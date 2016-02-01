@@ -150,7 +150,7 @@ public class StopTimeCreater {
                         startEnd[1] = end;
                         startEndList.add(startEnd);
                     } else {
-                        lastEnd = end;
+                        startEndList.get(startEndList.size() - 1)[1] = end;
                     }
                 }
                 index++;
