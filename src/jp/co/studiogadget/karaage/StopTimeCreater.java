@@ -133,10 +133,22 @@ public class StopTimeCreater {
 
             // 時間帯を統合
             List<LocalDateTime[]> startEndList = new ArrayList<LocalDateTime[]>();
+            StringBuilder indicatorSubSb = new StringBuilder();
             int index = 0;
             for(EconomicIndicator indicator : indicatorList) {
+
                 LocalDateTime start = indicator.getAnnouncementDatetime().minusHours(beforeHour);
                 LocalDateTime end = indicator.getAnnouncementDatetime().plusHours(afterHour);
+
+                indicatorSubSb.append(start.plusHours(timeDifference).format(pageDt)).append("\t")
+                .append(end.plusHours(timeDifference).format(pageDt)).append("\t")
+                .append(indicator.getImportance()).append("\t")
+                .append(indicator.getName()).append("\r\n");
+
+                // 重要度が指定未満の場合はスキップ
+                if(indicator.getImportance() < importance) {
+                    continue;
+                }
                 if(index == 0) {
                     LocalDateTime[] startEnd = new LocalDateTime[2];
                     startEnd[0] = start;
@@ -182,30 +194,8 @@ public class StopTimeCreater {
             }
             System.out.println("経済指標時間");
             System.out.println(indicatorSb.toString());
-
-            // 株式市場
-            String marketAsia;
-            String marketEur;
-            String marketNy;
-            if(timeDifference == 7) {
-                marketAsia = PropertyUtil.getValue("karaage", "market.asia");
-                marketEur = PropertyUtil.getValue("karaage", "market.eur");
-                marketNy = PropertyUtil.getValue("karaage", "market.ny");
-            } else {
-                marketAsia = PropertyUtil.getValue("karaage", "market.summer.asia");
-                marketEur = PropertyUtil.getValue("karaage", "market.summer.eur");
-                marketNy = PropertyUtil.getValue("karaage", "market.summer.ny");
-            }
-            // TODO ファイル出力
-            StringBuilder marketSb = new StringBuilder();
-            for(int i = 0; i < period + 1; i++) {
-                LocalDateTime target = today.plusDays(i + 1).toLocalDateTime();
-                marketSb.append(marketAsia.replace("MMDD", toStr(target.getMonthValue()) + toStr(target.getDayOfMonth()))).append(",")
-                        .append(marketEur.replace("MMDD", toStr(target.getMonthValue()) + toStr(target.getDayOfMonth()))).append(",")
-                        .append(marketNy.replace("MMDD", toStr(target.getMonthValue()) + toStr(target.getDayOfMonth()))).append(",");
-            }
-            System.out.println("株式市場時間");
-            System.out.println(marketSb.toString());
+            System.out.println("経済指標時間(エクセル用)");
+            System.out.println(indicatorSubSb.toString());
 
 
 
