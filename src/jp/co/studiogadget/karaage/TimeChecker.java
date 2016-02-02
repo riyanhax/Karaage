@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -144,28 +143,11 @@ public class TimeChecker {
             }
         }
 
-        // 着色
+        // 着色用の値を挿入
         XlsxExcelFileWriter writer = new XlsxExcelFileWriter(excelPath);
         for(int i = 0; i < colors.size(); i++) {
             int color = colors.get(i);
-            switch(color) {
-                case 0:
-                    break;
-                case 1:
-                    writer.setCellStyle(sheetName, i + 6, 7,
-                            writer.getCellColorStyle(sheetName, i + 6, 7, IndexedColors.RED)); // 赤
-                    break;
-                case 2:
-                    writer.setCellStyle(sheetName, i + 6, 7,
-                            writer.getCellColorStyle(sheetName, i + 6, 7, IndexedColors.SKY_BLUE)); // 青
-                    break;
-                case 3:
-                    writer.setCellStyle(sheetName, i + 6, 7,
-                            writer.getCellColorStyle(sheetName, i + 6, 7, IndexedColors.VIOLET)); // 紫
-                    break;
-                default:
-                    break;
-            }
+            writer.setValue(sheetName, i + 6, 20, color);
         }
         writer.write();
 
