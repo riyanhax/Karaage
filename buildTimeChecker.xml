@@ -54,6 +54,7 @@
         <copy file="${dir.lib}/xmlbeans-2.3.0.jar" todir="${dir.jarfile}/lib"/>
         <copy file="${dir.lib}/stax-api-1.0.1.jar" todir="${dir.jarfile}/lib"/>
         <mkdir dir="${dir.jarfile}/conf"/>
+        <mkdir dir="${dir.jarfile}/data"/>
         <copy file="${dir.git}/Karaage/conf/mail.properties" todir="${dir.jarfile}/conf"/>
         <copy file="${dir.git}/Karaage/conf/karaage.properties" todir="${dir.jarfile}/conf"/>
     </target>

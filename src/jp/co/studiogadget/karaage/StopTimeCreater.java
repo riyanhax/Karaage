@@ -5,7 +5,10 @@
  */
 package jp.co.studiogadget.karaage;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -22,11 +25,12 @@ import com.ui4j.api.browser.PageConfiguration;
 import com.ui4j.api.dom.Document;
 import com.ui4j.api.dom.Element;
 
+import jp.co.studiogadget.common.util.MailUtil;
 import jp.co.studiogadget.common.util.PropertyUtil;
 import jp.co.studiogadget.karaage.param.EconomicIndicator;
 
 /**
- * みんなの外為(http://fx.minkabu.jp/indicators/calendar)から経済指標発表時間をCSV形式で取得します。
+ * みんなの外為(http://fx.minkabu.jp/indicators/calendar)から経済指標発表時間を取得しCSV形式で出力します。
  *
  * @author hidet
  *
@@ -41,12 +45,16 @@ public class StopTimeCreater {
     /** 日本のゾーンID */
     public static final ZoneId JAPAN_ZONE_ID = ZoneId.of("Asia/Tokyo");
 
+    /** メール送信先 */
+    private static String to;
+
     /**
      * メインメソッド。
      *
      * @param args 出力先ディレクトリ(無しの場合自動設定)
+     * @throws Exception 例外
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         logger.info("***************** START *****************");
         try {
             String outputDir;
@@ -63,9 +71,9 @@ public class StopTimeCreater {
             String date = today.format(df);
 
             // 出力ファイル
-            String outputFull = outputDir + "/" + date + "_full.txt";              // 全部込み
-            String outputMarket = outputDir + "/" + date + "_market.txt";          // 株式市場のみ
-            String outputIndicator = outputDir + "/" + date + "_indicator.txt";    // 経済指標のみ
+            String output = outputDir + "/stop_list.txt";
+            // メール送信先
+            to = PropertyUtil.getValue("mail", "addr.to");
 
             // プロパティファイル読込
             int timeDifference = Integer.parseInt(PropertyUtil.getValue("karaage", "timedifference"));
@@ -140,9 +148,9 @@ public class StopTimeCreater {
                 LocalDateTime start = indicator.getAnnouncementDatetime().minusHours(beforeHour);
                 LocalDateTime end = indicator.getAnnouncementDatetime().plusHours(afterHour);
 
-                indicatorSubSb.append(start.plusHours(timeDifference).format(pageDt)).append("\t")
-                .append(end.plusHours(timeDifference).format(pageDt)).append("\t")
-                .append(indicator.getImportance()).append("\t")
+                indicatorSubSb.append(start.plusHours(timeDifference).format(pageDt)).append(",")
+                .append(end.plusHours(timeDifference).format(pageDt)).append(",")
+                .append(indicator.getImportance()).append(",")
                 .append(indicator.getName()).append("\r\n");
 
                 // 重要度が指定未満の場合はスキップ
@@ -168,43 +176,47 @@ public class StopTimeCreater {
                 index++;
             }
 
-            // TODO ファイル出力
+            // ファイル出力
             StringBuilder indicatorSb = new StringBuilder();
             for(LocalDateTime[] startEnd : startEndList) {
-                if(today.plusDays(period + 1).getDayOfYear() < startEnd[0].getDayOfYear()) {
+                LocalDateTime start = startEnd[0];
+                LocalDateTime end = startEnd[1];
+
+                if(today.plusDays(period + 1).getDayOfYear() < start.getDayOfYear()) {
                     break;
                 }
 
-                LocalDateTime start = startEnd[0];
-                LocalDateTime end = startEnd[1];
                 if(start.getDayOfMonth() == end.getDayOfMonth()) {
                     indicatorSb.append(toStr(start.getMonthValue())).append(toStr(start.getDayOfMonth())) // 月日
-                    .append(toStr(start.getHour())).append(toStr(start.getMinute()))             // 開始時刻
-                    .append(toStr(end.getHour())).append(toStr(end.getMinute()))                 // 終了時刻
+                    .append(toStr(start.getHour())).append(toStr(start.getMinute()))                      // 開始時刻
+                    .append(toStr(end.getHour())).append(toStr(end.getMinute()))                          // 終了時刻
                     .append(",");
                 } else {
                     indicatorSb.append(toStr(start.getMonthValue())).append(toStr(start.getDayOfMonth())) // 開始月日
-                    .append(toStr(start.getHour())).append(toStr(start.getMinute()))             // 開始時刻
-                    .append("2359").append(",")                                                  // 当日最終時刻
-                    .append(toStr(end.getMonthValue())).append(toStr(end.getDayOfMonth()))       // 終了月日
-                    .append("0000")                                                              // 翌日開始時刻
-                    .append(toStr(end.getHour())).append(toStr(end.getMinute()))                 // 終了時刻
+                    .append(toStr(start.getHour())).append(toStr(start.getMinute()))                      // 開始時刻
+                    .append("2359").append(",")                                                           // 当日最終時刻
+                    .append(toStr(end.getMonthValue())).append(toStr(end.getDayOfMonth()))                // 終了月日
+                    .append("0000")                                                                       // 翌日開始時刻
+                    .append(toStr(end.getHour())).append(toStr(end.getMinute()))                          // 終了時刻
                     .append(",");
                 }
             }
+
             System.out.println("経済指標時間");
             System.out.println(indicatorSb.toString());
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(new File(output))));
+            pw.print(indicatorSb.toString());
+            pw.close();
+
             System.out.println("経済指標時間(エクセル用)");
             System.out.println(indicatorSubSb.toString());
-
-
-
+            MailUtil.send(to, date + "_経済指標時間", indicatorSubSb.toString(), output);
 
             // 正常終了
             logger.info("****************** END ******************");
         } catch(Exception e) {
             logger.error("Failure.", e);
-            // TODO メール送信
+            MailUtil.send(to, "[ERROR] 経済指標時間", "経済指標時間取得エラー\r\n" + e.getLocalizedMessage());
         }
 
     }
