@@ -6,10 +6,10 @@
   </appender>
 
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    <file>log/MacaroniAuGratin/logFile.log</file>
+    <file>log/Karaage/logFile.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       <!-- daily rollover -->
-      <fileNamePattern>log/MacaroniAuGratin/logFile.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+      <fileNamePattern>log/Karaage/logFile.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
       <!-- keep 30 days worth of history -->
       <maxHistory>7</maxHistory>
     </rollingPolicy>
