@@ -153,6 +153,7 @@ public class TimeChecker {
 
         // 正常終了
         logger.info("****************** END ******************");
+        System.exit(0);
     }
 
 }

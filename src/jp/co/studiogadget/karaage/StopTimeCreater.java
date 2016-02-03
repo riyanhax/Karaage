@@ -214,9 +214,11 @@ public class StopTimeCreater {
 
             // 正常終了
             logger.info("****************** END ******************");
+            System.exit(0);
         } catch(Exception e) {
             logger.error("Failure.", e);
             MailUtil.send(to, "[ERROR] 経済指標時間", "経済指標時間取得エラー\r\n" + e.getLocalizedMessage());
+            System.exit(1);
         }
 
     }
