@@ -11,6 +11,5 @@
 	<classpathentry kind="lib" path="/lib/jtidy-r938.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CommonUtil"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ExcelOperation"/>
-	<classpathentry kind="lib" path="/lib/poi-3.10-FINAL-20140208.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
