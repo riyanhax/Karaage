@@ -8,7 +8,7 @@
     <!-- 環境に応じて設定 -->
     <property name="dir.workspace" value="D:/Development/workspace"/>
     <property name="dir.lib" value="D:/Development/Git/lib"/>
-    <property name="dir.jarfile" value="D:/Development/Karaage"/>
+    <property name="dir.jarfile" value="D:/Development/Tools/Karaage"/>
     <property name="dir.git" value="D:/Development/Git"/>
 
     <target name="create_run_jar">
