@@ -149,6 +149,7 @@ public class TimeChecker {
             int color = colors.get(i);
             writer.setValue(sheetName, i + 6, 20, color);
         }
+        writer.evaluateAllFormulaCells();
         writer.write();
 
         // 正常終了
