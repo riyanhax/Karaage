@@ -48,6 +48,12 @@ public class StopTimeCreater {
     /** メール送信先 */
     private static String to;
 
+    /** カウンター */
+    private static int counter = 0;
+
+    /** 引数 */
+    private static String[] argsTmp;
+
     /**
      * メインメソッド。
      *
@@ -56,6 +62,7 @@ public class StopTimeCreater {
      */
     public static void main(String[] args) throws Exception {
         logger.info("***************** START *****************");
+        argsTmp = args; // 引数保存
         try {
             String outputDir;
             if(args.length == 0) {
@@ -216,7 +223,10 @@ public class StopTimeCreater {
             logger.info("****************** END ******************");
             System.exit(0);
         } catch(Exception e) {
-            logger.error("Failure.", e);
+            logger.error("Failure.[" + counter + "]", e);
+            if(counter++ < 10) {
+                main(argsTmp);
+            }
             MailUtil.send(to, "[ERROR] 経済指標時間", "経済指標時間取得エラー\r\n" + e.getLocalizedMessage());
             System.exit(1);
         }
