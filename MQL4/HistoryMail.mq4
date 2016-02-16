@@ -136,7 +136,7 @@ int start() {
          field = field+NormalizeDouble(OrderCommission(), 2)+",";                                        // Commission
          field = field+""+",";                                                                           // Taxes
          field = field+NormalizeDouble(OrderSwap(), 2)+",";                                              // Swap
-         field = field+OrderProfit();                                                                    // Profit
+         field = field+OrderProfit()+",";                                                                // Profit
          field = field+OrderComment();                                                                   // Comment
          field = field+"\r\n";
       }
