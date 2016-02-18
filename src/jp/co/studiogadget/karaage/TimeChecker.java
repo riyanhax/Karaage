@@ -96,12 +96,12 @@ public class TimeChecker {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
         List<LocalDateTime> openDateTime = new ArrayList<LocalDateTime>();
         for(int i = 0; true; i++) {
-            String chk = loader.getCellValue(sheetName, i + 6, 4);
+            String chk = loader.getCellValue(sheetName, i + 11, 4);
             if(chk == null || chk.length() == 0) {
                 break;
             }
-            String day = loader.getCellValue(sheetName, i + 6, 5);
-            String time = loader.getCellValue(sheetName, i + 6, 7).substring(11, 16);
+            String day = loader.getCellValue(sheetName, i +11, 5);
+            String time = loader.getCellValue(sheetName, i + 11, 7).substring(11, 16);
             LocalDateTime open = LocalDateTime.parse(day + " " + time, df);
             openDateTime.add(open);
         }
