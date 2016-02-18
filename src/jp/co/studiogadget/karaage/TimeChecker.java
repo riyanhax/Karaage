@@ -147,7 +147,7 @@ public class TimeChecker {
         XlsxExcelFileWriter writer = new XlsxExcelFileWriter(excelPath);
         for(int i = 0; i < colors.size(); i++) {
             int color = colors.get(i);
-            writer.setValue(sheetName, i + 6, 20, color);
+            writer.setValue(sheetName, i + 11, 20, color);
         }
 //        writer.evaluateAllFormulaCells();
         writer.write();
