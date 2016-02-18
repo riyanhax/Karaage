@@ -137,8 +137,7 @@ int start() {
          field = field+""+",";                                                                           // Taxes
          field = field+NormalizeDouble(OrderSwap(), 2)+",";                                              // Swap
          field = field+OrderProfit()+",";                                                                // Profit
-         string comment = OrderComment();
-         field = field+StringReplace( comment, "[sl]", "" );                                      // Comment
+         field = field+OrderComment();                                                                   // Comment
          field = field+"\r\n";
       }
    }
