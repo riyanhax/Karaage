@@ -85,8 +85,8 @@ public class StopTimeCreater {
             // プロパティファイル読込
             int timeDifference = Integer.parseInt(PropertyUtil.getValue("karaage", "timedifference"));
             int importance = Integer.parseInt(PropertyUtil.getValue("karaage", "importance"));
-            int beforeHour = Integer.parseInt(PropertyUtil.getValue("karaage", "before"));
-            int afterHour = Integer.parseInt(PropertyUtil.getValue("karaage", "after"));
+            int beforeMin = Integer.parseInt(PropertyUtil.getValue("karaage", "before_min"));
+            int afterMin = Integer.parseInt(PropertyUtil.getValue("karaage", "after_min"));
             int period = Integer.parseInt(PropertyUtil.getValue("karaage", "period"));
 
             // ヘッドレス
@@ -152,8 +152,8 @@ public class StopTimeCreater {
             int index = 0;
             for(EconomicIndicator indicator : indicatorList) {
 
-                LocalDateTime start = indicator.getAnnouncementDatetime().minusHours(beforeHour);
-                LocalDateTime end = indicator.getAnnouncementDatetime().plusHours(afterHour);
+                LocalDateTime start = indicator.getAnnouncementDatetime().minusMinutes(beforeMin);
+                LocalDateTime end = indicator.getAnnouncementDatetime().plusMinutes(afterMin);
 
                 indicatorSubSb.append(start.plusHours(timeDifference).format(pageDt)).append(",")
                 .append(end.plusHours(timeDifference).format(pageDt)).append(",")
