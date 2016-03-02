@@ -37,6 +37,9 @@ int start() {
 
    // Time Difference
    diffHour = TimeHour(TimeLocal()) - Hour();
+   if( diffHour < 0 ) {
+      diffHour = diffHour+24;
+   }
 
    // 件名
    now = TimeCurrent();
