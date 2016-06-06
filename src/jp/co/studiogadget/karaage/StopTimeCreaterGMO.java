@@ -65,10 +65,15 @@ public class StopTimeCreaterGMO {
         argsTmp = args; // 引数保存
         try {
             String outputDir;
+            String url = null;
             if(args.length == 0) {
                 logger.debug("main()");
                 outputDir = new File(new File(
                         StopTimeCreaterGMO.class.getClassLoader().getResource("karaage.properties").getPath()).getParent()).getParent() + "/data";
+            } else if(args.length == 2) {
+                logger.debug("main(" + args[0] + "," + args[1] + ")");
+                outputDir = args[0];
+                url = args[1];
             } else {
                 logger.debug("main(" + args[0] + ")");
                 outputDir = args[0];
@@ -111,7 +116,12 @@ public class StopTimeCreaterGMO {
             config.setUserAgent("Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.82 Safari/537.36");
 
             // トップページを開く(今月)
-            Page page = BrowserFactory.getWebKit().navigate(URL + thisMonthStr + ".html", config);
+            Page page;
+            if(url == null) {
+                page = BrowserFactory.getWebKit().navigate(URL + thisMonthStr + ".html", config);
+            } else {
+                page = BrowserFactory.getWebKit().navigate(url, config);
+            }
             Document doc = page.getDocument();
 
             // 経済指標を取得
@@ -167,54 +177,56 @@ public class StopTimeCreaterGMO {
             }
 
             // トップページを開く(来月)
-            page = BrowserFactory.getWebKit().navigate(URL + nextMonthStr + ".html", config);
-            doc = page.getDocument();
+            if(url == null) {
+                page = BrowserFactory.getWebKit().navigate(URL + nextMonthStr + ".html", config);
+                doc = page.getDocument();
 
-            tbody = doc.query("#calendar-table > tbody").get();
-            rows = tbody.getChildren();
-            for(int i = 0; i < rows.size(); i++) {
-                EconomicIndicator indicator = new EconomicIndicator();
+                tbody = doc.query("#calendar-table > tbody").get();
+                rows = tbody.getChildren();
+                for(int i = 0; i < rows.size(); i++) {
+                    EconomicIndicator indicator = new EconomicIndicator();
 
-                List<Element> columns = rows.get(i).getChildren();
-                for(Element column : columns) {
-                    String cls = column.getAttribute("class").get();
-                    // 日付
-                    if(cls.contains("cal-tbl-date")) {
-                        String text = column.getText().get().trim();
-                        if(text == null || text.length() == 0) {
-                            continue;
+                    List<Element> columns = rows.get(i).getChildren();
+                    for(Element column : columns) {
+                        String cls = column.getAttribute("class").get();
+                        // 日付
+                        if(cls.contains("cal-tbl-date")) {
+                            String text = column.getText().get().trim();
+                            if(text == null || text.length() == 0) {
+                                continue;
+                            }
+                            announcementDate = text.substring(0, text.indexOf("("));
+                        // 時間
+                        } else if(cls.contains("cal-tbl-time")) {
+                            String text = column.getText().get().trim();
+                            if(text == null || text.length() == 0 || text.contains("*")) {
+                                continue;
+                            }
+                            LocalDateTime datetime = LocalDateTime.parse(
+                                    today.getYear() + "/" + announcementDate + " " + text, pageDt);    // この時点では日本時間
+                            indicator.setAnnouncementDatetime(datetime.minusHours(timeDifference)); // MT4の時差を考慮
+                        // 国、指標名
+                        } else if(cls.contains("cal-tbl-event")) {
+                            if(column.getChildren().size() == 0) {
+                                continue;
+                            }
+                            String country = column.getChildren().get(0).getAttribute("title").get();
+                            indicator.setCountry(country);
+                            String text = column.getText().get().trim();
+                            indicator.setName(text);
+                        // 重要度
+                        } else if(cls.contains("cal-tbl-important")) {
+                            if(column.getChildren().size() == 0) {
+                                continue;
+                            }
+                            String starClass = column.getChildren().get(0).getClasses().get(1);
+                            indicator.setImportance(Integer.parseInt(starClass.substring(starClass.indexOf("-") + 1)));
+                            break;
                         }
-                        announcementDate = text.substring(0, text.indexOf("("));
-                    // 時間
-                    } else if(cls.contains("cal-tbl-time")) {
-                        String text = column.getText().get().trim();
-                        if(text == null || text.length() == 0 || text.contains("*")) {
-                            continue;
-                        }
-                        LocalDateTime datetime = LocalDateTime.parse(
-                                today.getYear() + "/" + announcementDate + " " + text, pageDt);    // この時点では日本時間
-                        indicator.setAnnouncementDatetime(datetime.minusHours(timeDifference)); // MT4の時差を考慮
-                    // 国、指標名
-                    } else if(cls.contains("cal-tbl-event")) {
-                        if(column.getChildren().size() == 0) {
-                            continue;
-                        }
-                        String country = column.getChildren().get(0).getAttribute("title").get();
-                        indicator.setCountry(country);
-                        String text = column.getText().get().trim();
-                        indicator.setName(text);
-                    // 重要度
-                    } else if(cls.contains("cal-tbl-important")) {
-                        if(column.getChildren().size() == 0) {
-                            continue;
-                        }
-                        String starClass = column.getChildren().get(0).getClasses().get(1);
-                        indicator.setImportance(Integer.parseInt(starClass.substring(starClass.indexOf("-") + 1)));
-                        break;
                     }
-                }
 
-                indicatorList.add(indicator);
+                    indicatorList.add(indicator);
+                }
             }
 
             // 時間帯を統合
@@ -229,7 +241,7 @@ public class StopTimeCreaterGMO {
                 LocalDateTime start = indicator.getAnnouncementDatetime().minusMinutes(beforeMin);
                 LocalDateTime end = indicator.getAnnouncementDatetime().plusMinutes(afterMin);
 
-                if(start.compareTo(today.toLocalDateTime().minusDays(1)) < 0) {
+                if(url == null && start.compareTo(today.toLocalDateTime().minusDays(1)) < 0) {
                     continue;
                 }
 
