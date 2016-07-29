@@ -24,9 +24,9 @@ import jp.co.studiogadget.exceloperation.writer.XlsxExcelFileWriter;
  * @author hidet
  *
  */
-public class TimeCheckerGMO {
+public class TimeCheckerGMO_School {
     /** ロガー */
-    private static Logger logger = LoggerFactory.getLogger(TimeCheckerGMO.class);
+    private static Logger logger = LoggerFactory.getLogger(TimeCheckerGMO_School.class);
 
     /** 日本のゾーンID */
     public static final ZoneId JAPAN_ZONE_ID = ZoneId.of("Asia/Tokyo");
@@ -79,7 +79,7 @@ public class TimeCheckerGMO {
         }
 
         // Open日時を取得
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm");
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("MM-dd-yyyy H:m");
         List<LocalDateTime> openDateTime = new ArrayList<LocalDateTime>();
         int lastIndex = -1;
         for(int i = 0; true; i++) {
@@ -87,16 +87,16 @@ public class TimeCheckerGMO {
             if(chk == null || chk.length() == 0) {
                 break;
             }
-            String chk2 = loader.getCellValue(sheetName, i + 8, 44);
+            String chk2 = loader.getCellValue(sheetName, i + 8, 40);
             if(chk2 != null && chk2.length() > 0) {
                 lastIndex = i;
                 continue;
             }
 
             String day = loader.getCellValue(sheetName, i + 8, 9).substring(0, 10);
-            String time = loader.getCellValue(sheetName, i + 8, 9).substring(13, 21);
-            time = time.substring(time.lastIndexOf(":") - 5, time.lastIndexOf(":"));
-            LocalDateTime open = LocalDateTime.parse(day + " " + time, df);
+            Date tmp = loader.getDateCellValue(sheetName, i + 8, 32);
+            LocalDateTime time = LocalDateTime.ofInstant(tmp.toInstant(), JAPAN_ZONE_ID);
+            LocalDateTime open = LocalDateTime.parse(day + " " + time.getHour() + ":" + time.getMinute(), df);
             openDateTime.add(open);
             System.out.println(i);
         }
@@ -159,11 +159,11 @@ public class TimeCheckerGMO {
         for(int i = 0; i < colors.size(); i++) {
             int color = colors.get(i);
             int star = stars.get(i);
-            writer.setValue(sheetName, lastIndex + 1 + i + 8, 44, color);
+            writer.setValue(sheetName, lastIndex + 1 + i + 8, 40, color);
             if(star == 99) {
-                writer.setValue(sheetName, lastIndex + 1 + i + 8, 45, "");
+                writer.setValue(sheetName, lastIndex + 1 + i + 8, 41, "");
             } else {
-                writer.setValue(sheetName, lastIndex + 1 + i + 8, 45, star);
+                writer.setValue(sheetName, lastIndex + 1 + i + 8, 41, star);
             }
         }
         writer.write();

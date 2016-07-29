@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +25,9 @@ import jp.co.studiogadget.exceloperation.writer.XlsxExcelFileWriter;
  * @author hidet
  *
  */
-public class TimeCheckerGMO {
+public class TimeCheckerGMO_WAVE {
     /** ロガー */
-    private static Logger logger = LoggerFactory.getLogger(TimeCheckerGMO.class);
+    private static Logger logger = LoggerFactory.getLogger(TimeCheckerGMO_WAVE.class);
 
     /** 日本のゾーンID */
     public static final ZoneId JAPAN_ZONE_ID = ZoneId.of("Asia/Tokyo");
@@ -79,24 +80,26 @@ public class TimeCheckerGMO {
         }
 
         // Open日時を取得
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm");
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy MMM dd HH:mm", Locale.ENGLISH);
         List<LocalDateTime> openDateTime = new ArrayList<LocalDateTime>();
         int lastIndex = -1;
         for(int i = 0; true; i++) {
-            String chk = loader.getCellValue(sheetName, i + 8, 0);
+            String chk = loader.getCellValue(sheetName, i + 8, 2);
             if(chk == null || chk.length() == 0) {
                 break;
             }
-            String chk2 = loader.getCellValue(sheetName, i + 8, 44);
+            String chk2 = loader.getCellValue(sheetName, i + 8, 19);
             if(chk2 != null && chk2.length() > 0) {
                 lastIndex = i;
                 continue;
             }
 
-            String day = loader.getCellValue(sheetName, i + 8, 9).substring(0, 10);
-            String time = loader.getCellValue(sheetName, i + 8, 9).substring(13, 21);
+            String temp = loader.getCellValue(sheetName, i + 8, 2);
+            String day = temp.substring(4, 10);
+            String year = temp.substring(temp.lastIndexOf(" ") + 1);
+            String time = loader.getCellValue(sheetName, i + 8, 3);
             time = time.substring(time.lastIndexOf(":") - 5, time.lastIndexOf(":"));
-            LocalDateTime open = LocalDateTime.parse(day + " " + time, df);
+            LocalDateTime open = LocalDateTime.parse(year + " " + day + " " + time, df);
             openDateTime.add(open);
             System.out.println(i);
         }
@@ -159,11 +162,11 @@ public class TimeCheckerGMO {
         for(int i = 0; i < colors.size(); i++) {
             int color = colors.get(i);
             int star = stars.get(i);
-            writer.setValue(sheetName, lastIndex + 1 + i + 8, 44, color);
+            writer.setValue(sheetName, lastIndex + 1 + i + 8, 19, color);
             if(star == 99) {
-                writer.setValue(sheetName, lastIndex + 1 + i + 8, 45, "");
+                writer.setValue(sheetName, lastIndex + 1 + i + 8, 20, "");
             } else {
-                writer.setValue(sheetName, lastIndex + 1 + i + 8, 45, star);
+                writer.setValue(sheetName, lastIndex + 1 + i + 8, 20, star);
             }
         }
         writer.write();

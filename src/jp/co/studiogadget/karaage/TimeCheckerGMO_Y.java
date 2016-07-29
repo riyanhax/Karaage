@@ -24,7 +24,7 @@ import jp.co.studiogadget.exceloperation.writer.XlsxExcelFileWriter;
  * @author hidet
  *
  */
-public class TimeCheckerGMO {
+public class TimeCheckerGMO_Y {
     /** ロガー */
     private static Logger logger = LoggerFactory.getLogger(TimeCheckerGMO.class);
 
@@ -87,7 +87,7 @@ public class TimeCheckerGMO {
             if(chk == null || chk.length() == 0) {
                 break;
             }
-            String chk2 = loader.getCellValue(sheetName, i + 8, 44);
+            String chk2 = loader.getCellValue(sheetName, i + 8, 39);
             if(chk2 != null && chk2.length() > 0) {
                 lastIndex = i;
                 continue;
@@ -159,11 +159,11 @@ public class TimeCheckerGMO {
         for(int i = 0; i < colors.size(); i++) {
             int color = colors.get(i);
             int star = stars.get(i);
-            writer.setValue(sheetName, lastIndex + 1 + i + 8, 44, color);
+            writer.setValue(sheetName, lastIndex + 1 + i + 8, 39, color);
             if(star == 99) {
-                writer.setValue(sheetName, lastIndex + 1 + i + 8, 45, "");
+                writer.setValue(sheetName, lastIndex + 1 + i + 8, 40, "");
             } else {
-                writer.setValue(sheetName, lastIndex + 1 + i + 8, 45, star);
+                writer.setValue(sheetName, lastIndex + 1 + i + 8, 40, star);
             }
         }
         writer.write();
