@@ -1,7 +1,7 @@
 #property copyright "Copyright(C) 2016 Studiogadget Inc."
 
 extern string Trader = "AXIORY";
-extern string StopListUrl = "http://s3-us-west-2.amazonaws.com/studiogadget-fx/karaage/stop_list.txt";
+extern string StopListUrl = "http://s3-us-west-2.amazonaws.com/studiogadget-fx/karaage/stop_list_dummy.txt";
 // 121115001559,121116301429,   MMddHHmmHHmm, ※カンマで終わること、TimeCurrentで指定
 
 int executedDayOfYear = 999;
