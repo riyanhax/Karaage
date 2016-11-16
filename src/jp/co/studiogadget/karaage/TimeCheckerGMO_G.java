@@ -24,9 +24,9 @@ import jp.co.studiogadget.exceloperation.writer.XlsxExcelFileWriter;
  * @author hidet
  *
  */
-public class TimeCheckerGMO_School {
+public class TimeCheckerGMO_G {
     /** ロガー */
-    private static Logger logger = LoggerFactory.getLogger(TimeCheckerGMO_School.class);
+    private static Logger logger = LoggerFactory.getLogger(TimeCheckerGMO_G.class);
 
     /** 日本のゾーンID */
     public static final ZoneId JAPAN_ZONE_ID = ZoneId.of("Asia/Tokyo");
@@ -87,16 +87,16 @@ public class TimeCheckerGMO_School {
             if(chk == null || chk.length() == 0) {
                 break;
             }
-            String chk2 = loader.getCellValue(sheetName, i + 8, 40);
+            String chk2 = loader.getCellValue(sheetName, i + 8, 29);
             if(chk2 != null && chk2.length() > 0) {
                 lastIndex = i;
                 continue;
             }
 
             String day = loader.getCellValue(sheetName, i + 8, 9).substring(0, 10);
-            Date tmp = loader.getDateCellValue(sheetName, i + 8, 32);
-            LocalDateTime time = LocalDateTime.ofInstant(tmp.toInstant(), JAPAN_ZONE_ID);
-            LocalDateTime open = LocalDateTime.parse(day + " " + time.getHour() + ":" + time.getMinute(), df);
+            String time = loader.getCellValue(sheetName, i + 8, 9).substring(13, 21);
+            time = time.substring(time.lastIndexOf(":") - 5, time.lastIndexOf(":"));
+            LocalDateTime open = LocalDateTime.parse(day + " " + time, df);
             openDateTime.add(open);
             System.out.println(i);
         }
@@ -159,11 +159,11 @@ public class TimeCheckerGMO_School {
         for(int i = 0; i < colors.size(); i++) {
             int color = colors.get(i);
             int star = stars.get(i);
-            writer.setValue(sheetName, lastIndex + 1 + i + 8, 40, color);
+            writer.setValue(sheetName, lastIndex + 1 + i + 8, 29, color);
             if(star == 99) {
-                writer.setValue(sheetName, lastIndex + 1 + i + 8, 41, "");
+                writer.setValue(sheetName, lastIndex + 1 + i + 8, 30, "");
             } else {
-                writer.setValue(sheetName, lastIndex + 1 + i + 8, 41, star);
+                writer.setValue(sheetName, lastIndex + 1 + i + 8, 30, star);
             }
         }
         writer.write();
