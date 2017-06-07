@@ -5,19 +5,23 @@
  */
 package jp.co.studiogadget.karaage;
 
-import java.time.LocalDate;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import jp.co.studiogadget.exceloperation.loader.XlsxExcelFileLoader;
-import jp.co.studiogadget.exceloperation.writer.XlsxExcelFileWriter;
 
 /**
  * 時間が経済指標時間帯、マーケット時間帯に入っているか判断します。
@@ -25,9 +29,9 @@ import jp.co.studiogadget.exceloperation.writer.XlsxExcelFileWriter;
  * @author hidet
  *
  */
-public class TimeCheckerGMO_G {
+public class TimeCheckerGMO_Backtest {
     /** ロガー */
-    private static Logger logger = LoggerFactory.getLogger(TimeCheckerGMO_G.class);
+    private static Logger logger = LoggerFactory.getLogger(TimeCheckerGMO_Backtest.class);
 
     /** 日本のゾーンID */
     public static final ZoneId JAPAN_ZONE_ID = ZoneId.of("Asia/Tokyo");
@@ -42,65 +46,68 @@ public class TimeCheckerGMO_G {
     public static void main(String[] args) throws Exception {
         logger.info("***************** START *****************");
         if(args.length == 0) {
-            System.out.print("TimeChecker.jar [excelPath] [sheetName] [default|summer]");
+            System.out.print("TimeCheckerGMO_Backtest.jar [csvPath] [inutPath]");
             System.exit(0);
         }
-        String excelPath = args[0];
-        String sheetName = args[1];
+        String csvPath = args[0];
+        String inPath = args[1];
 
-        XlsxExcelFileLoader loader = new XlsxExcelFileLoader(excelPath);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy/M/d HH:mm");
 
         // 経済指標時間帯を取得
+        logger.info("Loading...[" + csvPath + "]");
         List<LocalDateTime[]> startEndList = new ArrayList<LocalDateTime[]>();
         List<Integer> starList = new ArrayList<Integer>();
-        for(int i = 0; true; i++) {
-            String startStr = loader.getCellValue("経済指標時間帯", i + 1, 0);
-            if(startStr == null || startStr.length() == 0) {
-                break;
+        int index = 0;
+        try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(csvPath), "SJIS"))) {
+            while(true) {
+                String line = br.readLine();
+                if(StringUtils.isBlank(line)) {
+                    br.close();
+                    break;
+                }
+
+                String[] columns = line.split(",");
+                Date before1 = df.parse(columns[0]);
+                Date after1 = df.parse(columns[1]);
+                Date before2 = df.parse(columns[4]);
+                Date after2 = df.parse(columns[5]);
+                Date before3 = df.parse(columns[6]);
+                Date after3 = df.parse(columns[7]);
+                Date zero = df.parse(columns[8]);
+                int star = Integer.parseInt(columns[2]);
+
+                LocalDateTime[] startEnd = new LocalDateTime[7];
+                startEnd[0] = LocalDateTime.ofInstant(before1.toInstant(), JAPAN_ZONE_ID);
+                startEnd[1] = LocalDateTime.ofInstant(after1.toInstant(), JAPAN_ZONE_ID);
+                startEnd[2] = LocalDateTime.ofInstant(before2.toInstant(), JAPAN_ZONE_ID);
+                startEnd[3] = LocalDateTime.ofInstant(after2.toInstant(), JAPAN_ZONE_ID);
+                startEnd[4] = LocalDateTime.ofInstant(before3.toInstant(), JAPAN_ZONE_ID);
+                startEnd[5] = LocalDateTime.ofInstant(after3.toInstant(), JAPAN_ZONE_ID);
+                startEnd[6] = LocalDateTime.ofInstant(zero.toInstant(), JAPAN_ZONE_ID);
+                startEndList.add(startEnd);
+                starList.add(star);
+                System.out.println(++index);
             }
-            Date before1 = loader.getDateCellValue("経済指標時間帯", i + 1, 4);
-            Date after1 = loader.getDateCellValue("経済指標時間帯", i + 1, 5);
-            Date before2 = loader.getDateCellValue("経済指標時間帯", i + 1, 6);
-            Date after2 = loader.getDateCellValue("経済指標時間帯", i + 1, 7);
-            Date before3 = loader.getDateCellValue("経済指標時間帯", i + 1, 8);
-            Date after3 = loader.getDateCellValue("経済指標時間帯", i + 1, 9);
-            Date zero = loader.getDateCellValue("経済指標時間帯", i + 1, 10);
-            int star = (int) Double.parseDouble(loader.getCellValue("経済指標時間帯", i + 1, 2));
-            LocalDateTime[] startEnd = new LocalDateTime[7];
-            startEnd[0] = LocalDateTime.ofInstant(before1.toInstant(), JAPAN_ZONE_ID);
-            startEnd[1] = LocalDateTime.ofInstant(after1.toInstant(), JAPAN_ZONE_ID);
-            startEnd[2] = LocalDateTime.ofInstant(before2.toInstant(), JAPAN_ZONE_ID);
-            startEnd[3] = LocalDateTime.ofInstant(after2.toInstant(), JAPAN_ZONE_ID);
-            startEnd[4] = LocalDateTime.ofInstant(before3.toInstant(), JAPAN_ZONE_ID);
-            startEnd[5] = LocalDateTime.ofInstant(after3.toInstant(), JAPAN_ZONE_ID);
-            startEnd[6] = LocalDateTime.ofInstant(zero.toInstant(), JAPAN_ZONE_ID);
-            startEndList.add(startEnd);
-            starList.add(star);
-            System.out.println(i);
         }
 
         // Open日時を取得
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("M-d-yyyy H:m");
+        logger.info("Loading...[" + inPath + "]");
+        SimpleDateFormat odf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
         List<LocalDateTime> openDateTime = new ArrayList<LocalDateTime>();
-        int lastIndex = -1;
-        for(int i = 0; true; i++) {
-            String chk = loader.getCellValue(sheetName, i + 8, 1);
-            if(chk == null || chk.length() == 0) {
-                break;
-            }
-            String chk2 = loader.getCellValue(sheetName, i + 8, 16);
-            if(chk2 != null && chk2.length() > 0) {
-                lastIndex = i;
-                continue;
-            }
+        index = 0;
+        try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(inPath), "SJIS"))) {
+            while(true) {
+                String line = br.readLine();
+                if(StringUtils.isBlank(line)) {
+                    br.close();
+                    break;
+                }
 
-            Date day = loader.getDateCellValue(sheetName, i + 8, 3);
-            LocalDate date = LocalDateTime.ofInstant(day.toInstant(), JAPAN_ZONE_ID).toLocalDate();
-            String time = loader.getCellValue(sheetName, i + 8, 4);
-            time = time.substring(time.lastIndexOf(":") - 5, time.lastIndexOf(":"));
-            LocalDateTime open = LocalDateTime.parse(date.getMonthValue() + "-" + date.getDayOfMonth() + "-" + date.getYear() + " " + time, df);
-            openDateTime.add(open);
-            System.out.println(i);
+                Date open = odf.parse(line);
+                openDateTime.add(LocalDateTime.ofInstant(open.toInstant(), JAPAN_ZONE_ID));
+                System.out.println(++index);
+            }
         }
 
         // 検証
@@ -156,19 +163,19 @@ public class TimeCheckerGMO_G {
             }
         }
 
-        // 着色用の値を挿入
-        XlsxExcelFileWriter writer = new XlsxExcelFileWriter(excelPath);
+        // 値を出力
+        PrintWriter pw = new PrintWriter(
+                new BufferedWriter(new FileWriter(new File(inPath.replace(".txt", "_re.txt")), false)));
         for(int i = 0; i < colors.size(); i++) {
             int color = colors.get(i);
             int star = stars.get(i);
-            writer.setValue(sheetName, lastIndex + 1 + i + 8, 16, color);
             if(star == 99) {
-                writer.setValue(sheetName, lastIndex + 1 + i + 8, 17, "");
+                pw.println(color + "\t");
             } else {
-                writer.setValue(sheetName, lastIndex + 1 + i + 8, 17, star);
+                pw.println(color + "\t" + star);
             }
         }
-        writer.write();
+        pw.close();
 
         // 正常終了
         logger.info("****************** END ******************");

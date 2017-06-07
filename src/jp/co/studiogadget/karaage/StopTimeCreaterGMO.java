@@ -279,7 +279,8 @@ public class StopTimeCreaterGMO {
                 LocalDateTime start = startEnd[0];
                 LocalDateTime end = startEnd[1];
 
-                if(today.plusDays(period + 1).getDayOfYear() < start.getDayOfYear()) {
+                if(today.plusDays(period + 1).getYear() == start.getYear()
+                        && today.plusDays(period + 1).getDayOfYear() < start.getDayOfYear()) {
                     break;
                 }
 
