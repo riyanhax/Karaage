@@ -99,8 +99,8 @@ public class TimeCheckerGMO_Z {
                 continue;
             }
 
-            String day = loader.getCellValue(sheetName, i + 8, 6);
-            String time = loader.getCellValue(sheetName, i + 8, 7);
+            String day = loader.getStringCellValue(sheetName, i + 8, 6);
+            String time = loader.getStringCellValue(sheetName, i + 8, 7);
             LocalDateTime open = LocalDateTime.parse(day + " " + time, df);
             openDateTime.add(open);
             System.out.println(i);
