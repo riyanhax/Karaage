@@ -80,7 +80,7 @@ public class TimeCheckerGMO_Z {
             startEnd[8] = LocalDateTime.parse(zero, df1);
             startEndList.add(startEnd);
             starList.add(star);
-            System.out.println(i);
+            System.out.println("経済指標読込: " + i);
         }
 
         // Open日時を取得
@@ -103,7 +103,7 @@ public class TimeCheckerGMO_Z {
             String time = loader.getStringCellValue(sheetName, i + 8, 7);
             LocalDateTime open = LocalDateTime.parse(day + " " + time, df);
             openDateTime.add(open);
-            System.out.println(i);
+            System.out.println("OPEN日付取得: " + i);
         }
 
         // 検証
@@ -169,6 +169,7 @@ public class TimeCheckerGMO_Z {
                     break;
                 }
             }
+            System.out.println("経済指標チェック: " + i);
         }
 
         // 着色用の値を挿入
@@ -182,6 +183,7 @@ public class TimeCheckerGMO_Z {
             } else {
                 writer.setValue(sheetName, lastIndex + 1 + i + 8, 9, star);
             }
+            System.out.println("出力: " + i);
         }
         writer.write();
 
