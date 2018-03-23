@@ -5,12 +5,10 @@
  */
 package jp.co.studiogadget.karaage;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -69,7 +67,7 @@ public class TimeCheckerGMO_Z {
             String before4 = ecLoader.getCellValue("ALL", i, 12);
             String after4 = ecLoader.getCellValue("ALL", i, 13);
             String zero = ecLoader.getCellValue("ALL", i, 14);
-            int star = (int) Double.parseDouble(ecLoader.getCellValue("ALL", i + 1, 4));
+            int star = (int) Double.parseDouble(ecLoader.getCellValue("ALL", i, 4));
             LocalDateTime[] startEnd = new LocalDateTime[9];
             startEnd[0] = LocalDateTime.parse(before1, df1);
             startEnd[1] = LocalDateTime.parse(after1, df1);
@@ -87,7 +85,7 @@ public class TimeCheckerGMO_Z {
 
         // Open日時を取得
         XlsxExcelFileLoader loader = new XlsxExcelFileLoader(excelPath);
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("M-d-yyyy H:m");
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         List<LocalDateTime> openDateTime = new ArrayList<LocalDateTime>();
         int lastIndex = -1;
         for(int i = 0; true; i++) {
@@ -101,11 +99,9 @@ public class TimeCheckerGMO_Z {
                 continue;
             }
 
-            Date day = loader.getDateCellValue(sheetName, i + 8, 59);
-            LocalDate date = LocalDateTime.ofInstant(day.toInstant(), JAPAN_ZONE_ID).toLocalDate();
+            String day = loader.getCellValue(sheetName, i + 8, 59);
             String time = loader.getCellValue(sheetName, i + 8, 60);
-            time = time.substring(time.lastIndexOf(":") - 5, time.lastIndexOf(":"));
-            LocalDateTime open = LocalDateTime.parse(date.getMonthValue() + "-" + date.getDayOfMonth() + "-" + date.getYear() + " " + time, df);
+            LocalDateTime open = LocalDateTime.parse(day + " " + time, df);
             openDateTime.add(open);
             System.out.println(i);
         }
