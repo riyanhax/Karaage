@@ -93,14 +93,14 @@ public class TimeCheckerGMO_Z {
             if(chk == null || chk.length() == 0) {
                 break;
             }
-            String chk2 = loader.getCellValue(sheetName, i + 8, 61);
+            String chk2 = loader.getCellValue(sheetName, i + 8, 8);
             if(chk2 != null && chk2.length() > 0) {
                 lastIndex = i;
                 continue;
             }
 
-            String day = loader.getCellValue(sheetName, i + 8, 59);
-            String time = loader.getCellValue(sheetName, i + 8, 60);
+            String day = loader.getCellValue(sheetName, i + 8, 6);
+            String time = loader.getCellValue(sheetName, i + 8, 7);
             LocalDateTime open = LocalDateTime.parse(day + " " + time, df);
             openDateTime.add(open);
             System.out.println(i);
@@ -176,11 +176,11 @@ public class TimeCheckerGMO_Z {
         for(int i = 0; i < colors.size(); i++) {
             int color = colors.get(i);
             int star = stars.get(i);
-            writer.setValue(sheetName, lastIndex + 1 + i + 8, 61, color);
+            writer.setValue(sheetName, lastIndex + 1 + i + 8, 8, color);
             if(star == 99) {
-                writer.setValue(sheetName, lastIndex + 1 + i + 8, 62, "");
+                writer.setValue(sheetName, lastIndex + 1 + i + 8, 9, "");
             } else {
-                writer.setValue(sheetName, lastIndex + 1 + i + 8, 62, star);
+                writer.setValue(sheetName, lastIndex + 1 + i + 8, 9, star);
             }
         }
         writer.write();
