@@ -153,7 +153,7 @@ int start(){
          }
          return(0);
       }
-      if( ema == "↑" ) {
+      if( ema != "↓" ) {
          if( lastLog != Time[0] ) {
             Print( "Invalid EMA.["+ema+"]" );
             lastLog = Time[0];
