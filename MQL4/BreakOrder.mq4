@@ -132,7 +132,7 @@ int start(){
          return(0);
       }
       // エントリー
-      ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, Ask-LossCutPips*pipsRate, Ask+TakeProfitPips*pipsRate, "BUY ORDER", Magic, 0, Red);
+      ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, Bid-LossCutPips*pipsRate, Bid+TakeProfitPips*pipsRate, "BUY ORDER", Magic, 0, Red);
       if( ticket < 0 ) {
         if( lastLog != Time[0] ) {
           Print( "Error Opening BuyOrder." );
@@ -168,7 +168,7 @@ int start(){
          return(0);
       }
       // エントリー
-      ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, Bid+LossCutPips*pipsRate, Bid-TakeProfitPips*pipsRate, "SELL ORDER", Magic, 0, Blue);
+      ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, Ask+LossCutPips*pipsRate, Ask-TakeProfitPips*pipsRate, "SELL ORDER", Magic, 0, Blue);
       if( ticket < 0 ) {
         if( lastLog != Time[0] ) {
           Print( "Error Opening SellOrder." );
