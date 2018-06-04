@@ -27,10 +27,10 @@ int init(){
    // 直近のZigZagの最大値、最小値を取得
    zigzagYamaTani("ZigZag", PERIOD_CURRENT, 7, 5, 3, 300);
    lastZigzagYamaTani = Time[0];
-   Print( "Zigzag H:"+zigzagHigh+" L:"+zigzagLow );
+   //Print( "Zigzag H:"+zigzagHigh+" L:"+zigzagLow );
 
    unitParPips = currencyUnitPerPips( Symbol() );
-   Print( "UnitPerPips: "+unitParPips );
+   //Print( "UnitPerPips: "+unitParPips );
 
    return(0);
 }
@@ -48,7 +48,7 @@ int start(){
    if( Time[0] != lastZigzagYamaTani ) {
       zigzagYamaTani( "ZigZag", PERIOD_CURRENT, 7, 5, 3, 300 );
       lastZigzagYamaTani = Time[0];
-      Print( "Zigzag H:"+zigzagHigh+" L:"+zigzagLow );
+      //Print( "Zigzag H:"+zigzagHigh+" L:"+zigzagLow );
    }
 
    // 時間制限
