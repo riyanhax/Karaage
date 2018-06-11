@@ -8,8 +8,9 @@ extern double TakeProfitPips = 12.0;
 extern double LossCutPips = 6.0;
 extern int MaxSpread = 9;
 extern string Explanation2 = "MaxSpread: 0.5pips → 5, 1pips → 10";
+extern bool Filter = true;
 extern bool TimeControl = true;
-extern int TimeDiff = 9;
+extern int TimeDiff = 6;
 
 double zigzagHigh = 0.0;
 double zigzagLow = 0.0;
@@ -43,6 +44,9 @@ int start(){
    int i;
    int currentHour;
    double lots;
+
+   // TP SL チェック
+   CheckTPSL();
 
    // 各足で一回だけ直近のZigZagの最大値、最小値を取得
    if( Time[0] != lastZigzagYamaTani ) {
@@ -117,22 +121,24 @@ int start(){
          }
          return(0);
       }
-      if( ema != "↑" ) {
-         if( lastLog != Time[0] ) {
-            Print( "Invalid EMA.["+ema+"]" );
-            lastLog = Time[0];
-         }
-         return(0);
-      }
-      if( stochas != "√" && osma != "√" && estrangement != "√" ) {
-         if( lastLog != Time[0] ) {
-            Print( "All Conditions Unmatch.["+stochas+","+osma+","+estrangement+"]" );
-            lastLog = Time[0];
-         }
-         return(0);
+      if( Filter ) {
+        if( ema != "↑" ) {
+           if( lastLog != Time[0] ) {
+              Print( "Invalid EMA.["+ema+"]" );
+              lastLog = Time[0];
+           }
+           return(0);
+        }
+        if( stochas != "√" && osma != "√" && estrangement != "√" ) {
+           if( lastLog != Time[0] ) {
+              Print( "All Conditions Unmatch.["+stochas+","+osma+","+estrangement+"]" );
+              lastLog = Time[0];
+           }
+           return(0);
+        }
       }
       // エントリー
-      ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, Ask-LossCutPips*pipsRate, Ask+TakeProfitPips*pipsRate, "BreakOrder BUY", Magic, 0, Red);
+      ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, 0, 0, "BreakOrder BUY", Magic, 0, Red);
       if( ticket < 0 ) {
         if( lastLog != Time[0] ) {
           Print( "Error Opening BuyOrder." );
@@ -141,6 +147,8 @@ int start(){
         }
       } else {
         Print( "BuyOrder. " +Ask+" ["+spread+","+ema+","+stochas+","+osma+","+estrangement+"]" );
+        OrderSelect( ticket, SELECT_BY_TICKET );
+        OrderModify( OrderTicket(), OrderOpenPrice(), Ask-LossCutPips*pipsRate, Ask+TakeProfitPips*pipsRate, 0 );
       }
    }
 
@@ -153,22 +161,24 @@ int start(){
          }
          return(0);
       }
-      if( ema != "↓" ) {
-         if( lastLog != Time[0] ) {
-            Print( "Invalid EMA.["+ema+"]" );
-            lastLog = Time[0];
-         }
-         return(0);
-      }
-      if( stochas != "√" && osma != "√" && estrangement != "√" ) {
-         if( lastLog != Time[0] ) {
-            Print( "All Conditions Unmatch.["+stochas+","+osma+","+estrangement+"]" );
-            lastLog = Time[0];
-         }
-         return(0);
+      if( Filter ) {
+        if( ema != "↓" ) {
+           if( lastLog != Time[0] ) {
+              Print( "Invalid EMA.["+ema+"]" );
+              lastLog = Time[0];
+           }
+           return(0);
+        }
+        if( stochas != "√" && osma != "√" && estrangement != "√" ) {
+           if( lastLog != Time[0] ) {
+              Print( "All Conditions Unmatch.["+stochas+","+osma+","+estrangement+"]" );
+              lastLog = Time[0];
+           }
+           return(0);
+        }
       }
       // エントリー
-      ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, Bid+LossCutPips*pipsRate, Bid-TakeProfitPips*pipsRate, "BreakOrder SELL", Magic, 0, Blue);
+      ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, 0, 0, "BreakOrder SELL", Magic, 0, Blue);
       if( ticket < 0 ) {
         if( lastLog != Time[0] ) {
           Print( "Error Opening SellOrder." );
@@ -177,6 +187,8 @@ int start(){
         }
       } else {
         Print( "SellOrder. " +Bid+" ["+spread+","+ema+","+stochas+","+osma+","+estrangement+"]" );
+        OrderSelect( ticket, SELECT_BY_TICKET );
+        OrderModify( OrderTicket(), OrderOpenPrice(), Bid+LossCutPips*pipsRate, Bid-TakeProfitPips*pipsRate, 0 );
       }
    }
 
@@ -278,4 +290,36 @@ double currencyUnitPerPips(string aSymbol)
   }
 
   return(currencyUnit);
+}
+
+
+void CheckTPSL()
+{
+   double sl,tp,open_price;
+   int type;
+   for(int i=OrdersTotal()-1;i>=0;i--)
+   {
+      OrderSelect(i, SELECT_BY_POS);
+      if(OrderSymbol() != Symbol()) continue;
+      if(OrderMagicNumber() != Magic) continue;
+      type = OrderType();
+      if(type > OP_SELL) continue;
+      if((LossCutPips>0 && OrderStopLoss()==0) || (TakeProfitPips>0 && OrderTakeProfit()==0))
+      {
+         sl=0;
+         tp=0;
+         open_price=OrderOpenPrice();
+         if(type==OP_BUY)
+         {
+            if(LossCutPips > 0) sl = open_price-LossCutPips*pipsRate;
+            if(TakeProfitPips > 0) tp = open_price+TakeProfitPips*pipsRate;
+         }
+         else
+         {
+            if(LossCutPips>0) sl = open_price+LossCutPips*pipsRate;
+            if(TakeProfitPips>0) tp = open_price-TakeProfitPips*pipsRate;
+         }
+         OrderModify(OrderTicket(),open_price,sl,tp,0);
+      }
+   }
 }
