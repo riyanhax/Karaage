@@ -90,14 +90,13 @@ int start(){
    }
 
    // Get Parameters
-   double up = iCustom( Symbol(), PERIOD_CURRENT, "1tap_scal_tool", -6, 2000, false, false, false, false, TakeProfitPips, LossCutPips, White, Black, Lime, Black, Red, Lime, 0, 0 );
-   double down = iCustom( Symbol(), PERIOD_CURRENT, "1tap_scal_tool", -6, 2000, false, false, false, false, TakeProfitPips, LossCutPips, White, Black, Lime, Black, Red, Lime, 1, 0 );
+   double up = iCustom( Symbol(), PERIOD_CURRENT, "1tap_scal_tool", -1*TimeDiff, 2000, false, false, false, false, TakeProfitPips, LossCutPips, White, Black, Lime, Black, Red, Lime, 0, 0 );
+   double down = iCustom( Symbol(), PERIOD_CURRENT, "1tap_scal_tool", -1*TimeDiff, 2000, false, false, false, false, TakeProfitPips, LossCutPips, White, Black, Lime, Black, Red, Lime, 1, 0 );
    int spread = MarketInfo( Symbol(), MODE_SPREAD ); // 0.5pips → 5 1pips → 10
    string ema = ObjectDescription( "20EMA" ); // 「↑」 or 「↓」
    string stochas = ObjectDescription( "StochasResult" ); // 「√」
    string osma = ObjectDescription( "OsMAResult" ); // 「√」
    string estrangement = ObjectDescription( "MakairiResult" ); // 「√」
-   //double zigzag = iCustom( Symbol(), PERIOD_CURRENT, "ZigZag", 7, 5, 3, 0, 0 );
 
    // Highエントリー
    if( up != EMPTY_VALUE && up != 0 ) {
