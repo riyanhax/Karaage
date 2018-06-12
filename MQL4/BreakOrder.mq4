@@ -12,9 +12,6 @@ extern bool Filter = true;
 extern bool TimeControl = true;
 extern int TimeDiff = 6;
 
-double zigzagHigh = 0.0;
-double zigzagLow = 0.0;
-datetime lastZigzagYamaTani = 0;
 datetime lastLog = 0;
 double pipsRate;
 double unitParPips;
@@ -24,11 +21,6 @@ int init(){
 
    pipsRate = Point;
    if( Digits==3 || Digits==5 ) pipsRate = Point * 10;
-
-   // 直近のZigZagの最大値、最小値を取得
-   zigzagYamaTani("ZigZag", PERIOD_CURRENT, 7, 5, 3, 300);
-   lastZigzagYamaTani = Time[0];
-   //Print( "Zigzag H:"+zigzagHigh+" L:"+zigzagLow );
 
    unitParPips = currencyUnitPerPips( Symbol() );
    //Print( "UnitPerPips: "+unitParPips );
@@ -47,13 +39,6 @@ int start(){
 
    // TP SL チェック
    CheckTPSL();
-
-   // 各足で一回だけ直近のZigZagの最大値、最小値を取得
-   if( Time[0] != lastZigzagYamaTani ) {
-      zigzagYamaTani( "ZigZag", PERIOD_CURRENT, 7, 5, 3, 300 );
-      lastZigzagYamaTani = Time[0];
-      //Print( "Zigzag H:"+zigzagHigh+" L:"+zigzagLow );
-   }
 
    // 時間制限
    if( TimeControl ) {
@@ -105,6 +90,8 @@ int start(){
    }
 
    // Get Parameters
+   double up = iCustom( Symbol(), PERIOD_CURRENT, "1tap_scal_tool", -6, 2000, false, false, false, false, TakeProfitPips, LossCutPips, White, Black, Lime, Black, Red, Lime, 0, 0 );
+   double down = iCustom( Symbol(), PERIOD_CURRENT, "1tap_scal_tool", -6, 2000, false, false, false, false, TakeProfitPips, LossCutPips, White, Black, Lime, Black, Red, Lime, 1, 0 );
    int spread = MarketInfo( Symbol(), MODE_SPREAD ); // 0.5pips → 5 1pips → 10
    string ema = ObjectDescription( "20EMA" ); // 「↑」 or 「↓」
    string stochas = ObjectDescription( "StochasResult" ); // 「√」
@@ -113,7 +100,7 @@ int start(){
    //double zigzag = iCustom( Symbol(), PERIOD_CURRENT, "ZigZag", 7, 5, 3, 0, 0 );
 
    // Highエントリー
-   if( Close[1] <= zigzagHigh && zigzagHigh < Close[0] ) {
+   if( up != EMPTY_VALUE && up != 0 ) {
       if( spread > MaxSpread ) {
          if( lastLog != Time[0] ) {
             Print( "Spread Over.[" + spread + "]" );
@@ -153,7 +140,7 @@ int start(){
    }
 
    // Lowエントリー
-   if( Close[1] >= zigzagLow && zigzagLow > Close[0] ) {
+   if( down != EMPTY_VALUE && down != 0 ) {
       if( spread > MaxSpread ) {
          if( lastLog != Time[0] ) {
             Print( "Spread Over.[" + spread + "]" );
@@ -202,59 +189,6 @@ int deinit(){
 // 小数点を2桁に切る
 double dts2(double val) {
    return(StrToDouble((DoubleToStr(val,2))));
-}
-
-//+------------------------------------------------------------------+
-//|【関数】ZigZagの直近の山・谷取得                                  |
-//|                                                                  |
-//|【引数】 IN OUT  引数名             説明                          |
-//|        --------------------------------------------------------- |
-//|         ○      aZIGZAG            インジケーターファイル名      |
-//|         ○      tf                 時間足                        |
-//|         ○      aExtDepth          インジケーター引数１          |
-//|         ○      aExtDeviation      インジケーター引数２          |
-//|         ○      aExtBackstep       インジケーター引数３          |
-//|         ○      aMaxLoopCount      最大ループカウント            |
-//|            ○   aYama              山                            |
-//|            ○   aTani              谷                            |
-//|                                                                  |
-//|【戻値】なし                                                      |
-//|                                                                  |
-//|【備考】なし                                                      |
-//+------------------------------------------------------------------+
-void zigzagYamaTani(string aZIGZAG, int aTf, int aExtDepth, int aExtDeviation, int aExtBackstep, int aMaxLoopCount)
-{
-  bool yamaFlg = false;
-  bool taniFlg = false;
-  zigzagHigh = 0.0;
-  zigzagLow = 0.0;
-
-  for(int i = 0; i < aMaxLoopCount; i++){
-    double zigzag  = NormalizeDouble(iCustom(NULL, aTf, aZIGZAG, aExtDepth, aExtDeviation, aExtBackstep, 0, i), Digits);
-    double zigzagH = NormalizeDouble(iCustom(NULL, aTf, aZIGZAG, aExtDepth, aExtDeviation, aExtBackstep, 1, i), Digits);
-    double zigzagL = NormalizeDouble(iCustom(NULL, aTf, aZIGZAG, aExtDepth, aExtDeviation, aExtBackstep, 2, i), Digits);
-
-    if(zigzag == 0){
-      continue;
-    }
-
-    // 最初に出現する山または谷は無視する（取得する山と谷は２本の線の頂点として構成されているものだけ）
-    if(zigzag == zigzagH){
-      if(yamaFlg || (yamaFlg == false && taniFlg)){
-        zigzagHigh = zigzag;
-      }
-      yamaFlg = true;
-    }else if(zigzag == zigzagL){
-      if(taniFlg || (taniFlg == false && yamaFlg)){
-        zigzagLow = zigzag;
-      }
-      taniFlg = true;
-    }
-
-    if(zigzagHigh != 0.0 && zigzagLow != 0.0){
-      break;
-    }
-  }
 }
 
 //+------------------------------------------------------------------+
