@@ -1,12 +1,14 @@
 #property copyright "Copyright(C) 2018 Studiogadget Inc."
 
 extern int Magic = 37654321;
-extern double RiskPercent = 0.0;
+//extern double RiskPercent = 0.0;
+extern double BalanceForLot = 1000000.0;
 extern double Lots = 0.01;
-extern string Explanation1 = "RiskPercentを0.0に設定した場合にLots有効";
+extern string Explanation1 = "BalanceForLotを0.0に設定した場合にLots有効";
 extern double TakeProfitPips = 6.0;
 extern double LossCutPips = 6.0;
 extern int TimeSettlement = 0;
+extern bool AutoSupport = false;
 extern int MaxSpread = 9;
 extern string Explanation2 = "MaxSpread: 0.5pips → 5, 1pips → 10";
 extern double RsiL = 30;
@@ -18,6 +20,7 @@ extern double CciAbs = 100.0;
 extern bool Envelopes = true;
 extern double EnvelopesDeviation = 0.05;
 extern int EnvelopesTerm = 3;
+extern bool Vgfx = false;
 extern double MinSigma = 2.0;
 extern double MinLength = 0.0;
 
@@ -26,6 +29,10 @@ double pipsRate;
 double unitParPips;
 datetime lastOrderTime = 0;
 datetime lastTestTime = 0;
+int lastError = 0;
+datetime lastErrorTime = 0;
+datetime orderModifyTime = 0;
+int timeframe;
 
 int init(){
    pipsRate = Point;
@@ -33,6 +40,8 @@ int init(){
 
    unitParPips = currencyUnitPerPips( Symbol() );
    //Print( "UnitPerPips: "+unitParPips );
+
+   timeframe = Period();
 
    return(0);
 }
@@ -71,6 +80,17 @@ int start(){
    double envelopesUp;
    double envelopesDown;
    int errChk;
+   double currentProfitPips;
+   int tempInt;
+   int supportCount;
+   double fixedProfitPips;
+   double supportLine;
+   bool res;
+   string msg;
+   string time = TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS );
+   datetime current;
+   double vgfxBuy;
+   double vgfxSell;
 
    // TP SL チェック
    CheckTPSL();
@@ -115,7 +135,102 @@ int start(){
       }
    }
 
+   // AutoSupport
+   if( AutoSupport ) {
+    current = iTime( Symbol(), timeframe, 0 );
+     if( OrdersTotal() > 0){
+        for( i=0; i<OrdersTotal(); i++ ){
+           if( OrderSelect(i, SELECT_BY_POS) == true ){
+              if( OrderSymbol() == Symbol() && Magic == OrderMagicNumber() ) {
+                 // Support Line
+                 if( OrderType() == OP_BUY ){
+                    currentProfitPips = ( Bid-OrderOpenPrice() )/pipsRate;
+                    if( currentProfitPips >= 10 ) {
+                       orderModifyTime = current;
+                       tempInt = (currentProfitPips-10)/5;
+                       supportCount = tempInt-1;
+                       fixedProfitPips = 10+supportCount*5;
+                       supportLine = OrderOpenPrice()+fixedProfitPips*pipsRate;
+                    } else if( currentProfitPips >= 3 ) {
+                       orderModifyTime = current;
+                       fixedProfitPips = 2;
+                       supportLine = OrderOpenPrice()+fixedProfitPips*pipsRate;
+                    } else if( currentProfitPips >= 2 ) {
+                       orderModifyTime = current;
+                       fixedProfitPips = 1;
+                       supportLine = OrderOpenPrice()+fixedProfitPips*pipsRate;
+                    } else if( currentProfitPips >= 1 ) {
+                       orderModifyTime = current;
+                       fixedProfitPips = 0.5;
+                       supportLine = OrderOpenPrice()+fixedProfitPips*pipsRate;
+                    }
+                    if( supportLine > 0 && OrderStopLoss() < supportLine ) {
+                       res = OrderModify( OrderTicket(), OrderOpenPrice(), supportLine, OrderTakeProfit(), 0, Blue );
+                       if( fixedProfitPips > 0 ) {
+                          if( !res  ) {
+                             msg = "Error Modify BuyOrder["+Symbol()+"]:"+GetLastError()+"\r\nTime:"+time;
+                             if( lastErrorTime != current || lastError != GetLastError() ) {
+                                SendMail( "[ERROR] ScalpingTool", msg );
+                                lastError = GetLastError();
+                                lastErrorTime = current;
+                             }
+                             Print( msg );
+                          } else {
+                             msg = "MOD BUY ORDER ["+Symbol()+"]"+"\r\nFixedProfitPips:"+fixedProfitPips+"\r\nTime:"+time;
+                             SendMail( "[MOD] ScalpingTool", msg );
+                             Print( msg );
+                          }
+                       }
+                    }
+                 }else if( OrderType() == OP_SELL ){
+                    currentProfitPips = ( OrderOpenPrice()-Ask )/pipsRate;
+                    if( currentProfitPips >= 10 ) {
+                       orderModifyTime = current;
+                       tempInt = (currentProfitPips-10)/5;
+                       supportCount = tempInt-1;
+                       fixedProfitPips = 10+supportCount*5;
+                       supportLine = OrderOpenPrice()-fixedProfitPips*pipsRate;
+                    } else if( currentProfitPips >= 3 ) {
+                       orderModifyTime = current;
+                       fixedProfitPips = 2;
+                       supportLine = OrderOpenPrice()-fixedProfitPips*pipsRate;
+                    } else if( currentProfitPips >= 2 ) {
+                       orderModifyTime = current;
+                       fixedProfitPips = 1;
+                       supportLine = OrderOpenPrice()-fixedProfitPips*pipsRate;
+                    } else if( currentProfitPips >= 1 ) {
+                       orderModifyTime = current;
+                       fixedProfitPips = 0.5;
+                       supportLine = OrderOpenPrice()-fixedProfitPips*pipsRate;
+                    }
+                    if( supportLine > 0 && OrderStopLoss() > supportLine ) {
+                       res = OrderModify( OrderTicket(), OrderOpenPrice(), supportLine, OrderTakeProfit(), 0, Red );
+                       if( fixedProfitPips > 0 ) {
+                          if( !res ) {
+                             msg = "Error Modify SellOrder["+Symbol()+"]:"+GetLastError()+"\r\nTime:"+time;
+                             if( lastErrorTime != current || lastError != GetLastError() ) {
+                                SendMail( "[ERROR] ScalpingTool", msg );
+                                lastError = GetLastError();
+                                lastErrorTime = current;
+                             }
+                             Print( msg );
+                          } else {
+                             msg = "MOD SELL ORDER ["+Symbol()+"]"+"\r\nFixedProfitPips:"+fixedProfitPips+"\r\nTime:"+time;
+                             SendMail( "[MOD] ScalpingTool", msg );
+                             Print( msg );
+                          }
+                       }
+                    }
+                 }
+              }
+           }
+        }
+     }
+   }
+
+
    // ロット数計算
+  /**
    if( RiskPercent > 0 ) {
       double balance = AccountBalance();
       double riskBalance = ( balance*RiskPercent )/100.0;
@@ -123,7 +238,14 @@ int start(){
    } else {
       lots = Lots;
    }
+**/
+   if( BalanceForLot > 0 ) {
+      lots = dts2(AccountBalance()/BalanceForLot);
+   } else {
+      lots = Lots;
+   }
 
+   // 同じ足でのエントリーを避ける
    if( lastOrderTime == Time[0] ) {
       return(0);
    }
@@ -223,9 +345,13 @@ int start(){
    cci = iCustom( Symbol(), PERIOD_CURRENT, "CCI", CciTerm, 0, 1 );
    envelopesUp = iEnvelopes( Symbol(), PERIOD_CURRENT, EnvelopesTerm, MODE_SMMA, 0, PRICE_CLOSE, EnvelopesDeviation, MODE_UPPER, 1 );
    envelopesDown = iEnvelopes( Symbol(), PERIOD_CURRENT, EnvelopesTerm, MODE_SMMA, 0, PRICE_CLOSE, EnvelopesDeviation, MODE_LOWER, 1 );
+   if( Vgfx ) {
+      vgfxBuy = iCustom(Symbol(),PERIOD_CURRENT,"VGFX",0,0,0,0,0,0,"XRT7-949X-E1S6","5F67-G69W-5929",2,1);
+      vgfxSell = iCustom(Symbol(),PERIOD_CURRENT,"VGFX",0,0,0,0,0,0,"XRT7-949X-E1S6","5F67-G69W-5929",3,1);
+   }
 
    // Highエントリー
-   if( price <= sigma00 && sigma >= MinSigma && ( rsi <= RsiL || RsiU <= rsi ) && ( !CciLimit || cci <= -CciAbs ) &&  ( !Envelopes || price <= envelopesDown ) && lengthD >= MinLength ) {
+   if( price <= sigma00 && sigma >= MinSigma && ( rsi <= RsiL || RsiU <= rsi ) && ( !CciLimit || cci <= -CciAbs ) &&  ( !Envelopes || price <= envelopesDown ) && lengthD >= MinLength && ( !Vgfx || ( vgfxBuy != 0 && vgfxBuy != EMPTY_VALUE ) ) ) {
       ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, 0, 0, "BUY ORDER", Magic, 0, Red);
       if( ticket < 0 ) {
         if( lastLog != Time[0] ) {
@@ -242,7 +368,7 @@ int start(){
    }
 
    // Lowエントリー
-   if( price >= sigma00 && sigma >= MinSigma && ( rsi <= RsiL || RsiU <= rsi ) && ( !CciLimit || cci >= CciAbs ) && ( !Envelopes || price >= envelopesUp ) && lengthD >= MinLength ) {
+   if( price >= sigma00 && sigma >= MinSigma && ( rsi <= RsiL || RsiU <= rsi ) && ( !CciLimit || cci >= CciAbs ) && ( !Envelopes || price >= envelopesUp ) && lengthD >= MinLength && ( !Vgfx || ( vgfxSell != 0 && vgfxSell != EMPTY_VALUE ) ) ) {
       ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, 0, 0, "SELL ORDER", Magic, 0, Blue);
       if( ticket < 0 ) {
         if( lastLog != Time[0] ) {
