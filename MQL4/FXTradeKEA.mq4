@@ -91,6 +91,8 @@ int start(){
    datetime current;
    double vgfxBuy;
    double vgfxSell;
+   double tp;
+   double sl;
 
    // TP SL チェック
    CheckTPSL();
@@ -363,7 +365,15 @@ int start(){
         Print( "BUY_ORDER "+price+" "+sigma+" "+rsi+" "+cci+" "+envelopesUp+" "+envelopesDown+" "+lengthD );
         lastOrderTime = Time[0];
         OrderSelect( ticket, SELECT_BY_TICKET );
-        OrderModify( OrderTicket(), OrderOpenPrice(), Ask-LossCutPips*pipsRate, Ask+TakeProfitPips*pipsRate, 0 );
+        tp = 0;
+        sl = 0;
+        if( TakeProfitPips > 0 ) {
+          tp = Ask+TakeProfitPips*pipsRate;
+        }
+        if( LossCutPips > 0 ) {
+          sl = Ask-LossCutPips*pipsRate;
+        }
+        OrderModify( OrderTicket(), OrderOpenPrice(), sl, tp, 0 );
       }
    }
 
@@ -380,7 +390,15 @@ int start(){
         Print( "SELL_ORDER "+price+" "+sigma+" "+rsi+" "+cci+" "+envelopesUp+" "+envelopesDown+" "+lengthD );
         lastOrderTime = Time[0];
         OrderSelect( ticket, SELECT_BY_TICKET );
-        OrderModify( OrderTicket(), OrderOpenPrice(), Bid+LossCutPips*pipsRate, Bid-TakeProfitPips*pipsRate, 0 );
+        tp = 0;
+        sl = 0;
+        if( TakeProfitPips > 0 ) {
+          tp = Bid-TakeProfitPips*pipsRate;
+        }
+        if( LossCutPips > 0 ) {
+          sl = Bid+LossCutPips*pipsRate;
+        }
+        OrderModify( OrderTicket(), OrderOpenPrice(), sl, tp, 0 );
       }
    }
 
