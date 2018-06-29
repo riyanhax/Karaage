@@ -11,6 +11,7 @@ extern int TimeSettlement = 0;
 extern bool AutoSupport = false;
 extern int MaxSpread = 9;
 extern string Explanation2 = "MaxSpread: 0.5pips → 5, 1pips → 10";
+extern int MaxEntry = 999;
 extern double RsiL = 30;
 extern double RsiU = 70;
 extern int RsiTerm = 8;
@@ -93,6 +94,7 @@ int start(){
    double vgfxSell;
    double tp;
    double sl;
+   int entryCnt;
 
    // TP SL チェック
    CheckTPSL();
@@ -102,6 +104,7 @@ int start(){
         for( i=0; i<OrdersTotal(); i++ ){
            if( OrderSelect(i, SELECT_BY_POS) == true ){
               if( OrderSymbol() == Symbol() && OrderMagicNumber() == Magic ) {
+                entryCnt++;
                  if( OrderOpenTime()+TimeSettlement*60 <= TimeCurrent() ) {
                     if( OrderType() == OP_BUY ) {
                        while( !IsStopped() ) {
@@ -110,6 +113,7 @@ int start(){
                             errChk = 1;
                          }
                          if( errChk == 0 ) {
+                            entryCnt--;
                             break;
                          }
                          Print( "Order Close Failure." );
@@ -123,6 +127,7 @@ int start(){
                             errChk = 1;
                          }
                          if( errChk == 0 ) {
+                            entryCnt--;
                             break;
                          }
                          Print( "Order Close Failure." );
@@ -245,6 +250,11 @@ int start(){
       lots = dts2(AccountBalance()/BalanceForLot);
    } else {
       lots = Lots;
+   }
+
+   // 同時エントリー制限
+   if( entryCnt >= MaxEntry ) {
+    return(0);
    }
 
    // 同じ足でのエントリーを避ける
