@@ -95,9 +95,10 @@ int start(){
    double tp;
    double sl;
    int entryCnt;
+   int spread;
 
    // TP SL チェック
-   CheckTPSL();
+   //CheckTPSL();
 
    if( TimeSettlement ) {
       if( OrdersTotal() > 0){
@@ -353,6 +354,8 @@ int start(){
       sigma = dt1( 0.0+doubleTemp );
    }
 
+   spread = MarketInfo( Symbol(), MODE_SPREAD );
+
    rsi = iRSI( Symbol(), PERIOD_CURRENT, RsiTerm, PRICE_CLOSE, 1 );
    cci = iCustom( Symbol(), PERIOD_CURRENT, "CCI", CciTerm, 0, 1 );
    envelopesUp = iEnvelopes( Symbol(), PERIOD_CURRENT, EnvelopesTerm, MODE_SMMA, 0, PRICE_CLOSE, EnvelopesDeviation, MODE_UPPER, 1 );
@@ -364,7 +367,14 @@ int start(){
 
    // Highエントリー
    if( price <= sigma00 && sigma >= MinSigma && ( rsi <= RsiL || RsiU <= rsi ) && ( !CciLimit || cci <= -CciAbs ) &&  ( !Envelopes || price <= envelopesDown ) && lengthD >= MinLength && ( !Vgfx || ( vgfxBuy != 0 && vgfxBuy != EMPTY_VALUE ) ) ) {
-      ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, 0, 0, "BUY ORDER", Magic, 0, Red);
+      if( spread > MaxSpread ) {
+         if( lastLog != Time[0] ) {
+            Print( "Invalid Spread.["+spread+"]" );
+            lastLog = Time[0];
+         }
+         return(0);
+      }
+      ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, Ask-LossCutPips*pipsRate, Ask+TakeProfitPips*pipsRate, "BUY ORDER", Magic, 0, Red );
       if( ticket < 0 ) {
         if( lastLog != Time[0] ) {
           Print( "Error Opening BuyOrder." );
@@ -372,8 +382,9 @@ int start(){
           lastLog = Time[0];
         }
       } else {
-        Print( "BUY_ORDER "+price+" "+sigma+" "+rsi+" "+cci+" "+envelopesUp+" "+envelopesDown+" "+lengthD );
+        Print( "BUY_ORDER "+price+" "+sigma+" "+rsi+" "+cci+" "+envelopesUp+" "+envelopesDown+" "+lengthD+" "+spread);
         lastOrderTime = Time[0];
+        /*
         OrderSelect( ticket, SELECT_BY_TICKET );
         tp = 0;
         sl = 0;
@@ -384,12 +395,20 @@ int start(){
           sl = Ask-LossCutPips*pipsRate;
         }
         OrderModify( OrderTicket(), OrderOpenPrice(), sl, tp, 0 );
+        */
       }
    }
 
    // Lowエントリー
    if( price >= sigma00 && sigma >= MinSigma && ( rsi <= RsiL || RsiU <= rsi ) && ( !CciLimit || cci >= CciAbs ) && ( !Envelopes || price >= envelopesUp ) && lengthD >= MinLength && ( !Vgfx || ( vgfxSell != 0 && vgfxSell != EMPTY_VALUE ) ) ) {
-      ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, 0, 0, "SELL ORDER", Magic, 0, Blue);
+      if( spread > MaxSpread ) {
+         if( lastLog != Time[0] ) {
+            Print( "Invalid Spread.["+spread+"]" );
+            lastLog = Time[0];
+         }
+         return(0);
+      }
+      ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, Bid+LossCutPips*pipsRate, Bid-TakeProfitPips*pipsRate, "SELL ORDER", Magic, 0, Blue);
       if( ticket < 0 ) {
         if( lastLog != Time[0] ) {
           Print( "Error Opening SellOrder." );
@@ -397,8 +416,9 @@ int start(){
           lastLog = Time[0];
         }
       } else {
-        Print( "SELL_ORDER "+price+" "+sigma+" "+rsi+" "+cci+" "+envelopesUp+" "+envelopesDown+" "+lengthD );
+        Print( "SELL_ORDER "+price+" "+sigma+" "+rsi+" "+cci+" "+envelopesUp+" "+envelopesDown+" "+lengthD+" "+spread );
         lastOrderTime = Time[0];
+        /*
         OrderSelect( ticket, SELECT_BY_TICKET );
         tp = 0;
         sl = 0;
@@ -409,6 +429,7 @@ int start(){
           sl = Bid+LossCutPips*pipsRate;
         }
         OrderModify( OrderTicket(), OrderOpenPrice(), sl, tp, 0 );
+        */
       }
    }
 
