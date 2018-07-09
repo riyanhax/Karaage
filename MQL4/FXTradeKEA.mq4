@@ -21,6 +21,12 @@ extern double CciAbs = 100.0;
 extern bool Envelopes = true;
 extern double EnvelopesDeviation = 0.05;
 extern int EnvelopesTerm = 3;
+extern bool Sto = true;
+extern int StoKPeriod = 5;
+extern int StoDPeriod = 2;
+extern int StoSlowing = 2;
+extern int StoLevelLower = 10;
+extern int StoLevelUpper = 90;
 extern bool Vgfx = false;
 extern double MinSigma = 2.0;
 extern double MinLength = 0.0;
@@ -96,6 +102,8 @@ int start(){
    double sl;
    int entryCnt;
    int spread;
+   double stoValue;
+   bool stochastic;
 
    // TP SL チェック
    //CheckTPSL();
@@ -364,9 +372,17 @@ int start(){
       vgfxBuy = iCustom(Symbol(),PERIOD_CURRENT,"VGFX",0,0,0,0,0,0,"XRT7-949X-E1S6","5F67-G69W-5929",2,1);
       vgfxSell = iCustom(Symbol(),PERIOD_CURRENT,"VGFX",0,0,0,0,0,0,"XRT7-949X-E1S6","5F67-G69W-5929",3,1);
    }
+   if( Sto ) {
+      stoValue = iStochastic( Symbol(), PERIOD_CURRENT, StoKPeriod, StoDPeriod, StoSlowing, MODE_SMA, 0, MODE_MAIN, 1 );
+      if( stoValue <= StoLevelLower || StoLevelUpper <= stoValue ) {
+         stochastic = true;
+      } else {
+         stochastic = false;
+      }
+   }
 
    // Highエントリー
-   if( price <= sigma00 && sigma >= MinSigma && ( rsi <= RsiL || RsiU <= rsi ) && ( !CciLimit || cci <= -CciAbs ) &&  ( !Envelopes || price <= envelopesDown ) && lengthD >= MinLength && ( !Vgfx || ( vgfxBuy != 0 && vgfxBuy != EMPTY_VALUE ) ) ) {
+   if( price <= sigma00 && sigma >= MinSigma && ( rsi <= RsiL || RsiU <= rsi ) && ( !CciLimit || cci <= -CciAbs ) &&  ( !Envelopes || price <= envelopesDown ) && lengthD >= MinLength && ( !Vgfx || ( vgfxBuy != 0 && vgfxBuy != EMPTY_VALUE ) ) && ( !Sto || stochastic ) ) {
       if( spread > MaxSpread ) {
          if( lastLog != Time[0] ) {
             Print( "Invalid Spread.["+spread+"]" );
@@ -400,7 +416,7 @@ int start(){
    }
 
    // Lowエントリー
-   if( price >= sigma00 && sigma >= MinSigma && ( rsi <= RsiL || RsiU <= rsi ) && ( !CciLimit || cci >= CciAbs ) && ( !Envelopes || price >= envelopesUp ) && lengthD >= MinLength && ( !Vgfx || ( vgfxSell != 0 && vgfxSell != EMPTY_VALUE ) ) ) {
+   if( price >= sigma00 && sigma >= MinSigma && ( rsi <= RsiL || RsiU <= rsi ) && ( !CciLimit || cci >= CciAbs ) && ( !Envelopes || price >= envelopesUp ) && lengthD >= MinLength && ( !Vgfx || ( vgfxSell != 0 && vgfxSell != EMPTY_VALUE ) ) && ( !Sto || stochastic ) ) {
       if( spread > MaxSpread ) {
          if( lastLog != Time[0] ) {
             Print( "Invalid Spread.["+spread+"]" );
