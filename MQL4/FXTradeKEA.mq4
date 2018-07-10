@@ -1,7 +1,6 @@
 #property copyright "Copyright(C) 2018 Studiogadget Inc."
 
 extern int Magic = 37654321;
-//extern double RiskPercent = 0.0;
 extern double BalanceForLot = 1000000.0;
 extern double Lots = 0.01;
 extern string Explanation1 = "BalanceForLotを0.0に設定した場合にLots有効";
@@ -108,12 +107,12 @@ int start(){
    // TP SL チェック
    //CheckTPSL();
 
-   if( TimeSettlement ) {
-      if( OrdersTotal() > 0){
-        for( i=0; i<OrdersTotal(); i++ ){
-           if( OrderSelect(i, SELECT_BY_POS) == true ){
-              if( OrderSymbol() == Symbol() && OrderMagicNumber() == Magic ) {
-                entryCnt++;
+    if( OrdersTotal() > 0){
+      for( i=0; i<OrdersTotal(); i++ ){
+         if( OrderSelect(i, SELECT_BY_POS) == true ){
+            if( OrderSymbol() == Symbol() && OrderMagicNumber() == Magic ) {
+              entryCnt++;
+              if( TimeSettlement > 0 ) {
                  if( OrderOpenTime()+TimeSettlement*60 <= TimeCurrent() ) {
                     if( OrderType() == OP_BUY ) {
                        while( !IsStopped() ) {
@@ -147,9 +146,9 @@ int start(){
                  }
               }
             }
-         }
-      }
-   }
+          }
+       }
+    }
 
    // AutoSupport
    if( AutoSupport ) {
@@ -220,7 +219,11 @@ int start(){
                        supportLine = OrderOpenPrice()-fixedProfitPips*pipsRate;
                     }
                     if( supportLine > 0 && OrderStopLoss() > supportLine ) {
-                       res = OrderModify( OrderTicket(), OrderOpenPrice(), supportLine, OrderTakeProfit(), 0, Red );
+                        if( OrderTakeProfit() > 0 ) {
+                           res = OrderModify( OrderTicket(), OrderOpenPrice(), supportLine, OrderTakeProfit(), 0, Red );
+                        } else {
+                          res = OrderModify( OrderTicket(), OrderOpenPrice(), supportLine, 0, 0, Red );
+                        }
                        if( fixedProfitPips > 0 ) {
                           if( !res ) {
                              msg = "Error Modify SellOrder["+Symbol()+"]:"+GetLastError()+"\r\nTime:"+time;
@@ -244,17 +247,7 @@ int start(){
      }
    }
 
-
    // ロット数計算
-  /**
-   if( RiskPercent > 0 ) {
-      double balance = AccountBalance();
-      double riskBalance = ( balance*RiskPercent )/100.0;
-      lots = dts2( riskBalance/( 100000*unitParPips*LossCutPips ) );
-   } else {
-      lots = Lots;
-   }
-**/
    if( BalanceForLot > 0 ) {
       lots = dts2(AccountBalance()/BalanceForLot);
    } else {
@@ -390,7 +383,18 @@ int start(){
          }
          return(0);
       }
-      ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, Ask-LossCutPips*pipsRate, Ask+TakeProfitPips*pipsRate, "BUY ORDER", Magic, 0, Red );
+      // エントリー
+      if( LossCutPips > 0 ) {
+         sl = Ask-LossCutPips*pipsRate;
+      } else {
+         sl = 0;
+      }
+      if( TakeProfitPips > 0 ) {
+         tp = Ask+TakeProfitPips*pipsRate;
+      } else {
+         tp = 0;
+      }
+      ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, sl, tp, "BUY ORDER", Magic, 0, Red );
       if( ticket < 0 ) {
         if( lastLog != Time[0] ) {
           Print( "Error Opening BuyOrder." );
@@ -400,18 +404,6 @@ int start(){
       } else {
         Print( "BUY_ORDER "+price+" "+sigma+" "+rsi+" "+cci+" "+envelopesUp+" "+envelopesDown+" "+lengthD+" "+spread);
         lastOrderTime = Time[0];
-        /*
-        OrderSelect( ticket, SELECT_BY_TICKET );
-        tp = 0;
-        sl = 0;
-        if( TakeProfitPips > 0 ) {
-          tp = Ask+TakeProfitPips*pipsRate;
-        }
-        if( LossCutPips > 0 ) {
-          sl = Ask-LossCutPips*pipsRate;
-        }
-        OrderModify( OrderTicket(), OrderOpenPrice(), sl, tp, 0 );
-        */
       }
    }
 
@@ -424,7 +416,18 @@ int start(){
          }
          return(0);
       }
-      ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, Bid+LossCutPips*pipsRate, Bid-TakeProfitPips*pipsRate, "SELL ORDER", Magic, 0, Blue);
+      // エントリー
+      if( LossCutPips > 0 ) {
+         sl = Bid+LossCutPips*pipsRate;
+      } else {
+         sl = 0;
+      }
+      if( TakeProfitPips > 0 ) {
+         tp = Bid-TakeProfitPips*pipsRate;
+      } else {
+         tp = 0;
+      }
+      ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, sl, tp, "SELL ORDER", Magic, 0, Blue);
       if( ticket < 0 ) {
         if( lastLog != Time[0] ) {
           Print( "Error Opening SellOrder." );
@@ -434,18 +437,6 @@ int start(){
       } else {
         Print( "SELL_ORDER "+price+" "+sigma+" "+rsi+" "+cci+" "+envelopesUp+" "+envelopesDown+" "+lengthD+" "+spread );
         lastOrderTime = Time[0];
-        /*
-        OrderSelect( ticket, SELECT_BY_TICKET );
-        tp = 0;
-        sl = 0;
-        if( TakeProfitPips > 0 ) {
-          tp = Bid-TakeProfitPips*pipsRate;
-        }
-        if( LossCutPips > 0 ) {
-          sl = Bid+LossCutPips*pipsRate;
-        }
-        OrderModify( OrderTicket(), OrderOpenPrice(), sl, tp, 0 );
-        */
       }
    }
 
