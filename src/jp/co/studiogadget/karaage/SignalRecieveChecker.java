@@ -57,6 +57,7 @@ public class SignalRecieveChecker {
             String signalName = PropertyUtil.getValue("signalRecieveChecker", "signalName");
             String mql5Account = PropertyUtil.getValue("signalRecieveChecker", "mql5Account");
             String mailTo = PropertyUtil.getValue("signalRecieveChecker", "mailTo");
+            String platform = PropertyUtil.getValue("signalRecieveChecker", "platform");
             boolean checkEA = "TRUE".equals(PropertyUtil.getValue("signalRecieveChecker", "checkEA").toUpperCase());
 
             // 当日の日付 (yyyyMMdd)
@@ -78,12 +79,23 @@ public class SignalRecieveChecker {
                 terms3 = true;
             }
 
+            String charset;
+            if("MT4".equals(platform)) {
+                charset = "UTF8";
+            } else {
+                charset = "UTF-16LE";
+            }
+
             // ログファイル読込 (後ろから)
             ReversedLinesFileReader fr = null;
             try {
-                fr = new ReversedLinesFileReader(logFile, IOUtils.DEFAULT_BUFFER_SIZE, "windows-31j");
+                fr = new ReversedLinesFileReader(logFile, IOUtils.DEFAULT_BUFFER_SIZE, charset);
                 String line = null;
                 while((line = fr.readLine()) != null) {
+
+                    if(line.length() < 50) {
+                        continue;
+                    }
 
                     // 条件1
                     if(!terms1
