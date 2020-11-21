@@ -97,6 +97,7 @@ public class SignalRecieveChecker {
                 String line = null;
                 while((line = fr.readLine()) != null) {
 
+                    // 短い行はスキップ
                     if(line.length() < 50) {
                         continue;
                     }
