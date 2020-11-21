@@ -1,6 +1,6 @@
 /*
  * 株式会社スタジオガジェット
- * Copyright(C) 2015 Studiogadget Inc.
+ * Copyright(C) 2020 Studiogadget Inc.
  *
  */
 package jp.co.studiogadget.karaage;
@@ -150,7 +150,9 @@ public class SignalRecieveChecker {
                         break;
                     }
                 }
-                fr.close();
+                if(fr != null) {
+                    fr.close();
+                }
 
                 // 結果に応じてメール作成
                 String mailSubject;
