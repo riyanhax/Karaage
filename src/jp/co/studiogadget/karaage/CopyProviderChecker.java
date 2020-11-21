@@ -91,7 +91,7 @@ public class CopyProviderChecker {
                 // エラーが発生した場合はメールを送信して終了
                 if(error) {
                     logger.error("CopyProvider Error.");
-                    MailUtil.send(mailTo, "ERROR " + signalName + " is Failed.", today.format(mdf));
+                    MailUtil.send(mailTo, "ERROR " + signalName + " is Failed.", today.format(mdf) + "\r\nCopyProvider Error.");
                     System.exit(1);
                 }
 
