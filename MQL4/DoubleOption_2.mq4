@@ -7,9 +7,8 @@ extern double TakeProfitPips = 5.0;
 bool firstOrder = false;
 datetime firstOrderTime;
 double pipsRate;
-double unitParPips;
 int ticket;
-int count;
+int count = 0;
 
 int init(){
    pipsRate = Point;
@@ -23,7 +22,7 @@ int start(){
    int i;
    int errChk;
    double profitPips;
-   bool closeFlg = false;
+   int closeFlg = 0; // 初期値 0、Long 1、Short 2
 
    // 初回両建て
    if( !firstOrder ) {
@@ -37,13 +36,12 @@ int start(){
    }
 
    // TakeProfitPips以上の利益が出ているポジションが存在する場合、
-   // その利益が出ているポジションと、
-   // firstOrderTimeより後のポジションを全て決済して両建てを持ち直す。
+   // その利益が出ているポジションとを決済し、ポジションを持ち直す。
    if( OrdersTotal() > 0) {
      for( i=0; i<OrdersTotal(); i++ ) {
        if( OrderSelect( i, SELECT_BY_POS) == true ) {
          if( OrderSymbol() == Symbol() && OrderMagicNumber() == Magic ) {
-           if( OrderType() == OP_BUY ) {
+             if( OrderType() == OP_BUY ) {
               profitPips = ( Bid-OrderOpenPrice() ) / pipsRate;
               if( profitPips >= TakeProfitPips ) {
                 Print( "Close Profit Order." );
@@ -53,7 +51,7 @@ int start(){
                       errChk = 1;
                    }
                    if( errChk == 0 ) {
-                      closeFlg = true;
+                      closeFlg = 1;
                       break;
                    }
                    Print( "Order Close Failure Long." );
@@ -70,48 +68,7 @@ int start(){
                       errChk = 1;
                    }
                    if( errChk == 0 ) {
-                      closeFlg = true;
-                      break;
-                   }
-                   Print( "Order Close Failure Short." );
-                   Sleep(500);
-                   RefreshRates();
-                 }
-               }
-             }
-          }
-       }
-     }
-   }
-   // firstOrderTimeより後のポジションを全て決済
-   if( closeFlg ) {
-      if( OrdersTotal() > 0) {
-       for( i=0; i<OrdersTotal(); i++ ) {
-         if( OrderSelect( i, SELECT_BY_POS) == true ) {
-           if( OrderSymbol() == Symbol() && OrderMagicNumber() == Magic ) {
-             if( OrderOpenTime() > firstOrderTime ) {
-               // このポジションを決済
-               Print( "Close Profitless Order." );
-               if( OrderType() == OP_BUY ) {
-                 while( !IsStopped() ) {
-                   errChk = 0;
-                   if( !OrderClose( OrderTicket(),OrderLots(),Bid,3,Green ) ){
-                      errChk = 1;
-                   }
-                   if( errChk == 0 ) {
-                      break;
-                   }
-                   Print( "Order Close Failure Long." );
-                   Sleep(500);
-                   RefreshRates();
-                }
-              } else if( OrderType() == OP_SELL ) {
-                 while( !IsStopped() ) {
-                   errChk = 0;
-                   if( !OrderClose( OrderTicket(),OrderLots(),Ask,3,Green ) ){
-                      errChk = 1;
-                   }
-                   if( errChk == 0 ) {
+                      closeFlg = 2;
                       break;
                    }
                    Print( "Order Close Failure Short." );
@@ -124,10 +81,29 @@ int start(){
          }
        }
      }
-     // 両建てを持ち直す
-     Print( "Order Long and Short." + ++count );
-     doubleOrder();
-     closeFlg = false;
+   // ポジションを持ちなおす
+   if( closeFlg == 1 ) {
+      // Long Order
+      ticket = OrderSend( Symbol(), OP_BUY, Lots, Ask, 3, 0, 0, "Order Long", Magic, 0, Blue);
+      if( ticket < 0 ) {
+        Print( "Error Opening Order Long." );
+        Print( GetLastError() );
+        return false;
+      } else {
+        Print( "Opening Order Long." + ++count );
+      }
+      closeFlg = 0;
+   } else if( closeFlg == 2 ) {
+    // Short Order
+    ticket = OrderSend( Symbol(), OP_SELL, Lots, Bid, 3, 0, 0, "Order Short", Magic, 0, Red);
+    if( ticket < 0 ) {
+      Print( "Error Opening Order Short." );
+      Print( GetLastError() );
+      return false;
+    } else {
+      Print( "Opening Order Short." + ++count );
+    }
+     closeFlg = 0;
    }
 
    return(0);

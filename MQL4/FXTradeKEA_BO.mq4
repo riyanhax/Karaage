@@ -27,6 +27,7 @@ extern int StoDPeriod = 2;
 extern int StoSlowing = 2;
 extern int StoLevelLower = 10;
 extern int StoLevelUpper = 90;
+extern bool Koisca = false;
 extern bool Vgfx = false;
 extern bool HiLoBands = false;
 extern int CountBars = 4000;
@@ -119,6 +120,8 @@ int start(){
    string stochas;
    string osma;
    string estrangement;
+   double koiscaUp;
+   double koiscaDown;
 
    // TP SL チェック
    //CheckTPSL();
@@ -387,6 +390,10 @@ int start(){
    cci = iCustom( Symbol(), PERIOD_CURRENT, "CCI", CciTerm, 0, 1 );
    envelopesUp = iEnvelopes( Symbol(), PERIOD_CURRENT, EnvelopesTerm, MODE_SMMA, 0, PRICE_CLOSE, EnvelopesDeviation, MODE_UPPER, 1 );
    envelopesDown = iEnvelopes( Symbol(), PERIOD_CURRENT, EnvelopesTerm, MODE_SMMA, 0, PRICE_CLOSE, EnvelopesDeviation, MODE_LOWER, 1 );
+   if( Koisca ) {
+      koiscaUp = iCustom( Symbol(), PERIOD_CURRENT, "KoiscaFX", false, false, true, true, true, 0, 1 );
+      koiscaDown = iCustom( Symbol(), PERIOD_CURRENT, "KoiscaFX", false, false, true, true, true, 1, 1 );
+   }
    if( Vgfx ) {
       vgfxBuy = iCustom(Symbol(),PERIOD_CURRENT,"VGFX",0,0,0,0,0,0,"XRT7-949X-E1S6","5F67-G69W-5929",2,1);
       vgfxSell = iCustom(Symbol(),PERIOD_CURRENT,"VGFX",0,0,0,0,0,0,"XRT7-949X-E1S6","5F67-G69W-5929",3,1);
@@ -429,7 +436,7 @@ int start(){
    }
 
    // Highエントリー
-   if( price <= sigma00 && sigma >= MinSigma && ( rsi <= RsiL || RsiU <= rsi ) && ( !CciLimit || cci <= -CciAbs ) &&  ( !Envelopes || price <= envelopesDown ) && lengthD >= MinLength && ( !Vgfx || ( vgfxBuy != 0 && vgfxBuy != EMPTY_VALUE ) ) && ( !Sto || stochastic ) && ( !HiLoBands || ( High[1] >= hiBand ) ) && ( !BreakOrder || ( boUp != EMPTY_VALUE && boUp != 0 ) ) ) {
+   if( price <= sigma00 && sigma >= MinSigma && ( rsi <= RsiL || RsiU <= rsi ) && ( !CciLimit || cci <= -CciAbs ) &&  ( !Envelopes || price <= envelopesDown ) && lengthD >= MinLength && ( !Vgfx || ( vgfxBuy != 0 && vgfxBuy != EMPTY_VALUE ) ) && ( !Sto || stochastic ) && ( !HiLoBands || ( High[1] >= hiBand ) ) && ( !BreakOrder || ( boUp != EMPTY_VALUE && boUp != 0 ) ) && ( !Koisca || ( koiscaUp != EMPTY_VALUE && koiscaUp != 0 ) ) ) {
       if( spread > MaxSpread ) {
          if( lastLog != Time[0] ) {
             Print( "Invalid Spread.["+spread+"]" );
@@ -486,7 +493,7 @@ int start(){
    }
 
    // Lowエントリー
-   if( price >= sigma00 && sigma >= MinSigma && ( rsi <= RsiL || RsiU <= rsi ) && ( !CciLimit || cci >= CciAbs ) && ( !Envelopes || price >= envelopesUp ) && lengthD >= MinLength && ( !Vgfx || ( vgfxSell != 0 && vgfxSell != EMPTY_VALUE ) ) && ( !Sto || stochastic ) && ( !HiLoBands || ( Low[1] <= loBand ) ) && ( !BreakOrder || ( boDown != EMPTY_VALUE && boDown != 0 ) ) ) {
+   if( price >= sigma00 && sigma >= MinSigma && ( rsi <= RsiL || RsiU <= rsi ) && ( !CciLimit || cci >= CciAbs ) && ( !Envelopes || price >= envelopesUp ) && lengthD >= MinLength && ( !Vgfx || ( vgfxSell != 0 && vgfxSell != EMPTY_VALUE ) ) && ( !Sto || stochastic ) && ( !HiLoBands || ( Low[1] <= loBand ) ) && ( !BreakOrder || ( boDown != EMPTY_VALUE && boDown != 0 ) ) && ( !Koisca || ( koiscaDown != EMPTY_VALUE && koiscaDown != 0 ) ) ) {
       if( spread > MaxSpread ) {
          if( lastLog != Time[0] ) {
             Print( "Invalid Spread.["+spread+"]" );
