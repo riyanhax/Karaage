@@ -49,6 +49,7 @@ public class CopyProviderChecker {
         String logDir = PropertyUtil.getValue("copyProviderChecker", "logDir");
         String signalName = PropertyUtil.getValue("copyProviderChecker", "signalName");
         String mailTo = PropertyUtil.getValue("copyProviderChecker", "mailTo");
+        int intervalMin = Integer.parseInt(PropertyUtil.getValue("copyProviderChecker", "intervalMin"));
 
         // 当日の日付 (yyyyMMdd)
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -100,8 +101,8 @@ public class CopyProviderChecker {
                     raf.close();
                 }
 
-                // 15分間停止
-                Thread.sleep(15 * 60 * 1000);
+                // 一定時間停止
+                Thread.sleep(intervalMin * 60 * 1000);
             }
         } catch(Exception e) {
             logger.error("Unexpected Error.", e);
