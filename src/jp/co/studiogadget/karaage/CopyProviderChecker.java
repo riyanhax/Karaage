@@ -24,7 +24,7 @@ import jp.co.studiogadget.common.util.PropertyUtil;
  * ログに特定の文字列が出力されているかでエラーを確認します。<br>
  * <br>
  * エラーを特定する文字列<br>
- * エラーが発生しました
+ * [Error]
  *
  * @author hidet
  *
@@ -46,9 +46,9 @@ public class CopyProviderChecker {
         logger.info("***************** START *****************");
 
         // プロパティファイル読込
-        String logDir = PropertyUtil.getValue("signalRecieveChecker", "logDir");
-        String signalName = PropertyUtil.getValue("signalRecieveChecker", "signalName");
-        String mailTo = PropertyUtil.getValue("signalRecieveChecker", "mailTo");
+        String logDir = PropertyUtil.getValue("copyProviderChecker", "logDir");
+        String signalName = PropertyUtil.getValue("copyProviderChecker", "signalName");
+        String mailTo = PropertyUtil.getValue("copyProviderChecker", "mailTo");
 
         // 当日の日付 (yyyyMMdd)
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -82,12 +82,7 @@ public class CopyProviderChecker {
                 String line = null;
                 while((line = raf.readLine()) != null) {
 
-                    // 短い行はスキップ
-                    if(line.length() < 100) {
-                        continue;
-                    }
-
-                    if(line.contains("エラーが発生しました")) {
+                    if(line.contains("[Error]")) {
                         error = true;
                     }
                 }
