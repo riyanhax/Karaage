@@ -51,20 +51,24 @@ public class SignalRecieveChecker {
      */
     public static void main(String[] args) throws Exception {
         logger.info("***************** START *****************");
+
+        // プロパティファイル読込
+        String logDir = PropertyUtil.getValue("signalRecieveChecker", "logDir");
+        String signalName = PropertyUtil.getValue("signalRecieveChecker", "signalName");
+        String mql5Account = PropertyUtil.getValue("signalRecieveChecker", "mql5Account");
+        String mailTo = PropertyUtil.getValue("signalRecieveChecker", "mailTo");
+        String platform = PropertyUtil.getValue("signalRecieveChecker", "platform");
+        boolean checkEA = "TRUE".equals(PropertyUtil.getValue("signalRecieveChecker", "checkEA").toUpperCase());
+
+        // 当日の日付 (yyyyMMdd)
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyyMMdd");
+        ZonedDateTime today = ZonedDateTime.now(JAPAN_ZONE_ID);
+        String date = today.format(df);
+
+        DateTimeFormatter mdf = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
+        String mailBody = today.format(mdf);
+
         try {
-            // プロパティファイル読込
-            String logDir = PropertyUtil.getValue("signalRecieveChecker", "logDir");
-            String signalName = PropertyUtil.getValue("signalRecieveChecker", "signalName");
-            String mql5Account = PropertyUtil.getValue("signalRecieveChecker", "mql5Account");
-            String mailTo = PropertyUtil.getValue("signalRecieveChecker", "mailTo");
-            String platform = PropertyUtil.getValue("signalRecieveChecker", "platform");
-            boolean checkEA = "TRUE".equals(PropertyUtil.getValue("signalRecieveChecker", "checkEA").toUpperCase());
-
-            // 当日の日付 (yyyyMMdd)
-            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyyMMdd");
-            ZonedDateTime today = ZonedDateTime.now(JAPAN_ZONE_ID);
-            String date = today.format(df);
-
             // ログファイル
             String log = date + ".log";
             File logFile = new File(logDir + "/" + log);
@@ -149,12 +153,10 @@ public class SignalRecieveChecker {
 
                 // 結果に応じてメール作成
                 String mailSubject;
-                DateTimeFormatter mdf = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
-                String mailBody = today.format(mdf);
                 if(termsAll) {
-                    mailSubject = signalName + " is Started.";
+                    mailSubject = signalName + " is Running.";
                 } else {
-                    mailSubject = signalName + " is Faild.";
+                    mailSubject = "ERROR " + signalName + " is Failed.";
                     if(!terms1) {
                         mailBody += "\r\n Signal Disabled.";
                     }
@@ -174,7 +176,8 @@ public class SignalRecieveChecker {
 
             } catch(IOException e) {
                 logger.error("Logfile Read Error. [" + logFile.getPath() + "]", e);
-                throw new Exception(e);
+                MailUtil.send(mailTo, "ERROR " + signalName + " Logfile Read Error.", mailBody + "\r\n" + e.getMessage());
+                System.exit(1);
             }
 
             // 正常終了
@@ -183,6 +186,7 @@ public class SignalRecieveChecker {
 
         } catch(Exception e) {
             logger.error("Unexpected Error.", e);
+            MailUtil.send(mailTo, "ERROR " + signalName + " Unexpected Error.", mailBody + "\r\n" + e.getMessage());
             System.exit(1);
         }
 
