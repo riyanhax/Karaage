@@ -58,12 +58,11 @@ public class CopyRecieverChecker {
         logger.info("***************** START *****************");
 
         // プロパティファイル読込
-        String logDir = PropertyUtil.getValue("copyProviderChecker", "logDir");
-        String mtLogDir = PropertyUtil.getValue("copyProviderChecker", "mtLogDir");
-        String platform = PropertyUtil.getValue("signalRecieveChecker", "platform");
-        String serverlName = PropertyUtil.getValue("copyProviderChecker", "serverlName");
-        String mailTo = PropertyUtil.getValue("copyProviderChecker", "mailTo");
-        int intervalMin = Integer.parseInt(PropertyUtil.getValue("copyProviderChecker", "intervalMin"));
+        String logDir = PropertyUtil.getValue("copyRecieverChecker", "logDir");
+        String mtLogDir = PropertyUtil.getValue("copyRecieverChecker", "mtLogDir");
+        String serverlName = PropertyUtil.getValue("copyRecieverChecker", "serverlName");
+        String mailTo = PropertyUtil.getValue("copyRecieverChecker", "mailTo");
+        int intervalMin = Integer.parseInt(PropertyUtil.getValue("copyRecieverChecker", "intervalMin"));
 
         // 当日の日付 (yyyyMMdd)
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -71,7 +70,9 @@ public class CopyRecieverChecker {
 
         ZonedDateTime today = ZonedDateTime.now(JAPAN_ZONE_ID);
         RandomAccessFile raf = null;
+        RandomAccessFile mtRaf = null;
         long pointer = 0L;
+        long mtPointer = 0L;
 
         try {
             // ファイル読込
@@ -91,6 +92,7 @@ public class CopyRecieverChecker {
                 File mtLogFile = new File(mtLogDir + "/" + log);
 
                 // メタトレーダーのログファイルのサイズチェック
+                // 300kB以上になった場合は、メールを送信して終了
                 if(mtLogFile.length() >= 300 * 1024) {
                     logger.error("Logfile Size is Increasing.");
                     MailUtil.send(mailTo, "ERROR " + serverlName + " is Failed.", today.format(mdf) + "\r\nLogfile Size is Increasing.");
@@ -103,7 +105,6 @@ public class CopyRecieverChecker {
                 boolean error = false;
                 String line = null;
                 while((line = raf.readLine()) != null) {
-
                     if(line.contains("[Error]")) {
                         error = true;
                     }
@@ -120,7 +121,28 @@ public class CopyRecieverChecker {
                     raf.close();
                 }
 
-                // TODO メタトレーダーのログファイルの動作チェック
+                // メタトレーダーのログファイルで動作チェック
+                mtRaf = new RandomAccessFile(mtLogFile, "r");
+                mtRaf.seek(mtPointer);
+                boolean isWork = false;
+                line = null;
+                while((line = mtRaf.readLine()) != null) {
+                    if(line.toLowerCase().contains("i am working")
+                       & line.toLowerCase().contains("receiverea")) {
+                        isWork = true;
+                    }
+                }
+                // 動作していない場合はメールを送信して終了
+                if(!isWork) {
+                    logger.error("RecieverEA Error.");
+                    MailUtil.send(mailTo, "ERROR " + serverlName + " is Failed.", today.format(mdf) + "\r\nRecieverEA Error.");
+                    System.exit(1);
+                }
+                if(mtRaf != null) {
+                    // ポインターを更新
+                    mtPointer = mtRaf.length();
+                    mtRaf.close();
+                }
 
                 // 一定時間停止
                 Thread.sleep(intervalMin * 60 * 1000);
