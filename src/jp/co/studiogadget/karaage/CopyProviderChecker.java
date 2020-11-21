@@ -18,7 +18,7 @@ import jp.co.studiogadget.common.util.MailUtil;
 import jp.co.studiogadget.common.util.PropertyUtil;
 
 /**
- * ForexCopierProvideが出力する当日のログ(yyyyMMdd.log)を読み込んで、<br>
+ * ForexCopierProvideが出力する当日のログ(yyyyMMdd.log)を監視して、<br>
  * エラーが発生していないことを確認します。<br>
  * エラーが発生した場合はメールを送信します。<br>
  * ログに特定の文字列が出力されているかでエラーを確認します。<br>
