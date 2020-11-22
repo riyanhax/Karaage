@@ -77,6 +77,7 @@ public class CopyRecieverChecker {
         try {
             // ファイル読込
             while(true) {
+                logger.info("Execute.");
                 today = ZonedDateTime.now(JAPAN_ZONE_ID);
 
                 // 0時0分の場合はログファイルが変わるため、20分停止
@@ -99,7 +100,7 @@ public class CopyRecieverChecker {
                     System.exit(1);
                 }
 
-                // CopierRecieverのログファイルのエラーチェック
+                // ForexCopyRecieverのログファイルのエラーチェック
                 raf = new RandomAccessFile(logFile, "r");
                 raf.seek(pointer);
                 boolean error = false;
@@ -111,8 +112,8 @@ public class CopyRecieverChecker {
                 }
                 // エラーが発生した場合はメールを送信して終了
                 if(error) {
-                    logger.error("CopyReciever Error.");
-                    MailUtil.send(mailTo, "ERROR " + serverlName + " is Failed.", today.format(mdf) + "\r\nCopyReciever Error.");
+                    logger.error("ForexCopyReciever Error.");
+                    MailUtil.send(mailTo, "ERROR " + serverlName + " is Failed.", today.format(mdf) + "\r\nForexCopyReciever Error.");
                     System.exit(1);
                 }
                 if(raf != null) {

@@ -63,6 +63,7 @@ public class CopyProviderChecker {
         try {
             // ファイル読込
             while(true) {
+                logger.info("Execute.");
                 today = ZonedDateTime.now(JAPAN_ZONE_ID);
 
                 // 0時0分の場合はログファイルが変わるため、5分停止
@@ -90,8 +91,8 @@ public class CopyProviderChecker {
 
                 // エラーが発生した場合はメールを送信して終了
                 if(error) {
-                    logger.error("CopyProvider Error.");
-                    MailUtil.send(mailTo, "ERROR " + signalName + " is Failed.", today.format(mdf) + "\r\nCopyProvider Error.");
+                    logger.error("ForexCopyProvider Error.");
+                    MailUtil.send(mailTo, "ERROR " + signalName + " is Failed.", today.format(mdf) + "\r\nForexCopyProvider Error.");
                     System.exit(1);
                 }
 
