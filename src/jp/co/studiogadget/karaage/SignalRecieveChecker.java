@@ -26,6 +26,7 @@ import jp.co.studiogadget.common.util.PropertyUtil;
  * <br>
  * 特定の文字列(文字大小区別なし)はMT4とMT5で共通で、全ての文字列が一致していること。<br>
  * これは1行あればOK<br>
+ * previous successful authorization : ログイン<br>
  * Signal use 95% of deposit 0.00 USD 5.0 spreads enabled (同じ行) : 条件1 <br>
  * Signal connecting to signal server (同じ行) : 条件2<br>
  * <br>
@@ -82,6 +83,7 @@ public class SignalRecieveChecker {
             if(!checkEA) {
                 terms3 = true;
             }
+            boolean isLogin = false;
 
             String charset;
             if("MT4".equals(platform)) {
@@ -100,6 +102,12 @@ public class SignalRecieveChecker {
                     // 短い行はスキップ
                     if(line.length() < 50) {
                         continue;
+                    }
+
+                    // ログインチェック
+                    if(!isLogin
+                       & line.toLowerCase().contains("previous successful authorization")) {
+                        isLogin = true;
                     }
 
                     // 条件1
@@ -125,7 +133,7 @@ public class SignalRecieveChecker {
                         if(line.toLowerCase().contains("loaded successfully")) {
                             terms3 = true;
                         } else {
-                            logger.warn("EA Load Faild.");
+                            logger.warn("EA Load Failed.");
                             break;
                         }
                     }
@@ -139,13 +147,13 @@ public class SignalRecieveChecker {
                            & line.toLowerCase().contains("enabled")) {
                             terms4 = true;
                         } else {
-                            logger.warn("Signal Subscription Faild.");
+                            logger.warn("Signal Subscription Failed.");
                             break;
                         }
                     }
 
                     // 条件をすべて満たしたら読込終了
-                    if(terms1 & terms2 & terms3 & terms4) {
+                    if(terms1 & terms2 & terms3 & terms4 &isLogin) {
                         termsAll = true;
                         break;
                     }
@@ -167,10 +175,13 @@ public class SignalRecieveChecker {
                         mailBody += "\r\n Connecting to Signal Server Failed.";
                     }
                     if(!terms3) {
-                        mailBody += "\r\n EA Load Faild.";
+                        mailBody += "\r\n EA Load Failed.";
                     }
                     if(!terms4) {
-                        mailBody += "\r\n Signal Subscription Faild.";
+                        mailBody += "\r\n Signal Subscription Failed.";
+                    }
+                    if(!isLogin) {
+                        mailBody += "\r\n Login Failed";
                     }
                 }
 
