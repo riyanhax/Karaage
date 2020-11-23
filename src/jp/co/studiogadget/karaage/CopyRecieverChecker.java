@@ -83,6 +83,8 @@ public class CopyRecieverChecker {
         long pointer = 0L;
         long mtPointer = 0L;
 
+        //TODO 古いログファイルを削除する処理
+
         try {
             // ファイル読込
             while(true) {
@@ -111,6 +113,7 @@ public class CopyRecieverChecker {
                 String log = date + ".log";
                 File logFile = new File(logDir + "/" + log);
                 File mtLogFile = new File(mtLogDir + "/" + log);
+                logger.info("Length.[" + logFile.length() + ", " + mtLogFile.length() + "]");
 
                 // メタトレーダーのログファイルのサイズチェック
                 // 300kB以上になった場合は、メールを送信して終了

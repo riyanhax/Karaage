@@ -122,6 +122,8 @@ public class SignalRecieveChecker {
                 charset = "UTF-16LE";
             }
 
+            //TODO 古いログファイルを削除する処理
+
             // ログファイル読込 (後ろから)
             ReversedLinesFileReader fr = null;
             try {

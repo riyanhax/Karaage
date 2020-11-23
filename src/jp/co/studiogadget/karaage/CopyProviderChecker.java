@@ -69,6 +69,8 @@ public class CopyProviderChecker {
         RandomAccessFile raf = null;
         long pointer = 0L;
 
+        //TODO 古いログファイルを削除する処理
+
         try {
             // ファイル読込
             while(true) {
@@ -96,6 +98,7 @@ public class CopyProviderChecker {
                 String date = today.format(df);
                 String log = date + ".log";
                 File logFile = new File(logDir + "/" + log);
+                logger.info("Length.[" + logFile.length()+ "]");
 
                 raf = new RandomAccessFile(logFile, "r");
                 raf.seek(pointer);
