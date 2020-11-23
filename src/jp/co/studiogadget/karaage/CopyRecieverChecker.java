@@ -82,6 +82,7 @@ public class CopyRecieverChecker {
         RandomAccessFile mtRaf = null;
         long pointer = 0L;
         long mtPointer = 0L;
+        boolean nextDay = false;
 
         //TODO 古いログファイルを削除する処理
 
@@ -102,10 +103,11 @@ public class CopyRecieverChecker {
                     }
                 }
 
-                // 0時0分の場合はログファイルが変わるため、20分停止
+                // 0時25分未満の場合はログファイルが変わるため、日付変更フラグを立てる
                 if(today.getHour() == 0
-                   & today.getMinute() == 0) {
-                    Thread.sleep(20 * 60 * 1000);
+                   && today.getMinute() < 25) {
+                    nextDay = true;
+                    Thread.sleep(25 * 60 * 1000);
                 }
 
                 // ログファイル
@@ -113,10 +115,21 @@ public class CopyRecieverChecker {
                 String log = date + ".log";
                 File logFile = new File(logDir + "/" + log);
                 File mtLogFile = new File(mtLogDir + "/" + log);
-                logger.info("Length.[" + logFile.length() + ", " + mtLogFile.length() + "]");
+                String line = null;
+                // Windows上でファイルの更新を認識させるためにメモ帳で開く
+                Runtime rt = Runtime.getRuntime();
+                try {
+                    rt.exec("notepad " + mtLogFile.getPath());
+                    Thread.sleep(5 * 1000);
+                    rt.exec("taskkill /IM notepad.exe");
+                } catch(Exception e) {
+                    logger.error("Open by Notepad Error.", e);
+                    MailUtil.send(mailTo, "ERROR " + serverlName + " is Failed.", today.format(mdf) + "\r\nOpen by Notepad Error.\r\n" + e.getMessage());
+                }
 
                 // メタトレーダーのログファイルのサイズチェック
                 // 300kB以上になった場合は、メールを送信して終了
+                logger.info("MtLength.[" + mtLogFile.length() + "]");
                 if(mtLogFile.length() >= 300 * 1024) {
                     logger.error("Logfile Size is Increasing.");
                     MailUtil.send(mailTo, "ERROR " + serverlName + " is Failed.", today.format(mdf) + "\r\nLogfile Size is Increasing.");
@@ -124,33 +137,36 @@ public class CopyRecieverChecker {
                 }
 
                 // ForexCopyRecieverのログファイルのエラーチェック
-                raf = new RandomAccessFile(logFile, "r");
-                raf.seek(pointer);
-                boolean error = false;
-                String line = null;
-                while((line = raf.readLine()) != null) {
-                    if(line.contains("[Error]")) {
-                        error = true;
-                    }
+                if(logFile.exists()
+                   || (!logFile.exists() && !nextDay)) {
+                    logger.info("Length.[" + logFile.length() + "]");
+                    raf = new RandomAccessFile(logFile, "r");
+                    raf.seek(pointer);
+                    boolean error = false;
+                    while((line = raf.readLine()) != null) {
+                        if(line.contains("[Error]")) {
+                            error = true;
+                        }
 
-                    if(line.contains("Connection reconnected")) {
-                        error = false;
+                        if(line.contains("Connection reconnected")) {
+                            error = false;
+                        }
+                        if(line.contains("Connection established")) {
+                            error = false;
+                        }
                     }
-                    if(line.contains("Connection established")) {
-                        error = false;
+                    // エラーが発生した場合はメールを送信して終了
+                    if(error) {
+                        logger.error("ForexCopyReciever Error.");
+                        MailUtil.send(mailTo, "ERROR " + serverlName + " is Failed.", today.format(mdf) + "\r\nForexCopyReciever Error.");
+                        System.exit(1);
                     }
-                }
-                // エラーが発生した場合はメールを送信して終了
-                if(error) {
-                    logger.error("ForexCopyReciever Error.");
-                    MailUtil.send(mailTo, "ERROR " + serverlName + " is Failed.", today.format(mdf) + "\r\nForexCopyReciever Error.");
-                    System.exit(1);
-                }
-                if(raf != null) {
-                    // ポインターを更新
-                    pointer = raf.length();
-                    raf.close();
-                }
+                    if(raf != null) {
+                        // ポインターを更新
+                        pointer = raf.length();
+                        raf.close();
+                    }
+                } // (!logFile.exists() && nextDay)は通過
 
                 // メタトレーダーのログファイルで動作チェック
                 mtRaf = new RandomAccessFile(mtLogFile, "r");
@@ -159,7 +175,7 @@ public class CopyRecieverChecker {
                 line = null;
                 while((line = mtRaf.readLine()) != null) {
                     if(line.toLowerCase().contains("i am working")
-                       & line.toLowerCase().contains("receiverea")) {
+                       && line.toLowerCase().contains("receiverea")) {
                         isWork = true;
                     }
                 }
