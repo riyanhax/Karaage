@@ -7,6 +7,7 @@ package jp.co.studiogadget.karaage;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.DayOfWeek;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -60,10 +61,39 @@ public class SignalRecieveChecker {
         String mailTo = PropertyUtil.getValue("signalRecieveChecker", "mailTo");
         String platform = PropertyUtil.getValue("signalRecieveChecker", "platform");
         boolean checkEA = "TRUE".equals(PropertyUtil.getValue("signalRecieveChecker", "checkEA").toUpperCase());
+        boolean summar = "TRUE".equals(PropertyUtil.getValue("signalRecieveChecker", "summar").toUpperCase());
+
+        int startHour;
+        if(summar) {
+            startHour = 6;
+        } else {
+            startHour = 7;
+        }
 
         // 当日の日付 (yyyyMMdd)
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyyMMdd");
         ZonedDateTime today = ZonedDateTime.now(JAPAN_ZONE_ID);
+
+        while(true) {
+            logger.info("Execute.");
+            today = ZonedDateTime.now(JAPAN_ZONE_ID);
+
+            // 取引開始まで停止
+            if(DayOfWeek.MONDAY.equals(today.getDayOfWeek())) {
+                if(today.getHour() < startHour) {
+                    Thread.sleep(5 * 60 * 1000);
+                    continue;
+                } else if(today.getHour() == startHour && today.getMinute() < 5) {
+                    Thread.sleep(1 * 60 * 1000);
+                    continue;
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+
         String date = today.format(df);
 
         DateTimeFormatter mdf = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
