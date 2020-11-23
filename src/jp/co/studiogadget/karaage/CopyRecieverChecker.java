@@ -7,6 +7,7 @@ package jp.co.studiogadget.karaage;
 
 import java.io.File;
 import java.io.RandomAccessFile;
+import java.time.DayOfWeek;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -63,6 +64,14 @@ public class CopyRecieverChecker {
         String serverlName = PropertyUtil.getValue("copyRecieverChecker", "serverlName");
         String mailTo = PropertyUtil.getValue("copyRecieverChecker", "mailTo");
         int intervalMin = Integer.parseInt(PropertyUtil.getValue("copyRecieverChecker", "intervalMin"));
+        boolean summar = "TRUE".equals(PropertyUtil.getValue("copyRecieverChecker", "summar").toUpperCase());
+
+        int startHour;
+        if(summar) {
+            startHour = 6;
+        } else {
+            startHour = 7;
+        }
 
         // 当日の日付 (yyyyMMdd)
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -79,6 +88,17 @@ public class CopyRecieverChecker {
             while(true) {
                 logger.info("Execute.");
                 today = ZonedDateTime.now(JAPAN_ZONE_ID);
+
+                // 取引開始まで停止
+                if(DayOfWeek.MONDAY.equals(today.getDayOfWeek())) {
+                    if(today.getHour() < startHour) {
+                        Thread.sleep(5 * 60 * 1000);
+                        continue;
+                    } else if(today.getHour() == startHour && today.getMinute() < 5) {
+                        Thread.sleep(1 * 60 * 1000);
+                        continue;
+                    }
+                }
 
                 // 0時0分の場合はログファイルが変わるため、20分停止
                 if(today.getHour() == 0
@@ -107,7 +127,13 @@ public class CopyRecieverChecker {
                 String line = null;
                 while((line = raf.readLine()) != null) {
                     if(line.contains("[Error]")) {
-                        error = true;
+                        if(!line.contains("SaveSettingsAsReceiver for terminal")) {
+                            error = true;
+                        }
+                    }
+
+                    if(line.contains("Connection reconnected")) {
+                        error = false;
                     }
                 }
                 // エラーが発生した場合はメールを送信して終了
