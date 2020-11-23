@@ -68,6 +68,7 @@ public class CopyProviderChecker {
         ZonedDateTime today = ZonedDateTime.now(JAPAN_ZONE_ID);
         RandomAccessFile raf = null;
         long pointer = 0L;
+        boolean nextDay = false;
 
         //TODO 古いログファイルを削除する処理
 
@@ -88,9 +89,10 @@ public class CopyProviderChecker {
                     }
                 }
 
-                // 0時0分の場合はログファイルが変わるため、5分停止
+                // 0時5分未満の場合はログファイルが変わるため、日付変更フラグを立てる
                 if(today.getHour() == 0
-                   & today.getMinute() == 0) {
+                   && today.getMinute() < 5) {
+                    nextDay = true;
                     Thread.sleep(5 * 60 * 1000);
                 }
 
@@ -98,6 +100,12 @@ public class CopyProviderChecker {
                 String date = today.format(df);
                 String log = date + ".log";
                 File logFile = new File(logDir + "/" + log);
+                // 日付が変わっている場合はログファイルが存在しない可能性がある
+                if(!logFile.exists() && nextDay) {
+                    // 一定時間停止
+                    Thread.sleep(intervalMin * 60 * 1000);
+                    continue;
+                }
                 logger.info("Length.[" + logFile.length()+ "]");
 
                 raf = new RandomAccessFile(logFile, "r");
@@ -109,6 +117,13 @@ public class CopyProviderChecker {
 
                     if(line.contains("[Error]")) {
                         error = true;
+                    }
+
+                    if(line.contains("Connection reconnected")) {
+                        error = false;
+                    }
+                    if(line.contains("Connection established")) {
+                        error = false;
                     }
                 }
 
