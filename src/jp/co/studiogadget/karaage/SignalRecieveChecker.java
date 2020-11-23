@@ -138,30 +138,30 @@ public class SignalRecieveChecker {
 
                     // ログインチェック
                     if(!isLogin
-                       & line.toLowerCase().contains("previous successful authorization")) {
+                       && line.toLowerCase().contains("previous successful authorization")) {
                         isLogin = true;
                     }
 
                     // 条件1
                     if(!terms1
-                       & line.toLowerCase().contains("signal")
-                       & line.toLowerCase().contains("use 95% of deposit")
-                       & line.toLowerCase().contains("0.00 usd")
-                       & line.toLowerCase().contains("5.0 spreads")
-                       & line.toLowerCase().contains("enabled")) {
+                       && line.toLowerCase().contains("signal")
+                       && line.toLowerCase().contains("use 95% of deposit")
+                       && line.toLowerCase().contains("0.00 usd")
+                       && line.toLowerCase().contains("5.0 spreads")
+                       && line.toLowerCase().contains("enabled")) {
                         terms1 = true;
                     }
 
                     // 条件2
                     if(!terms2
-                       & line.toLowerCase().contains("signal")
-                       & line.toLowerCase().contains("connecting to signal server")) {
+                       && line.toLowerCase().contains("signal")
+                       && line.toLowerCase().contains("connecting to signal server")) {
                         terms2 = true;
                     }
 
                     // 条件3
                     if(!terms3
-                       & line.toLowerCase().contains("expert sourceea")) {
+                       && line.toLowerCase().contains("expert sourceea")) {
                         if(line.toLowerCase().contains("loaded successfully")) {
                             terms3 = true;
                         } else {
@@ -172,11 +172,11 @@ public class SignalRecieveChecker {
 
                     // 条件4
                     if(!terms4
-                       & line.toLowerCase().contains("signal")
-                       & line.toLowerCase().contains(signalName.toLowerCase())
-                       & line.toLowerCase().contains(mql5Account.toLowerCase())) {
+                       && line.toLowerCase().contains("signal")
+                       && line.toLowerCase().contains(signalName.toLowerCase())
+                       && line.toLowerCase().contains(mql5Account.toLowerCase())) {
                         if(line.toLowerCase().contains("subscription found")
-                           & line.toLowerCase().contains("enabled")) {
+                           && line.toLowerCase().contains("enabled")) {
                             terms4 = true;
                         } else {
                             logger.warn("Signal Subscription Failed.");
@@ -185,7 +185,7 @@ public class SignalRecieveChecker {
                     }
 
                     // 条件をすべて満たしたら読込終了
-                    if(terms1 & terms2 & terms3 & terms4 &isLogin) {
+                    if(terms1 && terms2 && terms3 && terms4 &&isLogin) {
                         termsAll = true;
                         break;
                     }
