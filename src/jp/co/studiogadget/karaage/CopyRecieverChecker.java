@@ -127,12 +127,13 @@ public class CopyRecieverChecker {
                 String line = null;
                 while((line = raf.readLine()) != null) {
                     if(line.contains("[Error]")) {
-                        if(!line.contains("SaveSettingsAsReceiver for terminal")) {
-                            error = true;
-                        }
+                        error = true;
                     }
 
                     if(line.contains("Connection reconnected")) {
+                        error = false;
+                    }
+                    if(line.contains("Connection established")) {
                         error = false;
                     }
                 }
