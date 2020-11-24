@@ -5,7 +5,9 @@
  */
 package jp.co.studiogadget.karaage;
 
-import java.awt.Desktop;
+import java.awt.Robot;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.time.DayOfWeek;
@@ -22,7 +24,7 @@ import jp.co.studiogadget.common.util.MailUtil;
 import jp.co.studiogadget.common.util.PropertyUtil;
 
 /**
- * メタトレーダーが出力する当日のログ(yyyyMMdd.log)を読み込んで、<br>
+ * メタトレーダーが出力する操作履歴の当日のログ(yyyyMMdd.log)を読み込んで、<br>
  * シグナルの受信ができているかを確認します。<br>
  * 確認結果はメールで送信します。<br>
  * ログに特定の文字列が出力されているかで受信を確認します。<br>
@@ -56,6 +58,11 @@ public class SignalRecieveChecker {
     public static void main(String[] args) throws Exception {
         logger.info("***************** START *****************");
 
+//      // 画面の解像度
+//      int screenWidth =  Toolkit.getDefaultToolkit().getScreenSize().width;
+//      int screenHeight =  Toolkit.getDefaultToolkit().getScreenSize().height;
+//      logger.info(screenWidth + " x " + screenHeight);
+
         // プロパティファイル読込
         String logDir = PropertyUtil.getValue("signalRecieveChecker", "logDir");
         String signalName = PropertyUtil.getValue("signalRecieveChecker", "signalName");
@@ -75,11 +82,6 @@ public class SignalRecieveChecker {
         // 当日の日付 (yyyyMMdd)
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyyMMdd");
         ZonedDateTime today = ZonedDateTime.now(JAPAN_ZONE_ID);
-
-        // メタトレーダーのログディレクトリを開いておく
-        // メタトレーダーのログディレクトリを開いた状態でメモ帳でログファイルを開くことにより
-        // ログファイルを最新のものにするため
-        Desktop.getDesktop().open(new File(logDir));
 
         //TODO 古いログファイルを削除する処理
 
@@ -112,16 +114,69 @@ public class SignalRecieveChecker {
             // ログファイル
             String log = date + ".log";
             File logFile = new File(logDir + "/" + log);
+
+            // ************* メタトレーダーのログを更新する 開始 ***********
+            int x;
+            if("MT4".equals(platform)) {
+                x = 780; // (1920x1080)
+//                x = 416; // (1024x768)
+            } else {
+                x = 900; // (1920x1080)
+//                x = 480; // (1024x768)
+            }
+            // メタトレーダーを操作して操作履歴ディレクトリを開く
+            Robot robot = new Robot();
+//            ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/SignalRecieveChecker/logs/"+ System.currentTimeMillis() +"_1.png"));
+//            robot.mouseMove(x, 1010); // 操作履歴タブにマウスカーソルを移動 (1920x1080)
+            robot.mouseMove(x, 697); // 操作履歴タブにマウスカーソルを移動 (1024x768)
+            robot.mousePress(InputEvent.BUTTON1_DOWN_MASK); // 左クリック
+            robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+            Thread.sleep(1 * 1000);
+//            ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/SignalRecieveChecker/logs/"+ System.currentTimeMillis() +"_2.png"));
+//            robot.mouseMove(x, 980); // ターミナルにマウスカーソルを移動 (1920x1080)
+            robot.mouseMove(x, 677); // ターミナルにマウスカーソルを移動 (1024x768)
+            robot.mousePress(InputEvent.BUTTON3_DOWN_MASK); // 右クリック
+            robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
+            Thread.sleep(1 * 1000);
+//            ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/SignalRecieveChecker/logs/"+ System.currentTimeMillis() +"_3.png"));
+            if("MT4".equals(platform)) {
+                robot.keyPress(KeyEvent.VK_CONTROL); // Ctrl + O
+                robot.keyPress(KeyEvent.VK_O);
+                robot.keyRelease(KeyEvent.VK_CONTROL);
+                robot.keyRelease(KeyEvent.VK_O);
+            } else {
+//                robot.mouseMove(x + 30, 770); // (1920x1080)
+                robot.mouseMove(x + 30, 467); // (1024x768)
+                robot.mousePress(InputEvent.BUTTON1_DOWN_MASK); // 左クリック
+                robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+            }
+            Thread.sleep(2 * 1000); // 操作履歴ログディレクトリが開くのを待つ
+//            ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/SignalRecieveChecker/logs/"+ System.currentTimeMillis() +"_4.png"));
+
             // Windows上でファイルの更新を認識させるためにメモ帳で開く
             Runtime rt = Runtime.getRuntime();
             try {
                 rt.exec("notepad " + logFile.getPath());
-                Thread.sleep(5 * 1000);
+                Thread.sleep(2 * 1000);
+//                ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/SignalRecieveChecker/logs/"+ System.currentTimeMillis() +"_5.png"));
                 rt.exec("taskkill /IM notepad.exe");
             } catch(Exception e) {
                 logger.error("Open by Notepad Error.", e);
                 MailUtil.send(mailTo, "ERROR " + signalName + " is Failed.", today.format(mdf) + "\r\nOpen by Notepad Error.\r\n" + e.getMessage());
             }
+            Thread.sleep(2 * 1000); // メモ帳が閉じるのを待つ
+
+            // 操作履歴ログディレクトリを閉じる
+            robot.keyPress(KeyEvent.VK_ALT); // Alt + TAB (操作履歴ログディレクトリにフォーカスする)
+            robot.keyPress(KeyEvent.VK_TAB);
+            robot.keyRelease(KeyEvent.VK_ALT);
+            robot.keyRelease(KeyEvent.VK_TAB);
+            Thread.sleep(1 * 1000);
+            robot.keyPress(KeyEvent.VK_ALT); // Alt + F4 (操作履歴ログディレクトリを閉じる)
+            robot.keyPress(KeyEvent.VK_F4);
+            robot.keyRelease(KeyEvent.VK_ALT);
+            robot.keyRelease(KeyEvent.VK_F4);
+            // ************* メタトレーダーのログを更新する 終了 ***********
 
             // 条件クリアフラグ
             boolean termsAll = false; // 全条件クリア

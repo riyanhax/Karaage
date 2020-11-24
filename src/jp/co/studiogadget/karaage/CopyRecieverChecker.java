@@ -22,7 +22,7 @@ import jp.co.studiogadget.common.util.MailUtil;
 import jp.co.studiogadget.common.util.PropertyUtil;
 
 /**
- * ForexCopierRecieverが出力する当日のログ(yyyyMMdd.log)を監視して、<br>
+ * ForexCopierRecieverが出力するエキスパートの当日のログ(yyyyMMdd.log)を監視して、<br>
  * エラーが発生していないことを確認します。<br>
  * エラーが発生した場合はメールを送信します。<br>
  * ログに特定の文字列が出力されているかでエラーを確認します。<br>
@@ -60,6 +60,11 @@ public class CopyRecieverChecker {
      */
     public static void main(String[] args) throws Exception {
         logger.info("***************** START *****************");
+
+//        // 画面の解像度
+//        int screenWidth =  Toolkit.getDefaultToolkit().getScreenSize().width;
+//        int screenHeight =  Toolkit.getDefaultToolkit().getScreenSize().height;
+//        logger.info(screenWidth + " x " + screenHeight);
 
         // プロパティファイル読込
         String logDir = PropertyUtil.getValue("copyRecieverChecker", "logDir");
@@ -123,39 +128,50 @@ public class CopyRecieverChecker {
                 // ************* メタトレーダーのログを更新する 開始 ***********
                 // メタトレーダーを操作してエキスパートログディレクトリを開く
                 Robot robot = new Robot();
-                robot.mouseMove(680, 1010); // エキスパートタブにマウスカーソルを移動
+//                ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/CopyRecieverChecker/logs/"+ System.currentTimeMillis() +"_1.png"));
+//                robot.mouseMove(680, 1010); // エキスパートタブにマウスカーソルを移動 (1920x1080)
+                robot.mouseMove(680, 698); // エキスパートタブにマウスカーソルを移動 (1024x768)
                 robot.mousePress(InputEvent.BUTTON1_DOWN_MASK); // 左クリック
                 robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-                robot.mouseMove(680, 980); // ターミナルにマウスカーソルを移動
+                Thread.sleep(1 * 1000);
+//                ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/CopyRecieverChecker/logs/"+ System.currentTimeMillis() +"_2.png"));
+//                robot.mouseMove(680, 980); // ターミナルにマウスカーソルを移動 (1920x1080)
+                robot.mouseMove(680, 677); // ターミナルにマウスカーソルを移動 (1024x768)
                 robot.mousePress(InputEvent.BUTTON3_DOWN_MASK); // 右クリック
                 robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
+                Thread.sleep(1 * 1000);
+//                ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/CopyRecieverChecker/logs/"+ System.currentTimeMillis() +"_3.png"));
                 robot.keyPress(KeyEvent.VK_CONTROL); // Ctrl + O
                 robot.keyPress(KeyEvent.VK_O);
                 robot.keyRelease(KeyEvent.VK_CONTROL);
                 robot.keyRelease(KeyEvent.VK_O);
                 Thread.sleep(2 * 1000); // エキスパートログディレクトリが開くのを待つ
+//                ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/CopyRecieverChecker/logs/"+ System.currentTimeMillis() +"_4.png"));
 
                 // Windows上でファイルの更新を認識させるためにメモ帳で開く
                 Runtime rt = Runtime.getRuntime();
                 try {
                     rt.exec("notepad " + mtLogFile.getPath());
                     Thread.sleep(2 * 1000);
+//                    ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/CopyRecieverChecker/logs/"+ System.currentTimeMillis() +"_5.png"));
                     rt.exec("taskkill /IM notepad.exe");
                 } catch(Exception e) {
                     logger.error("Open by Notepad Error.", e);
                     MailUtil.send(mailTo, "ERROR " + serverlName + " is Failed.", today.format(mdf) + "\r\nOpen by Notepad Error.\r\n" + e.getMessage());
                 }
-
                 Thread.sleep(2 * 1000); // メモ帳が閉じるのを待つ
+
                 // エキスパートログディレクトリを閉じる
-                robot.keyPress(KeyEvent.VK_ALT); // Alt + TAB (エキスパートディレクトリにフォーカスする)
+                robot.keyPress(KeyEvent.VK_ALT); // Alt + TAB (エキスパートログディレクトリにフォーカスする)
                 robot.keyPress(KeyEvent.VK_TAB);
                 robot.keyRelease(KeyEvent.VK_ALT);
                 robot.keyRelease(KeyEvent.VK_TAB);
-                robot.keyPress(KeyEvent.VK_ALT); // Alt + F4 (エキスパートディレクトリを閉じる)
+                Thread.sleep(1 * 1000);
+                robot.keyPress(KeyEvent.VK_ALT); // Alt + F4 (エキスパートログディレクトリを閉じる)
                 robot.keyPress(KeyEvent.VK_F4);
                 robot.keyRelease(KeyEvent.VK_ALT);
                 robot.keyRelease(KeyEvent.VK_F4);
+                Thread.sleep(1 * 1000);
              // ************* メタトレーダーのログを更新する 終了 ***********
 
                 // メタトレーダーのログファイルのサイズチェック
