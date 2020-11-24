@@ -5,6 +5,9 @@
  */
 package jp.co.studiogadget.karaage;
 
+import java.awt.Robot;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.time.DayOfWeek;
@@ -116,16 +119,44 @@ public class CopyRecieverChecker {
                 File logFile = new File(logDir + "/" + log);
                 File mtLogFile = new File(mtLogDir + "/" + log);
                 String line = null;
+
+                // ************* メタトレーダーのログを更新する 開始 ***********
+                // メタトレーダーを操作してエキスパートログディレクトリを開く
+                Robot robot = new Robot();
+                robot.mouseMove(680, 1010); // エキスパートタブにマウスカーソルを移動
+                robot.mousePress(InputEvent.BUTTON1_DOWN_MASK); // 左クリック
+                robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+                robot.mouseMove(680, 980); // ターミナルにマウスカーソルを移動
+                robot.mousePress(InputEvent.BUTTON3_DOWN_MASK); // 右クリック
+                robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
+                robot.keyPress(KeyEvent.VK_CONTROL); // Ctrl + O
+                robot.keyPress(KeyEvent.VK_O);
+                robot.keyRelease(KeyEvent.VK_CONTROL);
+                robot.keyRelease(KeyEvent.VK_O);
+                Thread.sleep(2 * 1000); // エキスパートログディレクトリが開くのを待つ
+
                 // Windows上でファイルの更新を認識させるためにメモ帳で開く
                 Runtime rt = Runtime.getRuntime();
                 try {
                     rt.exec("notepad " + mtLogFile.getPath());
-                    Thread.sleep(5 * 1000);
+                    Thread.sleep(2 * 1000);
                     rt.exec("taskkill /IM notepad.exe");
                 } catch(Exception e) {
                     logger.error("Open by Notepad Error.", e);
                     MailUtil.send(mailTo, "ERROR " + serverlName + " is Failed.", today.format(mdf) + "\r\nOpen by Notepad Error.\r\n" + e.getMessage());
                 }
+
+                Thread.sleep(2 * 1000); // メモ帳が閉じるのを待つ
+                // エキスパートログディレクトリを閉じる
+                robot.keyPress(KeyEvent.VK_ALT); // Alt + TAB (エキスパートディレクトリにフォーカスする)
+                robot.keyPress(KeyEvent.VK_TAB);
+                robot.keyRelease(KeyEvent.VK_ALT);
+                robot.keyRelease(KeyEvent.VK_TAB);
+                robot.keyPress(KeyEvent.VK_ALT); // Alt + F4 (エキスパートディレクトリを閉じる)
+                robot.keyPress(KeyEvent.VK_F4);
+                robot.keyRelease(KeyEvent.VK_ALT);
+                robot.keyRelease(KeyEvent.VK_F4);
+             // ************* メタトレーダーのログを更新する 終了 ***********
 
                 // メタトレーダーのログファイルのサイズチェック
                 // 300kB以上になった場合は、メールを送信して終了

@@ -5,6 +5,7 @@
  */
 package jp.co.studiogadget.karaage;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.time.DayOfWeek;
@@ -21,7 +22,8 @@ import jp.co.studiogadget.common.util.MailUtil;
 import jp.co.studiogadget.common.util.PropertyUtil;
 
 /**
- * 当日のログ(yyyyMMdd.log)を読み込んで、シグナルの受信ができているかを確認します。<br>
+ * メタトレーダーが出力する当日のログ(yyyyMMdd.log)を読み込んで、<br>
+ * シグナルの受信ができているかを確認します。<br>
  * 確認結果はメールで送信します。<br>
  * ログに特定の文字列が出力されているかで受信を確認します。<br>
  * <br>
@@ -74,6 +76,13 @@ public class SignalRecieveChecker {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyyMMdd");
         ZonedDateTime today = ZonedDateTime.now(JAPAN_ZONE_ID);
 
+        // メタトレーダーのログディレクトリを開いておく
+        // メタトレーダーのログディレクトリを開いた状態でメモ帳でログファイルを開くことにより
+        // ログファイルを最新のものにするため
+        Desktop.getDesktop().open(new File(logDir));
+
+        //TODO 古いログファイルを削除する処理
+
         while(true) {
             logger.info("Execute.");
             today = ZonedDateTime.now(JAPAN_ZONE_ID);
@@ -103,6 +112,16 @@ public class SignalRecieveChecker {
             // ログファイル
             String log = date + ".log";
             File logFile = new File(logDir + "/" + log);
+            // Windows上でファイルの更新を認識させるためにメモ帳で開く
+            Runtime rt = Runtime.getRuntime();
+            try {
+                rt.exec("notepad " + logFile.getPath());
+                Thread.sleep(5 * 1000);
+                rt.exec("taskkill /IM notepad.exe");
+            } catch(Exception e) {
+                logger.error("Open by Notepad Error.", e);
+                MailUtil.send(mailTo, "ERROR " + signalName + " is Failed.", today.format(mdf) + "\r\nOpen by Notepad Error.\r\n" + e.getMessage());
+            }
 
             // 条件クリアフラグ
             boolean termsAll = false; // 全条件クリア
@@ -121,8 +140,6 @@ public class SignalRecieveChecker {
             } else {
                 charset = "UTF-16LE";
             }
-
-            //TODO 古いログファイルを削除する処理
 
             // ログファイル読込 (後ろから)
             ReversedLinesFileReader fr = null;
