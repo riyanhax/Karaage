@@ -68,6 +68,7 @@ public class CopyProviderChecker {
         ZonedDateTime today = ZonedDateTime.now(JAPAN_ZONE_ID);
         RandomAccessFile raf = null;
         long pointer = 0L;
+        int startupDay = today.getDayOfMonth();
         boolean nextDay = false;
 
         //TODO 古いログファイルを削除する処理
@@ -89,11 +90,9 @@ public class CopyProviderChecker {
                     }
                 }
 
-                // 0時5分未満の場合はログファイルが変わるため、日付変更フラグを立てる
-                if(today.getHour() == 0
-                   && today.getMinute() < 5) {
+                // 起動時と日付が変わっていたら、日付変更フラグを立てる
+                if(today.getDayOfMonth() != startupDay) {
                     nextDay = true;
-                    Thread.sleep(5 * 60 * 1000);
                 }
 
                 // ログファイル

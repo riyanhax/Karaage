@@ -90,6 +90,7 @@ public class CopyRecieverChecker {
         RandomAccessFile mtRaf = null;
         long pointer = 0L;
         long mtPointer = 0L;
+        int startupDay = today.getDayOfMonth();
         boolean nextDay = false;
 
         //TODO 古いログファイルを削除する処理
@@ -111,11 +112,9 @@ public class CopyRecieverChecker {
                     }
                 }
 
-                // 0時25分未満の場合はログファイルが変わるため、日付変更フラグを立てる
-                if(today.getHour() == 0
-                   && today.getMinute() < 25) {
+                // 起動時と日付が変わっていたら、日付変更フラグを立てる
+                if(today.getDayOfMonth() != startupDay) {
                     nextDay = true;
-                    Thread.sleep(25 * 60 * 1000);
                 }
 
                 // ログファイル
@@ -213,7 +212,7 @@ public class CopyRecieverChecker {
                         pointer = raf.length();
                         raf.close();
                     }
-                } // (!logFile.exists() && nextDay)は通過
+                } // (!logFile.exists() && nextDay )は通過
 
                 // メタトレーダーのログファイルで動作チェック
                 mtRaf = new RandomAccessFile(mtLogFile, "r");
