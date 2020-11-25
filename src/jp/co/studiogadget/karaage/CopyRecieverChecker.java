@@ -116,6 +116,11 @@ public class CopyRecieverChecker {
                 if(today.getDayOfMonth() != startupDay) {
                     nextDay = true;
                 }
+                // 日付が変わってすぐはログファイルにログが出力されていないので20分間停止
+                if(today.getHour() == 0
+                   && today.getMinute() < 20) {
+                    Thread.sleep(20 * 60 * 1000);
+                }
 
                 // ログファイル
                 String date = today.format(df);
