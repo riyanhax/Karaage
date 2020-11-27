@@ -8,6 +8,7 @@ package jp.co.studiogadget.karaage;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -51,6 +52,7 @@ public class CopyProviderChecker {
         String signalName = PropertyUtil.getValue("copyProviderChecker", "signalName");
         String mailTo = PropertyUtil.getValue("copyProviderChecker", "mailTo");
         int intervalMin = Integer.parseInt(PropertyUtil.getValue("copyProviderChecker", "intervalMin"));
+        int logHistory = Integer.parseInt(PropertyUtil.getValue("copyProviderChecker", "logHistory"));
         boolean summar = "TRUE".equals(PropertyUtil.getValue("copyProviderChecker", "summar").toUpperCase());
 
         int startHour;
@@ -71,7 +73,18 @@ public class CopyProviderChecker {
         int startupDay = today.getDayOfMonth();
         boolean nextDay = false;
 
-        //TODO 古いログファイルを削除する処理
+        // 古いログファイルを削除
+        try {
+            for(File file : new File(logDir).listFiles()) {
+                if(LocalDate.parse(file.getName().replace(".log", ""), df).atStartOfDay(today.getZone())
+                        .compareTo(today.minusDays(logHistory)) < 0) {
+                    file.delete();
+                    logger.info("Old Logfile Deleted.[" + file.getPath() + "]");
+                }
+            }
+        } catch(Exception e) {
+            logger.warn("Old Logfile Delete Error.[" + logDir + "]", e);
+        }
 
         try {
             // ファイル読込

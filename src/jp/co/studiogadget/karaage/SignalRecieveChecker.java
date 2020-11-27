@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -70,6 +71,7 @@ public class SignalRecieveChecker {
         String mailTo = PropertyUtil.getValue("signalRecieveChecker", "mailTo");
         String platform = PropertyUtil.getValue("signalRecieveChecker", "platform");
         boolean checkEA = "TRUE".equals(PropertyUtil.getValue("signalRecieveChecker", "checkEA").toUpperCase());
+        int logHistory = Integer.parseInt(PropertyUtil.getValue("signalRecieveChecker", "logHistory"));
         boolean summar = "TRUE".equals(PropertyUtil.getValue("signalRecieveChecker", "summar").toUpperCase());
 
         int startHour;
@@ -83,7 +85,18 @@ public class SignalRecieveChecker {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyyMMdd");
         ZonedDateTime today = ZonedDateTime.now(JAPAN_ZONE_ID);
 
-        //TODO 古いログファイルを削除する処理
+        // 古いログファイルを削除
+        try {
+            for(File file : new File(logDir).listFiles()) {
+                if(LocalDate.parse(file.getName().replace(".log", ""), df).atStartOfDay(today.getZone())
+                        .compareTo(today.minusDays(logHistory)) < 0) {
+                    file.delete();
+                    logger.info("Old Logfile Deleted.[" + file.getPath() + "]");
+                }
+            }
+        } catch(Exception e) {
+            logger.warn("Old Logfile Delete Error.[" + logDir + "]", e);
+        }
 
         while(true) {
             logger.info("Execute.");
