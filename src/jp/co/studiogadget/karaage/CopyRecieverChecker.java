@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -69,9 +70,11 @@ public class CopyRecieverChecker {
         // プロパティファイル読込
         String logDir = PropertyUtil.getValue("copyRecieverChecker", "logDir");
         String mtLogDir = PropertyUtil.getValue("copyRecieverChecker", "mtLogDir");
+        int logSizeLimitK = Integer.parseInt(PropertyUtil.getValue("copyRecieverChecker", "logSizeLimitK"));
         String serverlName = PropertyUtil.getValue("copyRecieverChecker", "serverlName");
         String mailTo = PropertyUtil.getValue("copyRecieverChecker", "mailTo");
         int intervalMin = Integer.parseInt(PropertyUtil.getValue("copyRecieverChecker", "intervalMin"));
+        int logHistory = Integer.parseInt(PropertyUtil.getValue("copyRecieverChecker", "logHistory"));
         boolean summar = "TRUE".equals(PropertyUtil.getValue("copyRecieverChecker", "summar").toUpperCase());
 
         int startHour;
@@ -93,7 +96,31 @@ public class CopyRecieverChecker {
         int startupDay = today.getDayOfMonth();
         boolean nextDay = false;
 
-        //TODO 古いログファイルを削除する処理
+        // 古いログファイルを削除
+        try {
+            for(File file : new File(logDir).listFiles()) {
+                if(LocalDate.parse(file.getName().replace(".log", ""), df).atStartOfDay(today.getZone())
+                        .compareTo(today.minusDays(logHistory)) < 0) {
+                    file.delete();
+                    logger.info("Old Logfile Deleted.[" + file.getPath() + "]");
+                }
+            }
+        } catch(Exception e) {
+            logger.warn("Old Logfile Delete Error.[" + logDir + "]", e);
+        }
+
+        try {
+            for(File file : new File(mtLogDir).listFiles()) {
+                if(LocalDate.parse(file.getName().replace(".log", ""), df).atStartOfDay(today.getZone())
+                        .compareTo(today.minusDays(logHistory)) < 0) {
+                    file.delete();
+                    logger.info("Old Logfile Deleted.[" + file.getPath() + "]");
+                }
+            }
+        } catch(Exception e) {
+            logger.warn("Old Logfile Delete Error.[" + mtLogDir + "]", e);
+        }
+
 
         try {
             // ファイル読込
@@ -120,6 +147,7 @@ public class CopyRecieverChecker {
                 if(today.getHour() == 0
                    && today.getMinute() < 20) {
                     Thread.sleep(20 * 60 * 1000);
+                    continue;
                 }
 
                 // ログファイル
@@ -179,9 +207,9 @@ public class CopyRecieverChecker {
              // ************* メタトレーダーのログを更新する 終了 ***********
 
                 // メタトレーダーのログファイルのサイズチェック
-                // 300kB以上になった場合は、メールを送信して終了
+                // 指定ファイルサイズ以上になった場合は、メールを送信して終了
                 logger.info("MtLength.[" + mtLogFile.length() + "]");
-                if(mtLogFile.length() >= 300 * 1024) {
+                if(mtLogFile.length() >= logSizeLimitK * 1024) {
                     logger.error("Logfile Size is Increasing.");
                     MailUtil.send(mailTo, "ERROR " + serverlName + " is Failed.", today.format(mdf) + "\r\nLogfile Size is Increasing.");
                     System.exit(1);
