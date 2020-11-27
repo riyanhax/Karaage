@@ -142,6 +142,9 @@ public class CopyRecieverChecker {
                 // 起動時と日付が変わっていたら、日付変更フラグを立てる
                 if(today.getDayOfMonth() != startupDay) {
                     nextDay = true;
+                    // ポインターをリセット
+                    pointer = 0L;
+                    mtPointer = 0L;
                 }
                 // 日付が変わってすぐはログファイルにログが出力されていないので20分間停止
                 if(today.getHour() == 0
