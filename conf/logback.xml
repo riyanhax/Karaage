@@ -1,25 +1,26 @@
 <configuration>
+  <property name="LOG_FILE" value="logs/application.log" />
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <pattern>%d{HH:mm:ss.SSS} %-5level %logger{10} %msg%n</pattern>
     </encoder>
   </appender>
-  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    <file>logs/logFile.log</file>
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOG_FILE}</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       <!-- daily rollover -->
-      <fileNamePattern>logs/logFile.%d.log</fileNamePattern>
+      <fileNamePattern>${LOG_FILE}.%d{yyyyMMdd}</fileNamePattern>
       <!-- keep 30 days worth of history -->
-      <maxHistory>7</maxHistory>
+      <maxHistory>30</maxHistory>
     </rollingPolicy>
     <encoder>
-      <pattern>%date %level %logger{10} [%file:%line] %msg%n</pattern>
+      <pattern>%d{HH:mm:ss.SSS} %-5level %logger{10} %msg%n</pattern>
     </encoder>
   </appender>
 
-  <logger name="jp.co.studiogadget" level="DEBUG"/>
+  <logger name="jp.co.studiogadget" level="INFO"/>
 
-  <root level="DEBUG">
+  <root level="INFO">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </root>
