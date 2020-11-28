@@ -282,23 +282,30 @@ public class SignalRecieveChecker {
                 // 結果に応じてメール作成
                 String mailSubject;
                 if(termsAll) {
+                    logger.info(signalName + " is Running.");
                     mailSubject = signalName + " is Running.";
                 } else {
+                    logger.error(signalName + " is Failed.");
                     mailSubject = "ERROR " + signalName + " is Failed.";
                     if(!terms1) {
+                        logger.error("Signal Disabled.");
                         mailBody += "\r\n Signal Disabled.";
                     }
                     if(!terms2) {
+                        logger.error("Connecting to Signal Server Failed.");
                         mailBody += "\r\n Connecting to Signal Server Failed.";
                     }
                     if(!terms3) {
+                        logger.error("EA Load Failed.");
                         mailBody += "\r\n EA Load Failed.";
                     }
                     if(!terms4) {
+                        logger.error("Signal Subscription Failed.");
                         mailBody += "\r\n Signal Subscription Failed.";
                     }
                     if(!isLogin) {
-                        mailBody += "\r\n Login Failed";
+                        logger.error("Login Failed");
+                        mailBody += "\r\n Login Failed.";
                     }
                 }
 
