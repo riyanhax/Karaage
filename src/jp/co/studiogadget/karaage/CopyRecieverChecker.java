@@ -140,7 +140,7 @@ public class CopyRecieverChecker {
                 }
 
                 // 起動時と日付が変わっていたら、日付変更フラグを立てる
-                if(today.getDayOfMonth() != startupDay) {
+                if(!nextDay && today.getDayOfMonth() != startupDay) {
                     nextDay = true;
                     // ポインターをリセット
                     pointer = 0L;
