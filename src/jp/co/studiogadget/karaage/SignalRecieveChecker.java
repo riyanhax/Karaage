@@ -277,6 +277,12 @@ public class SignalRecieveChecker {
                         termsAll = true;
                         break;
                     }
+
+                    // 読込終了 (MT4 build、started)
+                    if(line.toLowerCase().contains("mt4 build")
+                       && line.toLowerCase().contains("started")) {
+                        break;
+                    }
                 }
                 if(fr != null) {
                     fr.close();
