@@ -88,6 +88,9 @@ public class SignalRecieveChecker {
         // 古いログファイルを削除
         try {
             for(File file : new File(logDir).listFiles()) {
+                if("metaeditor.log".equals(file.getName())) {
+                    continue;
+                }
                 if(LocalDate.parse(file.getName().replace(".log", ""), df).atStartOfDay(today.getZone())
                         .compareTo(today.minusDays(logHistory)) < 0) {
                     file.delete();
