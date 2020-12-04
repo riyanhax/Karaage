@@ -76,6 +76,7 @@ public class CopyRecieverChecker {
         int intervalMin = Integer.parseInt(PropertyUtil.getValue("copyRecieverChecker", "intervalMin"));
         int logHistory = Integer.parseInt(PropertyUtil.getValue("copyRecieverChecker", "logHistory"));
         boolean summar = "TRUE".equals(PropertyUtil.getValue("copyRecieverChecker", "summar").toUpperCase());
+        String platform = PropertyUtil.getValue("copyRecieverChecker", "platform");
 
         int startHour;
         if(summar) {
@@ -161,34 +162,44 @@ public class CopyRecieverChecker {
                 String line = null;
 
                 // ************* メタトレーダーのログを更新する 開始 ***********
-                // メタトレーダーを操作してエキスパートログディレクトリを開く
+                int x;
+                if("MT4".equals(platform)) {
+                    x = 680; // (1920x1080)
+                } else {
+                    x = 785; // (1920x1080)
+                }
+                // メタトレーダーを操作してエキスパートディレクトリを開く
                 Robot robot = new Robot();
-//                ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/CopyRecieverChecker/logs/"+ System.currentTimeMillis() +"_1.png"));
-//                robot.mouseMove(680, 1010); // エキスパートタブにマウスカーソルを移動 (1920x1080)
-                robot.mouseMove(680, 698); // エキスパートタブにマウスカーソルを移動 (1024x768)
+//                ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/SignalRecieveChecker/logs/"+ System.currentTimeMillis() +"_1.png"));
+                robot.mouseMove(x, 698); // エキスパートタブにマウスカーソルを移動 (1024x768)
                 robot.mousePress(InputEvent.BUTTON1_DOWN_MASK); // 左クリック
                 robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
                 Thread.sleep(1 * 1000);
-//                ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/CopyRecieverChecker/logs/"+ System.currentTimeMillis() +"_2.png"));
-//                robot.mouseMove(680, 980); // ターミナルにマウスカーソルを移動 (1920x1080)
-                robot.mouseMove(680, 677); // ターミナルにマウスカーソルを移動 (1024x768)
+//                ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/SignalRecieveChecker/logs/"+ System.currentTimeMillis() +"_2.png"));
+                robot.mouseMove(x, 677); // ターミナルにマウスカーソルを移動 (1024x768)
                 robot.mousePress(InputEvent.BUTTON3_DOWN_MASK); // 右クリック
                 robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
                 Thread.sleep(1 * 1000);
-//                ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/CopyRecieverChecker/logs/"+ System.currentTimeMillis() +"_3.png"));
-                robot.keyPress(KeyEvent.VK_CONTROL); // Ctrl + O
-                robot.keyPress(KeyEvent.VK_O);
-                robot.keyRelease(KeyEvent.VK_CONTROL);
-                robot.keyRelease(KeyEvent.VK_O);
+//                ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/SignalRecieveChecker/logs/"+ System.currentTimeMillis() +"_3.png"));
+                if("MT4".equals(platform)) {
+                    robot.keyPress(KeyEvent.VK_CONTROL); // Ctrl + O
+                    robot.keyPress(KeyEvent.VK_O);
+                    robot.keyRelease(KeyEvent.VK_CONTROL);
+                    robot.keyRelease(KeyEvent.VK_O);
+                } else {
+                    robot.mouseMove(x + 30, 467); // (1024x768)
+                    robot.mousePress(InputEvent.BUTTON1_DOWN_MASK); // 左クリック
+                    robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+                }
                 Thread.sleep(2 * 1000); // エキスパートログディレクトリが開くのを待つ
-//                ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/CopyRecieverChecker/logs/"+ System.currentTimeMillis() +"_4.png"));
+//                ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/SignalRecieveChecker/logs/"+ System.currentTimeMillis() +"_4.png"));
 
                 // Windows上でファイルの更新を認識させるためにメモ帳で開く
                 Runtime rt = Runtime.getRuntime();
                 try {
                     rt.exec("notepad " + mtLogFile.getPath());
                     Thread.sleep(2 * 1000);
-//                    ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/CopyRecieverChecker/logs/"+ System.currentTimeMillis() +"_5.png"));
+//                    ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/SignalRecieveChecker/logs/"+ System.currentTimeMillis() +"_5.png"));
                     rt.exec("taskkill /IM notepad.exe");
                 } catch(Exception e) {
                     logger.error("Open by Notepad Error.", e);
@@ -202,12 +213,12 @@ public class CopyRecieverChecker {
                 robot.keyRelease(KeyEvent.VK_ALT);
                 robot.keyRelease(KeyEvent.VK_TAB);
                 Thread.sleep(1 * 1000);
-                robot.keyPress(KeyEvent.VK_ALT); // Alt + F4 (エキスパートログディレクトリを閉じる)
+                robot.keyPress(KeyEvent.VK_ALT); // Alt + F4 (操作履歴ログディレクトリを閉じる)
                 robot.keyPress(KeyEvent.VK_F4);
                 robot.keyRelease(KeyEvent.VK_ALT);
                 robot.keyRelease(KeyEvent.VK_F4);
                 Thread.sleep(1 * 1000);
-             // ************* メタトレーダーのログを更新する 終了 ***********
+                // ************* メタトレーダーのログを更新する 終了 ***********
 
                 // メタトレーダーのログファイルのサイズチェック
                 // 指定ファイルサイズ以上になった場合は、メールを送信して終了
@@ -256,6 +267,9 @@ public class CopyRecieverChecker {
                 boolean isWork = false;
                 line = null;
                 while((line = mtRaf.readLine()) != null) {
+                    if(!"MT4".equals(platform)) {
+                        line = new String(line.getBytes(), "UTF-16LE");
+                    }
                     if(line.toLowerCase().contains("i am working")
                        && line.toLowerCase().contains("receiverea")) {
                         isWork = true;
