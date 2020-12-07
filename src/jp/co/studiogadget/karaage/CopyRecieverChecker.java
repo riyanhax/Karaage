@@ -164,9 +164,9 @@ public class CopyRecieverChecker {
                 // ************* メタトレーダーのログを更新する 開始 ***********
                 int x;
                 if("MT4".equals(platform)) {
-                    x = 680; // (1920x1080)
+                    x = 680;
                 } else {
-                    x = 785; // (1920x1080)
+                    x = 820;
                 }
                 // メタトレーダーを操作してエキスパートディレクトリを開く
                 Robot robot = new Robot();
@@ -187,7 +187,7 @@ public class CopyRecieverChecker {
                     robot.keyRelease(KeyEvent.VK_CONTROL);
                     robot.keyRelease(KeyEvent.VK_O);
                 } else {
-                    robot.mouseMove(x + 30, 467); // (1024x768)
+                    robot.mouseMove(x + 30, 450); // (1024x768)
                     robot.mousePress(InputEvent.BUTTON1_DOWN_MASK); // 左クリック
                     robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
                 }
@@ -268,12 +268,17 @@ public class CopyRecieverChecker {
                 line = null;
                 while((line = mtRaf.readLine()) != null) {
                     if(!"MT4".equals(platform)) {
-                        line = new String(line.getBytes(), "UTF-16LE");
+                        line = new String(line.getBytes(), "UTF-16");
                     }
                     if(line.toLowerCase().contains("i am working")
                        && line.toLowerCase().contains("receiverea")) {
                         isWork = true;
                     }
+                    if(line.toLowerCase().contains("i am initialized")
+                        && line.toLowerCase().contains("receiverea")) {
+                         isWork = true;
+                    }
+
                 }
                 // 動作していない場合はメールを送信して終了
                 if(!isWork) {
