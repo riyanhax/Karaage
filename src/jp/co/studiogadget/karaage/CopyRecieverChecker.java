@@ -265,10 +265,17 @@ public class CopyRecieverChecker {
                 mtRaf = new RandomAccessFile(mtLogFile, "r");
                 mtRaf.seek(mtPointer);
                 boolean isWork = false;
+                boolean lineOne = true;
                 line = null;
                 while((line = mtRaf.readLine()) != null) {
                     if(!"MT4".equals(platform)) {
-                        line = new String(line.getBytes(), "UTF-16");
+                        // 読込の最初の行はUTF-8、2行目以降はUTF-16
+                        if(lineOne) {
+                            line = new String(line.getBytes(), "UTF-16LE");
+                            lineOne = false;
+                        } else {
+                            line = new String(line.getBytes(), "UTF-16");
+                        }
                     }
                     if(line.toLowerCase().contains("i am working")
                        && line.toLowerCase().contains("receiverea")) {
