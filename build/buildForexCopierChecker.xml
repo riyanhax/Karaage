@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project Karaage with libraries in sub-folder">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <!--define folder properties-->
+    <property name="dir.buildfile" value="."/>
+
+    <!-- 環境に応じて設定 -->
+    <property name="dir.workspace" value="D:/Development/workspace"/>
+    <property name="dir.lib" value="D:/Development/Git/lib"/>
+    <property name="dir.jarfile" value="D:/Development/Tools/Karaage"/>
+    <property name="dir.git" value="D:/Development/Git"/>
+
+    <target name="create_run_jar">
+        <jar destfile="${dir.jarfile}/ForexCopierChecker.jar">
+            <manifest>
+                <attribute name="Main-Class" value="jp.co.studiogadget.karaage.ForexCopierChecker"/>
+                <attribute name="Class-Path" value=". conf/ lib/slf4j-api-1.7.13.jar lib/ui4j-all-2.1.0.jar lib/logback-classic-1.1.3.jar lib/logback-core-1.1.3.jar lib/openjfx-monocle-1.8.0_20.jar lib/jtidy-r938.jar lib/log4j-1.2.17.jar lib/mail.jar lib/junit-dep-4.11.jar lib/mybatis-3.2.7.jar lib/guice-3.0.jar lib/commons-logging-1.1.1.jar lib/ws-commons-util-1.0.2.jar lib/xmlrpc-client-3.1.3.jar lib/xmlrpc-common-3.1.3.jar lib/xmlrpc-server-3.1.3.jar lib/jdom-2.0.5.jar lib/xercesImpl.jar lib/hamcrest-core-1.3.jar lib/jackson-annotations-2.5.0.jar lib/jackson-core-2.5.0.jar lib/jackson-databind-2.5.0.jar lib/htmlunit-core-js-2.13.jar lib/commons-lang3-3.1.jar lib/poi-3.10-FINAL-20140208.jar lib/poi-ooxml-3.10-FINAL-20140208.jar lib/poi-ooxml-schemas-3.10-FINAL-20140208.jar lib/dom4j-1.6.1.jar lib/xmlbeans-2.3.0.jar lib/stax-api-1.0.1.jar lib/commons-io-2.8.0.jar"/>
+            </manifest>
+            <fileset dir="D:/Development/Git/Karaage/bin" excludes="**/mail.properties, **/karaage.properties, **/forexCopierChecker.properties, **/mail_sub.properties"/>
+            <fileset dir="D:/Development/Git/CommonUtil/bin" excludes="**/mail.properties, **/mail_sub.properties"/>
+        </jar>
+        <delete dir="${dir.jarfile}/lib"/>
+        <mkdir dir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/slf4j-api-1.7.13.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/ui4j-all-2.1.0.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/logback-classic-1.1.3.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/logback-core-1.1.3.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/openjfx-monocle-1.8.0_20.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/jtidy-r938.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/log4j-1.2.17.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/mail.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/junit-dep-4.11.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/mybatis-3.2.7.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/guice-3.0.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/commons-logging-1.1.1.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/commons-io-2.8.0.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/ws-commons-util-1.0.2.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/xmlrpc-client-3.1.3.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/xmlrpc-common-3.1.3.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/xmlrpc-server-3.1.3.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/jdom-2.0.5.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/xercesImpl.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/hamcrest-core-1.3.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/jackson-annotations-2.5.0.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/jackson-core-2.5.0.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/jackson-databind-2.5.0.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/htmlunit-core-js-2.13.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/commons-lang3-3.1.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/poi-3.10-FINAL-20140208.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/poi-ooxml-3.10-FINAL-20140208.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/poi-ooxml-schemas-3.10-FINAL-20140208.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/dom4j-1.6.1.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/xmlbeans-2.3.0.jar" todir="${dir.jarfile}/lib"/>
+        <copy file="${dir.lib}/stax-api-1.0.1.jar" todir="${dir.jarfile}/lib"/>
+        <mkdir dir="${dir.jarfile}/conf"/>
+        <mkdir dir="${dir.jarfile}/data"/>
+        <copy file="${dir.git}/Karaage/conf/mail.properties" todir="${dir.jarfile}/conf"/>
+        <copy file="${dir.git}/Karaage/conf/karaage.properties" todir="${dir.jarfile}/conf"/>
+    </target>
+</project>
