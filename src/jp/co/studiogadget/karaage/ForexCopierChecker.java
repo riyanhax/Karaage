@@ -175,6 +175,7 @@ public class ForexCopierChecker {
                 File logFile = new File(logDir + "/" + log);
                 File logFileSender = new File(logDirSender + "/" + log);
                 File logFileReciever = new File(logDirReciever + "/" + log);
+                logger.info("Length.[" + logFile.length() + ", " + logFileSender.length() + ", " + logFileReciever.length() + "]");
 
                 // ************* メタトレーダーのログを更新する 開始 ***********
                 // シグナル送信のMT4にフォーカス
