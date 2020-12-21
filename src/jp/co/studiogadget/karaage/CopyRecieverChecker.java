@@ -77,6 +77,7 @@ public class CopyRecieverChecker {
         int logHistory = Integer.parseInt(PropertyUtil.getValue("copyRecieverChecker", "logHistory"));
         boolean summar = "TRUE".equals(PropertyUtil.getValue("copyRecieverChecker", "summar").toUpperCase());
         String platform = PropertyUtil.getValue("copyRecieverChecker", "platform");
+        boolean oanda = "TRUE".equals(PropertyUtil.getValue("copyRecieverChecker", "oanda").toUpperCase());
 
         int startHour;
         if(summar) {
@@ -164,42 +165,41 @@ public class CopyRecieverChecker {
                 // ************* メタトレーダーのログを更新する 開始 ***********
                 int x;
                 if("MT4".equals(platform)) {
-                    x = 680;
+                    if(oanda) {
+                        x = 640;
+                    } else {
+                        x = 680;
+                    }
                 } else {
                     x = 820;
                 }
                 // メタトレーダーを操作してエキスパートディレクトリを開く
                 Robot robot = new Robot();
-//                ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/SignalRecieveChecker/logs/"+ System.currentTimeMillis() +"_1.png"));
-                robot.mouseMove(x, 698); // エキスパートタブにマウスカーソルを移動 (1024x768)
+                robot.mouseMove(x, 698); // エキスパートタブにマウスカーソルを移動
                 robot.mousePress(InputEvent.BUTTON1_DOWN_MASK); // 左クリック
                 robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
                 Thread.sleep(1 * 1000);
-//                ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/SignalRecieveChecker/logs/"+ System.currentTimeMillis() +"_2.png"));
-                robot.mouseMove(x, 677); // ターミナルにマウスカーソルを移動 (1024x768)
+                robot.mouseMove(x, 677); // ターミナルにマウスカーソルを移動
                 robot.mousePress(InputEvent.BUTTON3_DOWN_MASK); // 右クリック
                 robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
                 Thread.sleep(1 * 1000);
-//                ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/SignalRecieveChecker/logs/"+ System.currentTimeMillis() +"_3.png"));
                 if("MT4".equals(platform)) {
                     robot.keyPress(KeyEvent.VK_CONTROL); // Ctrl + O
                     robot.keyPress(KeyEvent.VK_O);
                     robot.keyRelease(KeyEvent.VK_CONTROL);
                     robot.keyRelease(KeyEvent.VK_O);
                 } else {
-                    robot.mouseMove(x + 30, 450); // (1024x768)
+                    robot.mouseMove(x + 30, 450);
                     robot.mousePress(InputEvent.BUTTON1_DOWN_MASK); // 左クリック
                     robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
                 }
                 Thread.sleep(2 * 1000); // エキスパートログディレクトリが開くのを待つ
-//                ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/SignalRecieveChecker/logs/"+ System.currentTimeMillis() +"_4.png"));
 
                 // Windows上でファイルの更新を認識させるためにメモ帳で開く
                 Runtime rt = Runtime.getRuntime();
                 try {
                     rt.exec("notepad " + mtLogFile.getPath());
                     Thread.sleep(2 * 1000);
-//                    ImageIO.write(robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080)), "png", new File("C:/SignalRecieveChecker/logs/"+ System.currentTimeMillis() +"_5.png"));
                     rt.exec("taskkill /IM notepad.exe");
                 } catch(Exception e) {
                     logger.error("Open by Notepad Error.", e);
