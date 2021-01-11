@@ -130,7 +130,9 @@ public class CopyProviderChecker {
                 while((line = raf.readLine()) != null) {
 
                     if(line.contains("[Error]")) {
-                        error = true;
+                        if(!line.contains("Cannot get ip and country")) {
+                            error = true;
+                        }
                     }
 
                     if(line.contains("Connection reconnected")) {
