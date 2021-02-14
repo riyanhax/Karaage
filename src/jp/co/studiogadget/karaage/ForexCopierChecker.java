@@ -74,9 +74,14 @@ public class ForexCopierChecker {
         String logDir = PropertyUtil.getValue("forexCopierChecker", "logDir");
         String logDirSender = PropertyUtil.getValue("forexCopierChecker", "logDirSender");
         String logDirReciever = PropertyUtil.getValue("forexCopierChecker", "logDirReciever");
+        String logDirReciever2 = PropertyUtil.getValue("forexCopierChecker", "logDirReciever2");
         String serverlName = PropertyUtil.getValue("forexCopierChecker", "serverlName");
-        String signalName = PropertyUtil.getValue("forexCopierChecker", "signalName");
-        String mql5Account = PropertyUtil.getValue("forexCopierChecker", "mql5Account");
+        String eaName1 = PropertyUtil.getValue("forexCopierChecker", "eaName1");
+        String eaName2 = PropertyUtil.getValue("forexCopierChecker", "eaName2");
+        String eaName3 = PropertyUtil.getValue("forexCopierChecker", "eaName3");
+        String eaName4 = PropertyUtil.getValue("forexCopierChecker", "eaName4");
+        String eaName5 = PropertyUtil.getValue("forexCopierChecker", "eaName5");
+        String eaName6 = PropertyUtil.getValue("forexCopierChecker", "eaName6");
         String mailTo = PropertyUtil.getValue("forexCopierChecker", "mailTo");
         int intervalMin = Integer.parseInt(PropertyUtil.getValue("forexCopierChecker", "intervalMin"));
         int logHistory = Integer.parseInt(PropertyUtil.getValue("forexCopierChecker", "logHistory"));
@@ -95,7 +100,8 @@ public class ForexCopierChecker {
         RandomAccessFile rafSender = null;
         RandomAccessFile rafReciever = null;
         long pointerSender = 0L;
-        long pointerReciever = 0L;
+        long pointerReciever1 = 0L;
+        long pointerReciever2 = 0L;
         int startupDay = today.getDayOfMonth();
         boolean nextDay = false;
         boolean firstCheck = true;
@@ -156,7 +162,8 @@ public class ForexCopierChecker {
                 nextDay = true;
                 // ポインターをリセット
                 pointerSender = 0L;
-                pointerReciever = 0L;
+                pointerReciever1 = 0L;
+                pointerReciever2 = 0L;
             }
             // 日付が変わってすぐはログファイルにログが出力されていないので20分間停止
             if(today.getHour() == 0
@@ -175,7 +182,13 @@ public class ForexCopierChecker {
                 File logFile = new File(logDir + "/" + log);
                 File logFileSender = new File(logDirSender + "/" + log);
                 File logFileReciever = new File(logDirReciever + "/" + log);
-                logger.info("Length.[" + logFile.length() + ", " + logFileSender.length() + ", " + logFileReciever.length() + "]");
+                File logFileReciever2 = null;
+                if(logDirReciever2 != null && !logDirReciever2.isEmpty()) {
+                    logFileReciever2 = new File(logDirReciever2 + "/" + log);
+                    logger.info("Length.[" + logFile.length() + ", " + logFileSender.length() + ", " + logFileReciever.length() + ", " + logFileReciever2.length() + "]");
+                } else {
+                    logger.info("Length.[" + logFile.length() + ", " + logFileSender.length() + ", " + logFileReciever.length() + "]");
+                }
 
                 // ************* メタトレーダーのログを更新する 開始 ***********
                 // シグナル送信のMT4にフォーカス
@@ -305,6 +318,51 @@ public class ForexCopierChecker {
                 robot.keyRelease(KeyEvent.VK_ALT);
                 robot.keyRelease(KeyEvent.VK_F4);
                 Thread.sleep(1 * 1000);
+
+                if(logFileReciever2 != null) {
+                    // シグナル受信2のMT4にフォーカス
+                    robot.mouseMove(202, 755);
+                    robot.mousePress(InputEvent.BUTTON1_DOWN_MASK); // 左クリック
+                    robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+                    Thread.sleep(1 * 1000);
+                    // メタトレーダーを操作してエキスパートディレクトリを開く
+                    robot.mouseMove(713, 700); // エキスパートタブにマウスカーソルを移動
+                    robot.mousePress(InputEvent.BUTTON1_DOWN_MASK); // 左クリック
+                    robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+                    Thread.sleep(1 * 1000);
+                    robot.mouseMove(713, 677); // ターミナルにマウスカーソルを移動
+                    robot.mousePress(InputEvent.BUTTON3_DOWN_MASK); // 右クリック
+                    robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
+                    Thread.sleep(1 * 1000);
+                    robot.keyPress(KeyEvent.VK_CONTROL); // Ctrl + O
+                    robot.keyPress(KeyEvent.VK_O);
+                    robot.keyRelease(KeyEvent.VK_CONTROL);
+                    robot.keyRelease(KeyEvent.VK_O);
+                    Thread.sleep(2 * 1000); // エキスパートログディレクトリが開くのを待つ
+
+                    // Windows上でファイルの更新を認識させるためにメモ帳で開く
+                    try {
+                        rt.exec("notepad " + logFileReciever2.getPath());
+                        Thread.sleep(2 * 1000);
+                        rt.exec("taskkill /IM notepad.exe");
+                    } catch(Exception e) {
+                        logger.error("Open by Notepad Error.", e);
+                        MailUtil.send(mailTo, "ERROR " + serverlName + " is Failed.", today.format(mdf) + "\r\nOpen by Notepad Error.\r\n" + e.getMessage());
+                    }
+                    Thread.sleep(2 * 1000); // メモ帳が閉じるのを待つ
+
+                    // エキスパートログディレクトリを閉じる
+                    robot.keyPress(KeyEvent.VK_ALT); // Alt + TAB (エキスパートログディレクトリにフォーカスする)
+                    robot.keyPress(KeyEvent.VK_TAB);
+                    robot.keyRelease(KeyEvent.VK_ALT);
+                    robot.keyRelease(KeyEvent.VK_TAB);
+                    Thread.sleep(1 * 1000);
+                    robot.keyPress(KeyEvent.VK_ALT); // Alt + F4 (操作履歴ログディレクトリを閉じる)
+                    robot.keyPress(KeyEvent.VK_F4);
+                    robot.keyRelease(KeyEvent.VK_ALT);
+                    robot.keyRelease(KeyEvent.VK_F4);
+                    Thread.sleep(1 * 1000);
+                }
                 // ************* メタトレーダーのログを更新する 終了 ***********
 
                 // 送信側操作履歴
@@ -315,7 +373,29 @@ public class ForexCopierChecker {
                     boolean terms2 = false; // 条件2
                     boolean terms3 = false; // 条件3
                     boolean terms4 = false; // 条件4
+                    boolean terms5 = false; // 条件5
+                    boolean terms6 = false; // 条件6
+                    boolean terms7 = false; // 条件7
                     boolean isLogin = false;
+
+                    if(eaName1.isEmpty()) {
+                        terms1 = true;
+                    }
+                    if(eaName2.isEmpty()) {
+                        terms2 = true;
+                    }
+                    if(eaName3.isEmpty()) {
+                        terms3 = true;
+                    }
+                    if(eaName4.isEmpty()) {
+                        terms4 = true;
+                    }
+                    if(eaName5.isEmpty()) {
+                        terms5 = true;
+                    }
+                    if(eaName6.isEmpty()) {
+                        terms6 = true;
+                    }
 
                     // ログファイル読込 (後ろから)
                     ReversedLinesFileReader fr = null;
@@ -328,52 +408,95 @@ public class ForexCopierChecker {
                             if(!isLogin
                                && line.toLowerCase().contains("previous successful authorization")) {
                                 isLogin = true;
+                                continue;
                             }
 
                             // 条件1
                             if(!terms1
-                               && line.toLowerCase().contains("signal")
-                               && line.toLowerCase().contains("use 95% of deposit")
-                               && line.toLowerCase().contains("0.00 usd")
-                               && line.toLowerCase().contains("5.0 spreads")
-                               && line.toLowerCase().contains("disabled")) {
-                                terms1 = true;
+                               && line.toLowerCase().contains(eaName1.toLowerCase())) {
+                                if(line.toLowerCase().contains("loaded successfully")) {
+                                    terms1 = true;
+                                    continue;
+                                } else {
+                                    logger.warn(eaName1 + " Load Failed.");
+                                    break;
+                                }
                             }
 
                             // 条件2
                             if(!terms2
-                               && line.toLowerCase().contains("signal")
-                               && line.toLowerCase().contains("connecting to signal server")) {
-                                terms2 = true;
+                               && line.toLowerCase().contains(eaName2.toLowerCase())) {
+                                if(line.toLowerCase().contains("loaded successfully")) {
+                                    terms2 = true;
+                                    continue;
+                                } else {
+                                    logger.warn(eaName2 + " Load Failed.");
+                                    break;
+                                }
                             }
 
                             // 条件3
                             if(!terms3
-                               && line.toLowerCase().contains("expert sourceea")) {
+                               && line.toLowerCase().contains(eaName3.toLowerCase())) {
                                 if(line.toLowerCase().contains("loaded successfully")) {
                                     terms3 = true;
+                                    continue;
                                 } else {
-                                    logger.warn("EA Load Failed.");
+                                    logger.warn(eaName3 + " Load Failed.");
                                     break;
                                 }
                             }
 
                             // 条件4
                             if(!terms4
-                               && line.toLowerCase().contains("signal")
-                               && line.toLowerCase().contains(signalName.toLowerCase())
-                               && line.toLowerCase().contains(mql5Account.toLowerCase())) {
-                                if(line.toLowerCase().contains("subscription found")
-                                   && line.toLowerCase().contains("enabled")) {
+                               && line.toLowerCase().contains(eaName4.toLowerCase())) {
+                                if(line.toLowerCase().contains("loaded successfully")) {
                                     terms4 = true;
+                                    continue;
                                 } else {
-                                    logger.warn("Signal Subscription Failed.");
+                                    logger.warn(eaName4 + " Load Failed.");
+                                    break;
+                                }
+                            }
+
+                            // 条件5
+                            if(!terms5
+                               && line.toLowerCase().contains(eaName5.toLowerCase())) {
+                                if(line.toLowerCase().contains("loaded successfully")) {
+                                    terms5 = true;
+                                    continue;
+                                } else {
+                                    logger.warn(eaName5 + " Load Failed.");
+                                    break;
+                                }
+                            }
+
+                            // 条件6
+                            if(!terms6
+                               && line.toLowerCase().contains(eaName6.toLowerCase())) {
+                                if(line.toLowerCase().contains("loaded successfully")) {
+                                    terms6 = true;
+                                    continue;
+                                } else {
+                                    logger.warn(eaName6 + " Load Failed.");
+                                    break;
+                                }
+                            }
+
+                            // 条件7
+                            if(!terms7
+                               && line.toLowerCase().contains("expert sourceea")) {
+                                if(line.toLowerCase().contains("loaded successfully")) {
+                                    terms7 = true;
+                                    continue;
+                                } else {
+                                    logger.warn("SourceEA Load Failed.");
                                     break;
                                 }
                             }
 
                             // 条件をすべて満たしたら読込終了
-                            if(terms1 && terms2 && terms3 && terms4 && isLogin) {
+                            if(terms1 && terms2 && terms3 && terms4 && terms5 && terms6 && terms7 && isLogin) {
                                 termsAll = true;
                                 break;
                             }
@@ -457,33 +580,63 @@ public class ForexCopierChecker {
                     rafSender.close();
                 }
 
-                // 受信側エキスパート
+                // 受信側1エキスパート
                 rafReciever = new RandomAccessFile(logFileReciever, "r");
-                rafReciever.seek(pointerReciever);
-                boolean isWorkReciever = false;
+                rafReciever.seek(pointerReciever1);
+                boolean isWorkReciever1 = false;
                 line = null;
                 while((line = rafReciever.readLine()) != null) {
                     if(line.toLowerCase().contains("i am working")
                        && line.toLowerCase().contains("receiverea")) {
-                        isWorkReciever = true;
+                        isWorkReciever1 = true;
                     }
                     if(line.toLowerCase().contains("i am initialized")
                             && line.toLowerCase().contains("receiverea")) {
-                        isWorkReciever = true;
+                        isWorkReciever1 = true;
                     }
                 }
                 // 動作していない場合はメールを送信して終了
-                if(!isWorkReciever) {
-                    logger.error("RecieverEA Error.");
-                    MailUtil.send(mailTo, "ERROR " + serverlName + " is Failed.", mailBody + "\r\nRecieverEA Error.");
+                if(!isWorkReciever1) {
+                    logger.error("RecieverEA_1 Error.");
+                    MailUtil.send(mailTo, "ERROR " + serverlName + " is Failed.", mailBody + "\r\nRecieverEA_1 Error.");
                 }
                 if(rafReciever != null) {
                     // ポインターを更新
-                    pointerReciever = rafReciever.length();
+                    pointerReciever1 = rafReciever.length();
                     rafReciever.close();
                 }
 
-                if(!isWorkSender || !isWorkReciever) {
+                // 受信側2エキスパート
+                boolean isWorkReciever2 = true;
+                if(logFileReciever2 != null) {
+                    rafReciever = new RandomAccessFile(logFileReciever2, "r");
+                    rafReciever.seek(pointerReciever2);
+                    isWorkReciever2 = false;
+                    line = null;
+                    while((line = rafReciever.readLine()) != null) {
+                        if(line.toLowerCase().contains("i am working")
+                           && line.toLowerCase().contains("receiverea")) {
+                            isWorkReciever2 = true;
+                        }
+                        if(line.toLowerCase().contains("i am initialized")
+                                && line.toLowerCase().contains("receiverea")) {
+                            isWorkReciever2 = true;
+                        }
+                    }
+                    // 動作していない場合はメールを送信して終了
+                    if(!isWorkReciever2) {
+                        logger.error("RecieverEA_2 Error.");
+                        MailUtil.send(mailTo, "ERROR " + serverlName + " is Failed.", mailBody + "\r\nRecieverEA_2 Error.");
+                    }
+                    if(rafReciever != null) {
+                        // ポインターを更新
+                        pointerReciever2 = rafReciever.length();
+                        rafReciever.close();
+                    }
+                }
+
+
+                if(!isWorkSender || !isWorkReciever1 || !isWorkReciever2) {
                     System.exit(1);
                 }
 
