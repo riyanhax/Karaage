@@ -520,30 +520,34 @@ public class ForexCopierChecker {
                             logger.error(serverlName + " is Failed.");
                             mailSubject = "ERROR " + serverlName + " is Failed.";
                             if(!terms1) {
-                                logger.error("Signal Disabled.");
-                                mailBody += "\r\n Signal Disabled.";
+                                mailBody += "\r\n" + eaName1 + " Load Failed.";
                             }
                             if(!terms2) {
-                                logger.error("Connecting to Signal Server Failed.");
-                                mailBody += "\r\n Connecting to Signal Server Failed.";
+                                mailBody += "\r\n" + eaName2 + " Load Failed.";
                             }
                             if(!terms3) {
-                                logger.error("EA Load Failed.");
-                                mailBody += "\r\n EA Load Failed.";
+                                mailBody += "\r\n" + eaName3 + " Load Failed.";
                             }
                             if(!terms4) {
-                                logger.error("Signal Subscription Failed.");
-                                mailBody += "\r\n Signal Subscription Failed.";
+                                mailBody += "\r\n" + eaName4 + " Load Failed.";
+                            }
+                            if(!terms5) {
+                                mailBody += "\r\n" + eaName5 + " Load Failed.";
+                            }
+                            if(!terms6) {
+                                mailBody += "\r\n" + eaName6 + " Load Failed.";
+                            }
+                            if(!terms7) {
+                                mailBody += "\r\nSourceEA Load Failed.";
                             }
                             if(!isLogin) {
-                                logger.error("Login Failed");
-                                mailBody += "\r\n Login Failed.";
+                                mailBody += "\r\nLogin Failed.";
                             }
                         }
 
                         // メール送信
                         MailUtil.send(mailTo, mailSubject, mailBody, pngPath);
-                        if(!terms1 || !terms2 || !terms3 || !terms4 || !isLogin) {
+                        if(!terms1 || !terms2 || !terms3 || !terms4 || !terms5 || !terms6 || !terms7 || !isLogin) {
                             System.exit(1);
                         }
 
