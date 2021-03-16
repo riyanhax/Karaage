@@ -75,6 +75,7 @@ public class ForexCopierChecker {
         String logDirSender = PropertyUtil.getValue("forexCopierChecker", "logDirSender");
         String logDirReciever = PropertyUtil.getValue("forexCopierChecker", "logDirReciever");
         String logDirReciever2 = PropertyUtil.getValue("forexCopierChecker", "logDirReciever2");
+        String logDirReciever3 = PropertyUtil.getValue("forexCopierChecker", "logDirReciever3");
         String serverlName = PropertyUtil.getValue("forexCopierChecker", "serverlName");
         String eaName1 = PropertyUtil.getValue("forexCopierChecker", "eaName1");
         String eaName2 = PropertyUtil.getValue("forexCopierChecker", "eaName2");
@@ -102,6 +103,7 @@ public class ForexCopierChecker {
         long pointerSender = 0L;
         long pointerReciever1 = 0L;
         long pointerReciever2 = 0L;
+        long pointerReciever3 = 0L;
         int startupDay = today.getDayOfMonth();
         boolean nextDay = false;
         boolean firstCheck = true;
@@ -164,6 +166,7 @@ public class ForexCopierChecker {
                 pointerSender = 0L;
                 pointerReciever1 = 0L;
                 pointerReciever2 = 0L;
+                pointerReciever3 = 0L;
             }
             // 日付が変わってすぐはログファイルにログが出力されていないので20分間停止
             if(today.getHour() == 0
@@ -186,6 +189,13 @@ public class ForexCopierChecker {
                 if(logDirReciever2 != null && !logDirReciever2.isEmpty()) {
                     logFileReciever2 = new File(logDirReciever2 + "/" + log);
                     logger.info("Length.[" + logFile.length() + ", " + logFileSender.length() + ", " + logFileReciever.length() + ", " + logFileReciever2.length() + "]");
+                } else {
+                    logger.info("Length.[" + logFile.length() + ", " + logFileSender.length() + ", " + logFileReciever.length() + "]");
+                }
+                File logFileReciever3 = null;
+                if(logDirReciever3 != null && !logDirReciever3.isEmpty()) {
+                    logFileReciever3 = new File(logDirReciever3 + "/" + log);
+                    logger.info("Length.[" + logFile.length() + ", " + logFileSender.length() + ", " + logFileReciever.length() + ", " + logFileReciever3.length() + "]");
                 } else {
                     logger.info("Length.[" + logFile.length() + ", " + logFileSender.length() + ", " + logFileReciever.length() + "]");
                 }
@@ -343,6 +353,51 @@ public class ForexCopierChecker {
                     // Windows上でファイルの更新を認識させるためにメモ帳で開く
                     try {
                         rt.exec("notepad " + logFileReciever2.getPath());
+                        Thread.sleep(2 * 1000);
+                        rt.exec("taskkill /IM notepad.exe");
+                    } catch(Exception e) {
+                        logger.error("Open by Notepad Error.", e);
+                        MailUtil.send(mailTo, "ERROR " + serverlName + " is Failed.", today.format(mdf) + "\r\nOpen by Notepad Error.\r\n" + e.getMessage());
+                    }
+                    Thread.sleep(2 * 1000); // メモ帳が閉じるのを待つ
+
+                    // エキスパートログディレクトリを閉じる
+                    robot.keyPress(KeyEvent.VK_ALT); // Alt + TAB (エキスパートログディレクトリにフォーカスする)
+                    robot.keyPress(KeyEvent.VK_TAB);
+                    robot.keyRelease(KeyEvent.VK_ALT);
+                    robot.keyRelease(KeyEvent.VK_TAB);
+                    Thread.sleep(1 * 1000);
+                    robot.keyPress(KeyEvent.VK_ALT); // Alt + F4 (操作履歴ログディレクトリを閉じる)
+                    robot.keyPress(KeyEvent.VK_F4);
+                    robot.keyRelease(KeyEvent.VK_ALT);
+                    robot.keyRelease(KeyEvent.VK_F4);
+                    Thread.sleep(1 * 1000);
+                }
+
+                if(logFileReciever3 != null) {
+                    // シグナル受信3のMT4にフォーカス
+                    robot.mouseMove(249, 755);
+                    robot.mousePress(InputEvent.BUTTON1_DOWN_MASK); // 左クリック
+                    robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+                    Thread.sleep(1 * 1000);
+                    // メタトレーダーを操作してエキスパートディレクトリを開く
+                    robot.mouseMove(713, 700); // エキスパートタブにマウスカーソルを移動
+                    robot.mousePress(InputEvent.BUTTON1_DOWN_MASK); // 左クリック
+                    robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+                    Thread.sleep(1 * 1000);
+                    robot.mouseMove(713, 677); // ターミナルにマウスカーソルを移動
+                    robot.mousePress(InputEvent.BUTTON3_DOWN_MASK); // 右クリック
+                    robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
+                    Thread.sleep(1 * 1000);
+                    robot.keyPress(KeyEvent.VK_CONTROL); // Ctrl + O
+                    robot.keyPress(KeyEvent.VK_O);
+                    robot.keyRelease(KeyEvent.VK_CONTROL);
+                    robot.keyRelease(KeyEvent.VK_O);
+                    Thread.sleep(2 * 1000); // エキスパートログディレクトリが開くのを待つ
+
+                    // Windows上でファイルの更新を認識させるためにメモ帳で開く
+                    try {
+                        rt.exec("notepad " + logFileReciever3.getPath());
                         Thread.sleep(2 * 1000);
                         rt.exec("taskkill /IM notepad.exe");
                     } catch(Exception e) {
@@ -639,8 +694,37 @@ public class ForexCopierChecker {
                     }
                 }
 
+                // 受信側3エキスパート
+                boolean isWorkReciever3 = true;
+                if(logFileReciever3 != null) {
+                    rafReciever = new RandomAccessFile(logFileReciever3, "r");
+                    rafReciever.seek(pointerReciever3);
+                    isWorkReciever3 = false;
+                    line = null;
+                    while((line = rafReciever.readLine()) != null) {
+                        if(line.toLowerCase().contains("i am working")
+                           && line.toLowerCase().contains("receiverea")) {
+                            isWorkReciever3 = true;
+                        }
+                        if(line.toLowerCase().contains("i am initialized")
+                                && line.toLowerCase().contains("receiverea")) {
+                            isWorkReciever3 = true;
+                        }
+                    }
+                    // 動作していない場合はメールを送信して終了
+                    if(!isWorkReciever3) {
+                        logger.error("RecieverEA_3 Error.");
+                        MailUtil.send(mailTo, "ERROR " + serverlName + " is Failed.", mailBody + "\r\nRecieverEA_3 Error.");
+                    }
+                    if(rafReciever != null) {
+                        // ポインターを更新
+                        pointerReciever2 = rafReciever.length();
+                        rafReciever.close();
+                    }
+                }
 
-                if(!isWorkSender || !isWorkReciever1 || !isWorkReciever2) {
+
+                if(!isWorkSender || !isWorkReciever1 || !isWorkReciever2 || !isWorkReciever3) {
                     System.exit(1);
                 }
 
