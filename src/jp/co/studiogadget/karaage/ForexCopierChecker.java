@@ -718,7 +718,7 @@ public class ForexCopierChecker {
                     }
                     if(rafReciever != null) {
                         // ポインターを更新
-                        pointerReciever2 = rafReciever.length();
+                        pointerReciever3 = rafReciever.length();
                         rafReciever.close();
                     }
                 }
