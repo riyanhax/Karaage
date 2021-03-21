@@ -141,8 +141,10 @@ public class ForexCopierChecker {
         // 起動画面を取得
         Robot robot = new Robot();
         String pngPath = "C:/ForexCopierChecker/logs/"+ System.currentTimeMillis() +".png";
-        ImageIO.write(robot.createScreenCapture(
-                new Rectangle(0, 0, 1024, 768)), "png",new File(pngPath));
+        if(logDirReciever != null && !logDirReciever.isEmpty()) {
+            ImageIO.write(robot.createScreenCapture(
+                    new Rectangle(0, 0, 1024, 768)), "png",new File(pngPath));
+        }
 
         while(true) {
             logger.info("Execute.");
@@ -604,7 +606,12 @@ public class ForexCopierChecker {
                         }
 
                         // メール送信
-                        MailUtil.send(mailTo, mailSubject, mailBody, pngPath);
+                        if(logFileReciever != null) {
+                            MailUtil.send(mailTo, mailSubject, mailBody, pngPath);
+                        } else {
+                            MailUtil.send(mailTo, mailSubject, mailBody);
+                        }
+
                         if(!terms1 || !terms2 || !terms3 || !terms4 || !terms5 || !terms6 || !terms7 || !isLogin) {
                             System.exit(1);
                         }
