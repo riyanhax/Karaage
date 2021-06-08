@@ -129,16 +129,12 @@ public class SignalRecieveChecker {
             // ************* メタトレーダーのログを更新する 開始 ***********
             int x;
             if("MT4".equals(platform)) {
-                x = 780;
+                x = 746;
             } else {
                 x = 900;
             }
             // メタトレーダーを操作して操作履歴ディレクトリを開く
             Robot robot = new Robot();
-            if(!"MT4".equals(platform)) { // MT5の場合は最初にツールボックスを開く必要がある
-                robot.mouseMove(974, 699);
-                robot.mousePress(InputEvent.BUTTON1_DOWN_MASK); // 左クリック
-            }
             robot.mouseMove(x, 697); // 操作履歴タブにマウスカーソルを移動
             robot.mousePress(InputEvent.BUTTON1_DOWN_MASK); // 左クリック
             robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
