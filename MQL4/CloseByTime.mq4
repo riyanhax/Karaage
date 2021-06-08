@@ -3,6 +3,7 @@
 extern int CloseMin = 10;
 extern string CloseSymbol = "ALL"; // ALLの場合はすべて
 extern int MagicNumber = 0; // 0の場合はすべて
+extern string Comment = "ALL"; // ALLの場合はすべて
 
 void OnTick(){
   int errChk;
@@ -14,32 +15,34 @@ void OnTick(){
        if( OrderSelect(i, SELECT_BY_POS) == true ){
           if( CloseSymbol == "ALL" || OrderSymbol() == CloseSymbol ) {
             if( MagicNumber == 0 || OrderMagicNumber() == MagicNumber ) {
-              if( OrderOpenTime() + ( CloseMin * 60 ) < TimeCurrent() ) {
-                if( OrderType() == OP_BUY ) {
-                   while( !IsStopped() ) {
-                     errChk = 0;
-                     if( !OrderClose( OrderTicket(),OrderLots(),Bid,3,Green ) ){
-                        errChk = 1;
-                     }
-                     if( errChk == 0 ) {
-                      break;
-                     }
-                     Print( "Order Close Failure." );
-                     Sleep(500);
-                     RefreshRates();
-                  }
-                } else if( OrderType() == OP_SELL ) {
-                   while( !IsStopped() ) {
-                     errChk = 0;
-                     if( !OrderClose( OrderTicket(),OrderLots(),Ask,3,Green ) ){
-                        errChk = 1;
-                     }
-                     if( errChk == 0 ) {
-                       break;
-                     }
-                     Print( "Order Close Failure." );
-                     Sleep(500);
-                     RefreshRates();
+              if( Comment == "ALL" || OrderComment() == Comment ) {
+                if( OrderOpenTime() + ( CloseMin * 60 ) < TimeCurrent() ) {
+                  if( OrderType() == OP_BUY ) {
+                     while( !IsStopped() ) {
+                       errChk = 0;
+                       if( !OrderClose( OrderTicket(),OrderLots(),Bid,3,Green ) ){
+                          errChk = 1;
+                       }
+                       if( errChk == 0 ) {
+                        break;
+                       }
+                       Print( "Order Close Failure." );
+                       Sleep(500);
+                       RefreshRates();
+                    }
+                  } else if( OrderType() == OP_SELL ) {
+                     while( !IsStopped() ) {
+                       errChk = 0;
+                       if( !OrderClose( OrderTicket(),OrderLots(),Ask,3,Green ) ){
+                          errChk = 1;
+                       }
+                       if( errChk == 0 ) {
+                         break;
+                       }
+                       Print( "Order Close Failure." );
+                       Sleep(500);
+                       RefreshRates();
+                    }
                   }
                 }
               }
