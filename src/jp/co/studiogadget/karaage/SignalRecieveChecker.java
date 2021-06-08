@@ -129,9 +129,9 @@ public class SignalRecieveChecker {
             // ************* メタトレーダーのログを更新する 開始 ***********
             int x;
             if("MT4".equals(platform)) {
-                x = 746;
+                x = 780;
             } else {
-                x = 900;
+                x = 746;
             }
             // メタトレーダーを操作して操作履歴ディレクトリを開く
             Robot robot = new Robot();
