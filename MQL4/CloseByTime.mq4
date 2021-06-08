@@ -3,7 +3,6 @@
 extern int CloseMin = 10;
 extern string CloseSymbol = "ALL"; // ALLの場合はすべて
 extern int MagicNumber = 0; // 0の場合はすべて
-extern string Comment = "";
 
 void OnTick(){
   int errChk;
@@ -22,11 +21,12 @@ void OnTick(){
                      if( !OrderClose( OrderTicket(),OrderLots(),Bid,3,Green ) ){
                         errChk = 1;
                      }
-                     if( errChk == 1 ) {
-                      Print( "Order Close Failure." );
-                       Sleep(500);
-                       RefreshRates();
+                     if( errChk == 0 ) {
+                      break;
                      }
+                     Print( "Order Close Failure." );
+                     Sleep(500);
+                     RefreshRates();
                   }
                 } else if( OrderType() == OP_SELL ) {
                    while( !IsStopped() ) {
@@ -34,11 +34,12 @@ void OnTick(){
                      if( !OrderClose( OrderTicket(),OrderLots(),Ask,3,Green ) ){
                         errChk = 1;
                      }
-                     if( errChk == 1 ) {
-                      Print( "Order Close Failure." );
-                       Sleep(500);
-                       RefreshRates();
+                     if( errChk == 0 ) {
+                       break;
                      }
+                     Print( "Order Close Failure." );
+                     Sleep(500);
+                     RefreshRates();
                   }
                 }
               }
