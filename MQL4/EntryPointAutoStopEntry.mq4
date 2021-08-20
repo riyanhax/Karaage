@@ -9,6 +9,8 @@ extern bool OnlyDelete = false;
 
 datetime lastStopEntry1 = 0;
 datetime lastStopEntry2 = 0;
+datetime lastErrorLog1 = 0;
+datetime lastErrorLog2 = 0;
 
 void OnInit(){
 }
@@ -62,8 +64,11 @@ void OnTick(){
     if(lastStopEntry1 != Time[0]) {
       ticket = OrderSend( Symbol(), OP_BUYSTOP, Lots, High[1], 3, 0, 0, "Entry Point Auto", Magic, 0, Blue );
       if(ticket < 0) {
-        Print( "ERROR BuyStop_1 [" + TimeToStr( Time[0] ) + "]" );
-        Print( GetLastError() );
+        if(lastErrorLog1 != Time[0]) {
+          Print( "ERROR BuyStop_1 [" + TimeToStr( Time[0] ) + "]" );
+          Print( GetLastError() );
+          lastErrorLog1 = Time[0];
+        }
       } else {
         Print( "SUCCESS BuyStop_1 [" + TimeToStr( Time[0] ) + "]" );
         lastStopEntry1 = Time[0];
@@ -76,8 +81,11 @@ void OnTick(){
     if(DuplicateEntry && lastStopEntry2 != Time[0]) {
       ticket = OrderSend( Symbol(), OP_BUYSTOP, Lots, High[1], 3, 0, 0, "Entry Point Auto", Magic, 0, Blue );
       if(ticket < 0) {
-        Print( "ERROR BuyStop_2 [" + TimeToStr( Time[0] ) + "]" );
-        Print( GetLastError() );
+        if(lastErrorLog2 != Time[0]) {
+          Print( "ERROR BuyStop_2 [" + TimeToStr( Time[0] ) + "]" );
+          Print( GetLastError() );
+          lastErrorLog2 = Time[0];
+        }
       } else {
         Print( "SUCCESS BuyStop_2 [" + TimeToStr( Time[0] ) + "]" );
         lastStopEntry2 = Time[0];
@@ -94,8 +102,11 @@ void OnTick(){
     if(lastStopEntry1 != Time[0]) {
       ticket = OrderSend( Symbol(), OP_SELLSTOP, Lots, Low[1], 3, 0, 0, "Entry Point Auto", Magic, 0, Red );
       if(ticket < 0) {
-        Print( "ERROR SellStop_1 [" + TimeToStr( Time[0] ) + "]" );
-        Print( GetLastError() );
+        if(lastErrorLog1 != Time[0]){
+          Print( "ERROR SellStop_1 [" + TimeToStr( Time[0] ) + "]" );
+          Print( GetLastError() );
+          lastErrorLog1 = Time[0];
+        }
       } else {
         Print( "SUCCESS SellStop_1 [" + TimeToStr( Time[0] ) + "]" );
         lastStopEntry1 = Time[0];
@@ -108,8 +119,11 @@ void OnTick(){
     if(DuplicateEntry && lastStopEntry2 != Time[0]) {
       ticket = OrderSend( Symbol(), OP_SELLSTOP, Lots, Low[1], 3, 0, 0, "Entry Point Auto", Magic, 0, Red );
       if(ticket < 0) {
-        Print( "ERROR SellStop_2 [" + TimeToStr( Time[0] ) + "]" );
-        Print( GetLastError() );
+        if(lastErrorLog2 != Time[0]){
+          Print( "ERROR SellStop_2 [" + TimeToStr( Time[0] ) + "]" );
+          Print( GetLastError() );
+          lastErrorLog2 = Time[0];
+        }
       } else {
         Print( "SUCCESS SellStop_2 [" + TimeToStr( Time[0] ) + "]" );
         lastStopEntry2 = Time[0];
