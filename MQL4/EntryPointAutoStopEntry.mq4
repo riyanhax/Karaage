@@ -46,9 +46,16 @@ void OnTick(){
     }
   }
 
+  // 取り消しのみ
   if(OnlyDelete) {
     return;
   }
+
+  // 最初の1分はエントリーしない
+  if(TimeCurrent() < (Time[0] + 60)) {
+    return;
+  }
+
   // 同じ足で1回のみ実行
   if(lastStopEntry1 == Time[0] && (!DuplicateEntry || lastStopEntry2 == Time[0])){
     return;
