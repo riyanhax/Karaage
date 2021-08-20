@@ -6,6 +6,7 @@ extern int LimitCandle = 1;
 extern int MaxSizeOfSignalCandlePoints = 1000;
 extern bool DuplicateEntry = true;
 extern bool OnlyDelete = false;
+extern bool Delay = true;
 
 datetime lastStopEntry1 = 0;
 datetime lastStopEntry2 = 0;
@@ -19,6 +20,7 @@ void OnTick(){
   int i;
   int ticket;
   int errChk;
+  int delay;
 
   // 一定時間経過した逆指値注文を取り消す
   if(OrdersTotal() > 0) {
@@ -46,14 +48,17 @@ void OnTick(){
     }
   }
 
-  // 取り消しのみ
+  // 取り消しのみの場合
   if(OnlyDelete) {
     return;
   }
 
-  // 最初の1分はエントリーしない
-  if(TimeCurrent() < (Time[0] + 60)) {
-    return;
+  // 足が変わってすぐの期間(10%)はエントリーしない場合
+  if(Delay) {
+    delay = (Period() * 60) / 10;
+    if(TimeCurrent() < (Time[0] + delay)) {
+      return;
+    }
   }
 
   // 同じ足で1回のみ実行
