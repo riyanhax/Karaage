@@ -8,11 +8,10 @@ extern int MaxSizeOfSignalCandlePoints = 1000;
 datetime lastStopEntry1 = 0;
 datetime lastStopEntry2 = 0;
 
-int init(){
-  return(0);
+void OnInit(){
 }
 
-int onTick(){
+void OnTick(){
   int i;
   int ticket;
   int errChk;
@@ -26,7 +25,7 @@ int onTick(){
           if(iBarShift( Symbol(), PERIOD_CURRENT, OrderOpenTime(), false ) >= LimitCandle) {
             while( !IsStopped() ) {
               errChk = 0;
-              if(!OrderDelete( OrderTicket(), CLR_NONE )) {
+              if(!OrderDelete( OrderTicket(), Green )) {
                 errChk = 1;
               }
               if( errChk == 0 ) {
@@ -45,12 +44,12 @@ int onTick(){
 
   // 同じ足で1回のみ実行
   if(lastStopEntry1 == Time[0] && lastStopEntry2 == Time[0]){
-    return(0);
+    return;
   }
 
   // パラメータ取得
-  double upArrow = iCustom( Symbol(), PERIOD_CURRENT, "Entry Points Pro", MaxSizeOfSignalCandlePoints, true, "", true, true, 500, "", true, "", "00:00", "23:59", "", false, 30, Red, LightCyan, White, 9, "", false, false, false, "alert2.wav", 2, 1 ); // Blue Arrow
-  double downArrow = iCustom( Symbol(), PERIOD_CURRENT, "Entry Points Pro", MaxSizeOfSignalCandlePoints, true, "", true, true, 500, "", true, "", "00:00", "23:59", "", false, 30, Red, LightCyan, White, 9, "", false, false, false, "alert2.wav", 3, 1 ); // Red Arrow
+  double upArrow = iCustom( Symbol(), PERIOD_CURRENT, "Market\\Entry Points Pro", MaxSizeOfSignalCandlePoints, true, "", true, true, 500, "", true, "", "00:00", "23:59", "", false, 0, Red, LightCyan, White, 9, "", false, false, false, "alert2.wav", 2, 1 ); // Blue Arrow
+  double downArrow = iCustom( Symbol(), PERIOD_CURRENT, "Market\\Entry Points Pro", MaxSizeOfSignalCandlePoints, true, "", true, true, 500, "", true, "", "00:00", "23:59", "", false, 0, Red, LightCyan, White, 9, "", false, false, false, "alert2.wav", 3, 1 ); // Red Arrow
 
   // buy stop
   if(upArrow != EMPTY_VALUE && upArrow != 0) {
@@ -115,10 +114,4 @@ int onTick(){
       }
     }
   }
-
-  return(0);
-}
-
-int deinit(){
-  return(0);
 }
