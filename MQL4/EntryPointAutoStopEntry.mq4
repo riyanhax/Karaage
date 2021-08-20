@@ -4,6 +4,8 @@ extern int Magic = 0;
 extern double Lots = 0.01;
 extern int LimitCandle = 1;
 extern int MaxSizeOfSignalCandlePoints = 1000;
+extern bool DuplicateEntry = true;
+extern bool OnlyDelete = false;
 
 datetime lastStopEntry1 = 0;
 datetime lastStopEntry2 = 0;
@@ -42,8 +44,11 @@ void OnTick(){
     }
   }
 
+  if(OnlyDelete) {
+    return;
+  }
   // 同じ足で1回のみ実行
-  if(lastStopEntry1 == Time[0] && lastStopEntry2 == Time[0]){
+  if(lastStopEntry1 == Time[0] && (!DuplicateEntry || lastStopEntry2 == Time[0])){
     return;
   }
 
@@ -68,7 +73,7 @@ void OnTick(){
       }
     }
     // entry 2
-    if(lastStopEntry2 != Time[0]) {
+    if(DuplicateEntry && lastStopEntry2 != Time[0]) {
       ticket = OrderSend( Symbol(), OP_BUYSTOP, Lots, High[1], 3, 0, 0, "Entry Point Auto", Magic, 0, Blue );
       if(ticket < 0) {
         Print( "ERROR BuyStop_2 [" + TimeToStr( Time[0] ) + "]" );
@@ -100,7 +105,7 @@ void OnTick(){
       }
     }
     // entry 2
-    if(lastStopEntry2 != Time[0]) {
+    if(DuplicateEntry && lastStopEntry2 != Time[0]) {
       ticket = OrderSend( Symbol(), OP_SELLSTOP, Lots, Low[1], 3, 0, 0, "Entry Point Auto", Magic, 0, Red );
       if(ticket < 0) {
         Print( "ERROR SellStop_2 [" + TimeToStr( Time[0] ) + "]" );
