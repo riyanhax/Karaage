@@ -77,6 +77,12 @@ void OnTick(){
 
   // 同じ足で1回のみ実行
   if(lastStopEntry1 == Time[0] && (!DuplicateEntry || lastStopEntry2 == Time[0])){
+    if(immediately){
+      immediately = false;
+      ObjectSetInteger(0, buttonID, OBJPROP_COLOR, DeepPink); // 文字色
+      ObjectSetInteger(0, buttonID, OBJPROP_BGCOLOR, LightCyan); // ボタン色
+      Print( "not immediately" );
+    }
     return;
   }
 
