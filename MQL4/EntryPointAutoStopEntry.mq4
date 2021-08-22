@@ -7,13 +7,27 @@ extern int MaxSizeOfSignalCandlePoints = 1000;
 extern bool DuplicateEntry = true;
 extern bool OnlyDelete = false;
 extern bool Delay = true;
+extern int DelayPercent = 10;
 
 datetime lastStopEntry1 = 0;
 datetime lastStopEntry2 = 0;
 datetime lastErrorLog1 = 0;
 datetime lastErrorLog2 = 0;
+bool immediately = false;
+string buttonID = "immediately";
 
 void OnInit(){
+  ObjectDelete( buttonID );
+  ObjectCreate(0, buttonID, OBJ_BUTTON, 0, 0, 0); // ボタン作成
+  ObjectSetInteger(0, buttonID, OBJPROP_XDISTANCE, 10); // X座標
+  ObjectSetInteger(0, buttonID, OBJPROP_YDISTANCE, 15); // Y座標
+  ObjectSetInteger(0, buttonID, OBJPROP_XSIZE, 70); // 横サイズ
+  ObjectSetInteger(0, buttonID, OBJPROP_YSIZE, 30); // 縦サイズ
+  ObjectSetString(0, buttonID, OBJPROP_FONT, "Arial Bold"); // 文字フォント
+  ObjectSetString(0, buttonID, OBJPROP_TEXT, "IMMED"); // 文字
+  ObjectSetInteger(0, buttonID, OBJPROP_FONTSIZE, 12); // 文字サイズ
+  ObjectSetInteger(0, buttonID, OBJPROP_COLOR, DeepPink); // 文字色
+  ObjectSetInteger(0, buttonID, OBJPROP_BGCOLOR, LightCyan); // ボタン色
 }
 
 void OnTick(){
@@ -53,9 +67,9 @@ void OnTick(){
     return;
   }
 
-  // 足が変わってすぐの期間(10%)はエントリーしない場合
-  if(Delay) {
-    delay = (Period() * 60) / 10;
+  // 足が変わってからの一定期間(指定%)はエントリーしない場合
+  if(!immediately && Delay) {
+    delay = ((Period() * 60) / (100 / DelayPercent));
     if(TimeCurrent() < (Time[0] + delay)) {
       return;
     }
@@ -142,6 +156,26 @@ void OnTick(){
         if(lastStopEntry1 == Time[0] && lastStopEntry2 == Time[0]){
           Alert( Symbol() + "_"+ Period() + " Auto_SellStop" );
         }
+      }
+    }
+  }
+}
+
+void OnChartEvent(const int id, const long &lparam, const double &dparam, const string &sparam){
+  if(id == CHARTEVENT_OBJECT_CLICK){
+    string clickedChartObject = sparam;
+    if(clickedChartObject == buttonID){
+      bool isSelected = ObjectGetInteger(0, buttonID, OBJPROP_STATE);
+      if(isSelected){
+        immediately = true;
+        ObjectSetInteger(0, buttonID, OBJPROP_COLOR, LightCyan); // 文字色
+        ObjectSetInteger(0, buttonID, OBJPROP_BGCOLOR, DeepPink); // ボタン色
+        Print( "immediately" );
+      } else {
+        immediately = false;
+        ObjectSetInteger(0, buttonID, OBJPROP_COLOR, DeepPink); // 文字色
+        ObjectSetInteger(0, buttonID, OBJPROP_BGCOLOR, LightCyan); // ボタン色
+        Print( "not immediately" );
       }
     }
   }
