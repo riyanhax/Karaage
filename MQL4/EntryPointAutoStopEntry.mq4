@@ -184,6 +184,7 @@ void OnChartEvent(const int id, const long &lparam, const double &dparam, const 
         ObjectSetInteger(0, buttonID, OBJPROP_COLOR, LightCyan); // 文字色
         ObjectSetInteger(0, buttonID, OBJPROP_BGCOLOR, DeepPink); // ボタン色
         Print( "immediately = " + immediately );
+        OnTick();
       } else {
         immediately = false;
         ObjectSetInteger(0, buttonID, OBJPROP_COLOR, DeepPink); // 文字色
