@@ -4,10 +4,11 @@ extern int Magic = 0;
 extern double Lots = 0.01;
 extern int LimitCandle = 1;
 extern int MaxSizeOfSignalCandlePoints = 1000;
+extern bool UseDEMA = false;
 extern bool DuplicateEntry = true;
 extern bool OnlyDelete = false;
 extern bool Delay = true;
-extern int DelayPercent = 10;
+extern int DelayPercent = 100;
 
 datetime lastStopEntry1 = 0;
 datetime lastStopEntry2 = 0;
@@ -35,6 +36,7 @@ void OnTick(){
   int ticket;
   int errChk;
   int delay;
+  int tmp;
 
   // 一定時間経過した逆指値注文を取り消す
   if(OrdersTotal() > 0) {
@@ -69,7 +71,12 @@ void OnTick(){
 
   // 足が変わってからの一定期間(指定%)はエントリーしない場合
   if(!immediately && Delay) {
-    delay = ((Period() * 60) / (100 / DelayPercent));
+    if(DelayPercent == 0) {
+      delay = 0;
+    } else {
+      tmp = 100 / DelayPercent;
+      delay = ((Period() * 60) / tmp);
+    }
     if(TimeCurrent() < (Time[0] + delay)) {
       return;
     }
@@ -81,14 +88,14 @@ void OnTick(){
       immediately = false;
       ObjectSetInteger(0, buttonID, OBJPROP_COLOR, DeepPink); // 文字色
       ObjectSetInteger(0, buttonID, OBJPROP_BGCOLOR, LightCyan); // ボタン色
-      Print( "not immediately" );
+      Print( "immediately = " + immediately );
     }
     return;
   }
 
   // パラメータ取得
-  double upArrow = iCustom( Symbol(), PERIOD_CURRENT, "Market\\Entry Points Pro", MaxSizeOfSignalCandlePoints, true, "", true, true, 500, "", true, "", "00:00", "23:59", "", false, 0, Red, LightCyan, White, 9, "", false, false, false, "alert2.wav", 2, 1 ); // Blue Arrow
-  double downArrow = iCustom( Symbol(), PERIOD_CURRENT, "Market\\Entry Points Pro", MaxSizeOfSignalCandlePoints, true, "", true, true, 500, "", true, "", "00:00", "23:59", "", false, 0, Red, LightCyan, White, 9, "", false, false, false, "alert2.wav", 3, 1 ); // Red Arrow
+  double upArrow = iCustom( Symbol(), PERIOD_CURRENT, "Market\\Entry Points Pro", MaxSizeOfSignalCandlePoints, true, "", UseDEMA, false, 500, "", true, "", "00:00", "23:59", "", false, 0, Red, LightCyan, White, 9, "", false, false, false, "alert2.wav", 2, 1 ); // Blue Arrow
+  double downArrow = iCustom( Symbol(), PERIOD_CURRENT, "Market\\Entry Points Pro", MaxSizeOfSignalCandlePoints, true, "", UseDEMA, true, 500, "", true, "", "00:00", "23:59", "", false, 0, Red, LightCyan, White, 9, "", false, false, false, "alert2.wav", 3, 1 ); // Red Arrow
 
   // buy stop
   if(upArrow != EMPTY_VALUE && upArrow != 0) {
@@ -176,12 +183,12 @@ void OnChartEvent(const int id, const long &lparam, const double &dparam, const 
         immediately = true;
         ObjectSetInteger(0, buttonID, OBJPROP_COLOR, LightCyan); // 文字色
         ObjectSetInteger(0, buttonID, OBJPROP_BGCOLOR, DeepPink); // ボタン色
-        Print( "immediately" );
+        Print( "immediately = " + immediately );
       } else {
         immediately = false;
         ObjectSetInteger(0, buttonID, OBJPROP_COLOR, DeepPink); // 文字色
         ObjectSetInteger(0, buttonID, OBJPROP_BGCOLOR, LightCyan); // ボタン色
-        Print( "not immediately" );
+        Print( "immediately = " + immediately );
       }
     }
   }
