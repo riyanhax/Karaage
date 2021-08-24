@@ -16,6 +16,7 @@ extern bool Delay = true;
 extern int DelayPercent = 20;
 extern double ParabolicStep = 0.02;
 extern double ParabolicMax = 0.2;
+extern string Comm = "Entry Point Auto";
 
 datetime lastStopEntry1 = 0;
 datetime lastStopEntry2 = 0;
@@ -27,8 +28,12 @@ bool trailing = false;
 string buttonTrail = "trailing";
 trailingMethod method = Parabolic;
 string buttonMethod = "trailingMethod";
+double lots;
+string textLots = "lots";
 
 void OnInit(){
+  lots = Lots;
+
   ObjectDelete( buttonImmed );
   ObjectCreate(0, buttonImmed, OBJ_BUTTON, 0, 0, 0); // ボタン作成
   ObjectSetInteger(0, buttonImmed, OBJPROP_XDISTANCE, 10); // X座標
@@ -67,6 +72,19 @@ void OnInit(){
   ObjectSetInteger(0, buttonMethod, OBJPROP_COLOR, DeepPink); // 文字色
   ObjectSetInteger(0, buttonMethod, OBJPROP_BGCOLOR, LightYellow); // ボタン色
   Print( "Trailing Method = Parabolic" );
+
+  ObjectDelete( textLots );
+  ObjectCreate( textLots, OBJ_EDIT, 0, 0, 0 );
+  ObjectSetInteger(0, textLots, OBJPROP_XDISTANCE, 10); // X座標
+  ObjectSetInteger(0, textLots, OBJPROP_YDISTANCE, 50); // Y座標
+  ObjectSetInteger(0, textLots, OBJPROP_XSIZE, 70); // 横サイズ
+  ObjectSetInteger(0, textLots, OBJPROP_YSIZE, 30); // 縦サイズ
+  ObjectSetString(0, textLots, OBJPROP_FONT, "Arial Bold"); // 文字フォント
+  ObjectSetString(0, textLots, OBJPROP_TEXT, DoubleToStr( lots, 2 ) ); // 文字
+  ObjectSetInteger(0, textLots, OBJPROP_FONTSIZE, 12); // 文字サイズ
+  ObjectSetInteger(0, textLots, OBJPROP_COLOR, Black); // 文字色
+  ObjectSetInteger(0, buttonTrail, OBJPROP_BGCOLOR, White); // 背景色
+  Print( "Lots = " + lots );
 }
 
 void OnTick(){
@@ -196,7 +214,7 @@ void OnTick(){
   if(upArrow != EMPTY_VALUE && upArrow != 0) {
     // entry 1
     if(lastStopEntry1 != Time[0]) {
-      ticket = OrderSend( Symbol(), OP_BUYSTOP, Lots, High[1], 3, 0, 0, "Entry Point Auto", Magic, 0, Blue );
+      ticket = OrderSend( Symbol(), OP_BUYSTOP, lots, High[1], 3, 0, 0, Comm, Magic, 0, Blue );
       if(ticket < 0) {
         if(lastErrorLog1 != Time[0]) {
           Print( "ERROR BuyStop_1 [" + TimeToStr( Time[0] ) + "]" );
@@ -213,7 +231,7 @@ void OnTick(){
     }
     // entry 2
     if(DuplicateEntry && lastStopEntry2 != Time[0]) {
-      ticket = OrderSend( Symbol(), OP_BUYSTOP, Lots, High[1], 3, 0, 0, "Entry Point Auto", Magic, 0, Blue );
+      ticket = OrderSend( Symbol(), OP_BUYSTOP, lots, High[1], 3, 0, 0, Comm, Magic, 0, Blue );
       if(ticket < 0) {
         if(lastErrorLog2 != Time[0]) {
           Print( "ERROR BuyStop_2 [" + TimeToStr( Time[0] ) + "]" );
@@ -234,7 +252,7 @@ void OnTick(){
   if(downArrow != EMPTY_VALUE && downArrow != 0) {
     // entry 1
     if(lastStopEntry1 != Time[0]) {
-      ticket = OrderSend( Symbol(), OP_SELLSTOP, Lots, Low[1], 3, 0, 0, "Entry Point Auto", Magic, 0, Red );
+      ticket = OrderSend( Symbol(), OP_SELLSTOP, lots, Low[1], 3, 0, 0, Comm, Magic, 0, Red );
       if(ticket < 0) {
         if(lastErrorLog1 != Time[0]){
           Print( "ERROR SellStop_1 [" + TimeToStr( Time[0] ) + "]" );
@@ -251,7 +269,7 @@ void OnTick(){
     }
     // entry 2
     if(DuplicateEntry && lastStopEntry2 != Time[0]) {
-      ticket = OrderSend( Symbol(), OP_SELLSTOP, Lots, Low[1], 3, 0, 0, "Entry Point Auto", Magic, 0, Red );
+      ticket = OrderSend( Symbol(), OP_SELLSTOP, lots, Low[1], 3, 0, 0, Comm, Magic, 0, Red );
       if(ticket < 0) {
         if(lastErrorLog2 != Time[0]){
           Print( "ERROR SellStop_2 [" + TimeToStr( Time[0] ) + "]" );
@@ -319,6 +337,15 @@ void OnChartEvent(const int id, const long &lparam, const double &dparam, const 
         Print( "Trailing Method = Parabolic" );
         OnTick();
       }
+    }
+  }
+
+  if(id == CHARTEVENT_OBJECT_ENDEDIT ){
+    string editedChartObject = sparam;
+
+    if(editedChartObject == textLots){
+      lots = StrToDouble( ObjectGetString(0, textLots, OBJPROP_TEXT, 0) );
+      Print( "Lots = " + lots );
     }
   }
 }
