@@ -1,5 +1,10 @@
 #property copyright "Copyright(C) 2021 Studiogadget Inc."
 
+enum trailingMethod {
+  Parabolic = 0,
+  TrendLine = 1,
+};
+
 extern int Magic = 0;
 extern double Lots = 0.01;
 extern int LimitCandle = 1;
@@ -8,27 +13,60 @@ extern bool UseDEMA = false;
 extern bool DuplicateEntry = true;
 extern bool OnlyDelete = false;
 extern bool Delay = true;
-extern int DelayPercent = 100;
+extern int DelayPercent = 20;
+extern double ParabolicStep = 0.02;
+extern double ParabolicMax = 0.2;
 
 datetime lastStopEntry1 = 0;
 datetime lastStopEntry2 = 0;
 datetime lastErrorLog1 = 0;
 datetime lastErrorLog2 = 0;
 bool immediately = false;
-string buttonID = "immediately";
+string buttonImmed = "immediately";
+bool trailing = false;
+string buttonTrail = "trailing";
+trailingMethod method = Parabolic;
+string buttonMethod = "trailingMethod";
 
 void OnInit(){
-  ObjectDelete( buttonID );
-  ObjectCreate(0, buttonID, OBJ_BUTTON, 0, 0, 0); // ボタン作成
-  ObjectSetInteger(0, buttonID, OBJPROP_XDISTANCE, 10); // X座標
-  ObjectSetInteger(0, buttonID, OBJPROP_YDISTANCE, 15); // Y座標
-  ObjectSetInteger(0, buttonID, OBJPROP_XSIZE, 70); // 横サイズ
-  ObjectSetInteger(0, buttonID, OBJPROP_YSIZE, 30); // 縦サイズ
-  ObjectSetString(0, buttonID, OBJPROP_FONT, "Arial Bold"); // 文字フォント
-  ObjectSetString(0, buttonID, OBJPROP_TEXT, "IMMED"); // 文字
-  ObjectSetInteger(0, buttonID, OBJPROP_FONTSIZE, 12); // 文字サイズ
-  ObjectSetInteger(0, buttonID, OBJPROP_COLOR, DeepPink); // 文字色
-  ObjectSetInteger(0, buttonID, OBJPROP_BGCOLOR, LightCyan); // ボタン色
+  ObjectDelete( buttonImmed );
+  ObjectCreate(0, buttonImmed, OBJ_BUTTON, 0, 0, 0); // ボタン作成
+  ObjectSetInteger(0, buttonImmed, OBJPROP_XDISTANCE, 10); // X座標
+  ObjectSetInteger(0, buttonImmed, OBJPROP_YDISTANCE, 15); // Y座標
+  ObjectSetInteger(0, buttonImmed, OBJPROP_XSIZE, 70); // 横サイズ
+  ObjectSetInteger(0, buttonImmed, OBJPROP_YSIZE, 30); // 縦サイズ
+  ObjectSetString(0, buttonImmed, OBJPROP_FONT, "Arial Bold"); // 文字フォント
+  ObjectSetString(0, buttonImmed, OBJPROP_TEXT, "IMMED"); // 文字
+  ObjectSetInteger(0, buttonImmed, OBJPROP_FONTSIZE, 12); // 文字サイズ
+  ObjectSetInteger(0, buttonImmed, OBJPROP_COLOR, DeepPink); // 文字色
+  ObjectSetInteger(0, buttonImmed, OBJPROP_BGCOLOR, LightCyan); // ボタン色
+  Print( "Immediately = " + immediately );
+
+  ObjectDelete( buttonTrail );
+  ObjectCreate(0, buttonTrail, OBJ_BUTTON, 0, 0, 0); // ボタン作成
+  ObjectSetInteger(0, buttonTrail, OBJPROP_XDISTANCE, 92); // X座標
+  ObjectSetInteger(0, buttonTrail, OBJPROP_YDISTANCE, 15); // Y座標
+  ObjectSetInteger(0, buttonTrail, OBJPROP_XSIZE, 70); // 横サイズ
+  ObjectSetInteger(0, buttonTrail, OBJPROP_YSIZE, 30); // 縦サイズ
+  ObjectSetString(0, buttonTrail, OBJPROP_FONT, "Arial Bold"); // 文字フォント
+  ObjectSetString(0, buttonTrail, OBJPROP_TEXT, "TRAIL"); // 文字
+  ObjectSetInteger(0, buttonTrail, OBJPROP_FONTSIZE, 12); // 文字サイズ
+  ObjectSetInteger(0, buttonTrail, OBJPROP_COLOR, DeepPink); // 文字色
+  ObjectSetInteger(0, buttonTrail, OBJPROP_BGCOLOR, LightYellow); // ボタン色
+  Print( "Trailing = " + trailing );
+
+  ObjectDelete( buttonMethod );
+  ObjectCreate(0, buttonMethod, OBJ_BUTTON, 0, 0, 0); // ボタン作成
+  ObjectSetInteger(0, buttonMethod, OBJPROP_XDISTANCE, 92); // X座標
+  ObjectSetInteger(0, buttonMethod, OBJPROP_YDISTANCE, 50); // Y座標
+  ObjectSetInteger(0, buttonMethod, OBJPROP_XSIZE, 70); // 横サイズ
+  ObjectSetInteger(0, buttonMethod, OBJPROP_YSIZE, 30); // 縦サイズ
+  ObjectSetString(0, buttonMethod, OBJPROP_FONT, "Arial"); // 文字フォント
+  ObjectSetString(0, buttonMethod, OBJPROP_TEXT, "Parabolic"); // 文字
+  ObjectSetInteger(0, buttonMethod, OBJPROP_FONTSIZE, 9); // 文字サイズ
+  ObjectSetInteger(0, buttonMethod, OBJPROP_COLOR, DeepPink); // 文字色
+  ObjectSetInteger(0, buttonMethod, OBJPROP_BGCOLOR, LightYellow); // ボタン色
+  Print( "Trailing Method = Parabolic" );
 }
 
 void OnTick(){
@@ -69,6 +107,63 @@ void OnTick(){
     return;
   }
 
+  // トレーリング
+  if(trailing){
+    // ストップロスを算出
+    double sl = 0.0;
+    if(method == Parabolic){
+      sl = iSAR( Symbol(), PERIOD_CURRENT, ParabolicStep, ParabolicMax, 0 );
+    } else if(method == TrendLine){
+      sl = iCustom( Symbol(), PERIOD_CURRENT, "Market\\FX Trend", "", 6, 3.0, "", false, 1.0, true, false, true, true, true, Lime, DeepPink, 0, Black, 5000, "", 0, false, 80.0, false, false, false, false, false, "alert.wav", "", false, false, false, false, false, false, false, false, false, 12, 1 );
+      if(sl == EMPTY_VALUE || sl == 0.0){
+        sl = iCustom( Symbol(), PERIOD_CURRENT, "Market\\FX Trend", "", 6, 3.0, "", false, 1.0, true, false, true, true, true, Lime, DeepPink, 0, Black, 5000, "", 0, false, 80.0, false, false, false, false, false, "alert.wav", "", false, false, false, false, false, false, false, false, false, 13, 1 );
+      }
+    }
+    // ストップロスを設定
+    if(OrdersTotal() > 0) {
+      for(i=0; i<OrdersTotal(); i++){
+        if(OrderSelect( i, SELECT_BY_POS) == true){
+          if(OrderSymbol() == Symbol() && OrderMagicNumber() == Magic){
+            if(OrderType() == OP_BUY){
+              if(OrderStopLoss() < sl){
+                while( !IsStopped() ) {
+                  errChk = 0;
+                  if(!OrderModify( OrderTicket(), OrderOpenPrice(), sl, OrderTakeProfit(), OrderExpiration(), CLR_NONE )) {
+                    errChk = 1;
+                  }
+                  if( errChk == 0 ) {
+                    break;
+                  }
+                  Print( "Order Modify Failure" );
+                  Print( GetLastError() );
+                  Sleep(500);
+                  RefreshRates();
+                }
+              }
+            }
+            if(OrderType() == OP_SELL){
+              if(OrderStopLoss() > sl){
+                while( !IsStopped() ) {
+                  errChk = 0;
+                  if(!OrderModify( OrderTicket(), OrderOpenPrice(), sl, OrderTakeProfit(), OrderExpiration(), CLR_NONE )) {
+                    errChk = 1;
+                  }
+                  if( errChk == 0 ) {
+                    break;
+                  }
+                  Print( "Order Modify Failure" );
+                  Print( GetLastError() );
+                  Sleep(500);
+                  RefreshRates();
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   // 足が変わってからの一定期間(指定%)はエントリーしない場合
   if(!immediately && Delay) {
     if(DelayPercent == 0) {
@@ -86,8 +181,8 @@ void OnTick(){
   if(lastStopEntry1 == Time[0] && (!DuplicateEntry || lastStopEntry2 == Time[0])){
     if(immediately){
       immediately = false;
-      ObjectSetInteger(0, buttonID, OBJPROP_COLOR, DeepPink); // 文字色
-      ObjectSetInteger(0, buttonID, OBJPROP_BGCOLOR, LightCyan); // ボタン色
+      ObjectSetInteger(0, buttonImmed, OBJPROP_COLOR, DeepPink); // 文字色
+      ObjectSetInteger(0, buttonImmed, OBJPROP_BGCOLOR, LightCyan); // ボタン色
       Print( "immediately = " + immediately );
     }
     return;
@@ -177,19 +272,52 @@ void OnTick(){
 void OnChartEvent(const int id, const long &lparam, const double &dparam, const string &sparam){
   if(id == CHARTEVENT_OBJECT_CLICK){
     string clickedChartObject = sparam;
-    if(clickedChartObject == buttonID){
-      bool isSelected = ObjectGetInteger(0, buttonID, OBJPROP_STATE);
+    bool isSelected;
+
+    if(clickedChartObject == buttonImmed){
+      isSelected = ObjectGetInteger(0, buttonImmed, OBJPROP_STATE);
       if(isSelected){
         immediately = true;
-        ObjectSetInteger(0, buttonID, OBJPROP_COLOR, LightCyan); // 文字色
-        ObjectSetInteger(0, buttonID, OBJPROP_BGCOLOR, DeepPink); // ボタン色
-        Print( "immediately = " + immediately );
+        ObjectSetInteger(0, buttonImmed, OBJPROP_COLOR, LightCyan); // 文字色
+        ObjectSetInteger(0, buttonImmed, OBJPROP_BGCOLOR, DeepPink); // ボタン色
+        Print( "Immediately = " + immediately );
         OnTick();
       } else {
         immediately = false;
-        ObjectSetInteger(0, buttonID, OBJPROP_COLOR, DeepPink); // 文字色
-        ObjectSetInteger(0, buttonID, OBJPROP_BGCOLOR, LightCyan); // ボタン色
-        Print( "immediately = " + immediately );
+        ObjectSetInteger(0, buttonImmed, OBJPROP_COLOR, DeepPink); // 文字色
+        ObjectSetInteger(0, buttonImmed, OBJPROP_BGCOLOR, LightCyan); // ボタン色
+        Print( "Immediately = " + immediately );
+      }
+    }
+
+    if(clickedChartObject == buttonTrail){
+      isSelected = ObjectGetInteger(0, buttonTrail, OBJPROP_STATE);
+      if(isSelected){
+        trailing = true;
+        ObjectSetInteger(0, buttonTrail, OBJPROP_COLOR, LightYellow); // 文字色
+        ObjectSetInteger(0, buttonTrail, OBJPROP_BGCOLOR, DeepPink); // ボタン色
+        Print( "Trailing = " + trailing );
+        OnTick();
+      } else {
+        trailing = false;
+        ObjectSetInteger(0, buttonTrail, OBJPROP_COLOR, DeepPink); // 文字色
+        ObjectSetInteger(0, buttonTrail, OBJPROP_BGCOLOR, LightYellow); // ボタン色
+        Print( "Trailing = " + trailing );
+      }
+    }
+
+    if(clickedChartObject == buttonMethod){
+      isSelected = ObjectGetInteger(0, buttonMethod, OBJPROP_STATE);
+      if(isSelected){
+        method = TrendLine;
+        ObjectSetString(0, buttonMethod, OBJPROP_TEXT, "TrendLine"); // 文字
+        Print( "Trailing Method = TrendLine" );
+        OnTick();
+      } else {
+        method = Parabolic;
+        ObjectSetString(0, buttonMethod, OBJPROP_TEXT, "Parabolic"); // 文字
+        Print( "Trailing Method = Parabolic" );
+        OnTick();
       }
     }
   }
