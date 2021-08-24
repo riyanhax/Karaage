@@ -11,6 +11,7 @@ extern int LimitCandle = 1;
 extern int MaxSizeOfSignalCandlePoints = 1000;
 extern bool UseDEMA = false;
 extern bool DuplicateEntry = true;
+extern double ShiftPips = 0.0;
 extern bool OnlyDelete = false;
 extern bool Delay = true;
 extern int DelayPercent = 20;
@@ -30,9 +31,13 @@ trailingMethod method = Parabolic;
 string buttonMethod = "trailingMethod";
 double lots;
 string textLots = "lots";
+double pipsRate;
 
 void OnInit(){
   lots = Lots;
+
+  pipsRate = Point;
+   if( Digits==3 || Digits==5 ) pipsRate = Point * 10;
 
   ObjectDelete( buttonImmed );
   ObjectCreate(0, buttonImmed, OBJ_BUTTON, 0, 0, 0); // ボタン作成
@@ -214,7 +219,7 @@ void OnTick(){
   if(upArrow != EMPTY_VALUE && upArrow != 0) {
     // entry 1
     if(lastStopEntry1 != Time[0]) {
-      ticket = OrderSend( Symbol(), OP_BUYSTOP, lots, High[1], 3, 0, 0, Comm, Magic, 0, Blue );
+      ticket = OrderSend( Symbol(), OP_BUYSTOP, lots, High[1]+ShiftPips*pipsRate, 3, 0, 0, Comm, Magic, 0, Blue );
       if(ticket < 0) {
         if(lastErrorLog1 != Time[0]) {
           Print( "ERROR BuyStop_1 [" + TimeToStr( Time[0] ) + "]" );
@@ -231,7 +236,7 @@ void OnTick(){
     }
     // entry 2
     if(DuplicateEntry && lastStopEntry2 != Time[0]) {
-      ticket = OrderSend( Symbol(), OP_BUYSTOP, lots, High[1], 3, 0, 0, Comm, Magic, 0, Blue );
+      ticket = OrderSend( Symbol(), OP_BUYSTOP, lots, High[1]+ShiftPips*pipsRate, 3, 0, 0, Comm, Magic, 0, Blue );
       if(ticket < 0) {
         if(lastErrorLog2 != Time[0]) {
           Print( "ERROR BuyStop_2 [" + TimeToStr( Time[0] ) + "]" );
@@ -252,7 +257,7 @@ void OnTick(){
   if(downArrow != EMPTY_VALUE && downArrow != 0) {
     // entry 1
     if(lastStopEntry1 != Time[0]) {
-      ticket = OrderSend( Symbol(), OP_SELLSTOP, lots, Low[1], 3, 0, 0, Comm, Magic, 0, Red );
+      ticket = OrderSend( Symbol(), OP_SELLSTOP, lots, Low[1]-ShiftPips*pipsRate, 3, 0, 0, Comm, Magic, 0, Red );
       if(ticket < 0) {
         if(lastErrorLog1 != Time[0]){
           Print( "ERROR SellStop_1 [" + TimeToStr( Time[0] ) + "]" );
@@ -269,7 +274,7 @@ void OnTick(){
     }
     // entry 2
     if(DuplicateEntry && lastStopEntry2 != Time[0]) {
-      ticket = OrderSend( Symbol(), OP_SELLSTOP, lots, Low[1], 3, 0, 0, Comm, Magic, 0, Red );
+      ticket = OrderSend( Symbol(), OP_SELLSTOP, lots, Low[1]-ShiftPips*pipsRate, 3, 0, 0, Comm, Magic, 0, Red );
       if(ticket < 0) {
         if(lastErrorLog2 != Time[0]){
           Print( "ERROR SellStop_2 [" + TimeToStr( Time[0] ) + "]" );
