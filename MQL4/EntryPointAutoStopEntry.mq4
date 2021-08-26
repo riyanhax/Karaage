@@ -6,7 +6,7 @@ enum trailingMethod {
 };
 
 extern int Magic = 0;
-extern double Lots = 0.01;
+extern int BalanceParLot = 10000;
 extern int LimitCandle = 1;
 extern int MaxSizeOfSignalCandlePoints = 1000;
 extern bool UseDEMA = false;
@@ -34,7 +34,7 @@ string textLots = "lots";
 double pipsRate;
 
 void OnInit(){
-  lots = Lots;
+  lots = AccountBalance() / BalanceParLot;
 
   pipsRate = Point;
    if( Digits==3 || Digits==5 ) pipsRate = Point * 10;
@@ -85,10 +85,11 @@ void OnInit(){
   ObjectSetInteger(0, textLots, OBJPROP_XSIZE, 70); // 横サイズ
   ObjectSetInteger(0, textLots, OBJPROP_YSIZE, 30); // 縦サイズ
   ObjectSetString(0, textLots, OBJPROP_FONT, "Arial Bold"); // 文字フォント
-  ObjectSetString(0, textLots, OBJPROP_TEXT, DoubleToStr( lots, 2 ) ); // 文字
+  ObjectSetString(0, textLots, OBJPROP_TEXT, BalanceParLot ); // 文字
   ObjectSetInteger(0, textLots, OBJPROP_FONTSIZE, 12); // 文字サイズ
   ObjectSetInteger(0, textLots, OBJPROP_COLOR, Black); // 文字色
-  ObjectSetInteger(0, buttonTrail, OBJPROP_BGCOLOR, White); // 背景色
+  ObjectSetInteger(0, textLots, OBJPROP_BGCOLOR, White); // 背景色
+  Print( "BalanceParLot = " + BalanceParLot );
   Print( "Lots = " + lots );
 }
 
@@ -349,7 +350,9 @@ void OnChartEvent(const int id, const long &lparam, const double &dparam, const 
     string editedChartObject = sparam;
 
     if(editedChartObject == textLots){
-      lots = StrToDouble( ObjectGetString(0, textLots, OBJPROP_TEXT, 0) );
+      int balanceParLot = StrToInteger( ObjectGetString(0, textLots, OBJPROP_TEXT, 0) );
+      lots = AccountBalance() / balanceParLot;
+      Print( "BalanceParLot = " + balanceParLot );
       Print( "Lots = " + lots );
     }
   }
