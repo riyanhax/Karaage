@@ -51,8 +51,8 @@ int AA=A;
 
     ObjectDelete("d label");
       ObjectCreate("d label", OBJ_LABEL, 0,0,0);
-      ObjectSetText("d label","Candle Length = "+AA  , TextSize, "Arial", TextColor);
-      ObjectSet("d label", OBJPROP_XDISTANCE,200);
+      ObjectSetText("d label","Candle Length = "+AA  , TextSize, "Arial Bold", TextColor);
+      ObjectSet("d label", OBJPROP_XDISTANCE,230);
      ObjectSet("d label", OBJPROP_YDISTANCE,10);
 
 
