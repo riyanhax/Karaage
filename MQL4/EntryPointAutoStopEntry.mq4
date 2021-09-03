@@ -99,6 +99,7 @@ void OnTick(){
   int errChk;
   int delay;
   int tmp;
+  double sl;
 
   // 一定時間経過した逆指値注文を取り消す
   if(OrdersTotal() > 0) {
@@ -134,7 +135,7 @@ void OnTick(){
   // トレーリング
   if(trailing){
     // ストップロスを算出
-    double sl = 0.0;
+    sl = 0.0;
     if(method == Parabolic){
       sl = iSAR( Symbol(), PERIOD_CURRENT, ParabolicStep, ParabolicMax, 0 );
     } else if(method == TrendLine){
@@ -218,9 +219,10 @@ void OnTick(){
 
   // buy stop
   if(upArrow != EMPTY_VALUE && upArrow != 0) {
+    sl = upArrow;
     // entry 1
     if(lastStopEntry1 != Time[0]) {
-      ticket = OrderSend( Symbol(), OP_BUYSTOP, lots, High[1]+ShiftPips*pipsRate, 3, 0, 0, Comm, Magic, 0, Blue );
+      ticket = OrderSend( Symbol(), OP_BUYSTOP, lots, High[1]+ShiftPips*pipsRate, 3, sl, 0, Comm, Magic, 0, Blue );
       if(ticket < 0) {
         if(lastErrorLog1 != Time[0]) {
           Print( "ERROR BuyStop_1 [" + TimeToStr( Time[0] ) + "]" );
@@ -237,7 +239,7 @@ void OnTick(){
     }
     // entry 2
     if(DuplicateEntry && lastStopEntry2 != Time[0]) {
-      ticket = OrderSend( Symbol(), OP_BUYSTOP, lots, High[1]+ShiftPips*pipsRate, 3, 0, 0, Comm, Magic, 0, Blue );
+      ticket = OrderSend( Symbol(), OP_BUYSTOP, lots, High[1]+ShiftPips*pipsRate, 3, sl, 0, Comm, Magic, 0, Blue );
       if(ticket < 0) {
         if(lastErrorLog2 != Time[0]) {
           Print( "ERROR BuyStop_2 [" + TimeToStr( Time[0] ) + "]" );
@@ -256,9 +258,10 @@ void OnTick(){
 
   // sell stop
   if(downArrow != EMPTY_VALUE && downArrow != 0) {
+    sl = downArrow;
     // entry 1
     if(lastStopEntry1 != Time[0]) {
-      ticket = OrderSend( Symbol(), OP_SELLSTOP, lots, Low[1]-ShiftPips*pipsRate, 3, 0, 0, Comm, Magic, 0, Red );
+      ticket = OrderSend( Symbol(), OP_SELLSTOP, lots, Low[1]-ShiftPips*pipsRate, 3, sl, 0, Comm, Magic, 0, Red );
       if(ticket < 0) {
         if(lastErrorLog1 != Time[0]){
           Print( "ERROR SellStop_1 [" + TimeToStr( Time[0] ) + "]" );
@@ -275,7 +278,7 @@ void OnTick(){
     }
     // entry 2
     if(DuplicateEntry && lastStopEntry2 != Time[0]) {
-      ticket = OrderSend( Symbol(), OP_SELLSTOP, lots, Low[1]-ShiftPips*pipsRate, 3, 0, 0, Comm, Magic, 0, Red );
+      ticket = OrderSend( Symbol(), OP_SELLSTOP, lots, Low[1]-ShiftPips*pipsRate, 3, sl, 0, Comm, Magic, 0, Red );
       if(ticket < 0) {
         if(lastErrorLog2 != Time[0]){
           Print( "ERROR SellStop_2 [" + TimeToStr( Time[0] ) + "]" );
