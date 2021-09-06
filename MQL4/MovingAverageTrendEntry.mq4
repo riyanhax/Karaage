@@ -38,10 +38,25 @@ extern string Comm = "MovingAverageTrendEntry";
 datetime lastEntry = 0;
 datetime lastErrorLog = 0;
 double lots;
-int trend; // long:1 short:2
+int trend; // even:0 long:1 short:2
+string textTrend = "trend";
+int currentTrend; // even:0 long:1 short:2
 
 void OnInit(){
   lots = AccountBalance() / BalanceParLot;
+
+  ObjectDelete( textTrend );
+  ObjectCreate( textTrend, OBJ_TEXT, 0, 0, 0 );
+  ObjectSetInteger(0, textTrend, OBJPROP_XDISTANCE, 10); // X座標
+  ObjectSetInteger(0, textTrend, OBJPROP_YDISTANCE, 15); // Y座標
+  ObjectSetInteger(0, textTrend, OBJPROP_XSIZE, 70); // 横サイズ
+  ObjectSetInteger(0, textTrend, OBJPROP_YSIZE, 30); // 縦サイズ
+  ObjectSetString(0, textTrend, OBJPROP_FONT, "Arial Bold"); // 文字フォント
+  ObjectSetString(0, textTrend, OBJPROP_TEXT, "EVEN" ); // 文字
+  ObjectSetInteger(0, textTrend, OBJPROP_FONTSIZE, 12); // 文字サイズ
+  ObjectSetInteger(0, textTrend, OBJPROP_COLOR, White); // 文字色
+  Print( "Trend = EVEN" );
+  currentTrend = 0;
 }
 
 void OnTick(){
@@ -136,11 +151,32 @@ void OnTick(){
   // Long
   if(shortMA > middleMA > longMA) {
     trend = 1;
+    if(currentTrend != 1) {
+      ObjectSetString(0, textTrend, OBJPROP_TEXT, "LONG" ); // 文字
+      ObjectSetInteger(0, textTrend, OBJPROP_COLOR, Lime); // 文字色
+      ChartRedraw();
+      Print( "Trend = LONG" );
+      currentTrend = 1;
+    }
   // Short
   } else if(longMA > middleMA > shortMA) {
     trend = 2;
+    if(currentTrend != 2) {
+      ObjectSetString(0, textTrend, OBJPROP_TEXT, "SHORT" ); // 文字
+      ObjectSetInteger(0, textTrend, OBJPROP_COLOR, DeepPink); // 文字色
+      ChartRedraw();
+      Print( "Trend = SHORT" );
+      currentTrend = 2;
+    }
   }
   if(trend == 0) {
+    if(currentTrend != 0) {
+      ObjectSetString(0, textTrend, OBJPROP_TEXT, "EVEN" ); // 文字
+      ObjectSetInteger(0, textTrend, OBJPROP_COLOR, White); // 文字色
+      ChartRedraw();
+      Print( "Trend = EVEN" );
+      currentTrend = 0;
+    }
     return;
   }
 
