@@ -27,7 +27,7 @@ extern int MiddleMAPeriod = 11;
 extern int ShortMAPeriod = 5;
 extern string EntrySettings = "↓↓↓↓↓ ENTRY SETTINGS ↓↓↓↓↓";
 extern timeframe EntryTimeframe = M5;
-extern int EntryTimeShift = 0;
+extern bool DeeperEntry = false;
 extern int BBPeriod = 20;
 extern double BBDeviation = 3.0;
 extern string OrderSetting = "↓↓↓↓↓ ORDER SETTINGS ↓↓↓↓↓";
@@ -70,6 +70,8 @@ void OnTick(){
   int entryCnt;
   double upperBB;
   double lowerBB;
+  double upperBBPre;
+  double lowerBBPre;
   int errChk;
 
   // 同じ通貨ペアのエントリー数をカウント
@@ -188,38 +190,46 @@ void OnTick(){
   }
 
   // エントリー
-  upperBB = iBands( Symbol(), EntryTimeframe, BBPeriod, BBDeviation, 0, PRICE_CLOSE, MODE_UPPER, EntryTimeShift );
-  lowerBB = iBands( Symbol(), EntryTimeframe, BBPeriod, BBDeviation, 0, PRICE_CLOSE, MODE_LOWER, EntryTimeShift );
+  upperBB = iBands( Symbol(), EntryTimeframe, BBPeriod, BBDeviation, 0, PRICE_CLOSE, MODE_UPPER, 0 );
+  lowerBB = iBands( Symbol(), EntryTimeframe, BBPeriod, BBDeviation, 0, PRICE_CLOSE, MODE_LOWER, 0 );
+  if(DeeperEntry) {
+    upperBBPre = iBands( Symbol(), EntryTimeframe, BBPeriod, BBDeviation, 0, PRICE_CLOSE, MODE_UPPER, 1 );
+    lowerBBPre = iBands( Symbol(), EntryTimeframe, BBPeriod, BBDeviation, 0, PRICE_CLOSE, MODE_LOWER, 1 );
+  }
   // Long
   if(trend == 1) {
     if(Close[0] < lowerBB) {
-      sl = Ask - ( upperBB - lowerBB );
-      ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, sl, 0, Comm, Magic, 0, Blue );
-      if(ticket < 0) {
-        if(lastErrorLog != iTime( Symbol(), EntryTimeframe, 0 )) {
-          Print( "ERROR Buy [" + TimeToStr( TimeCurrent() ) + "]" );
-          Print( GetLastError() );
-          lastErrorLog = iTime( Symbol(), EntryTimeframe, 0 );
+      if(!DeeperEntry || ( iLow( Symbol(), EntryTimeframe, 1 ) < lowerBBPre )) {
+        sl = Ask - ( upperBB - lowerBB );
+        ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, sl, 0, Comm, Magic, 0, Blue );
+        if(ticket < 0) {
+          if(lastErrorLog != iTime( Symbol(), EntryTimeframe, 0 )) {
+            Print( "ERROR Buy [" + TimeToStr( TimeCurrent() ) + "]" );
+            Print( GetLastError() );
+            lastErrorLog = iTime( Symbol(), EntryTimeframe, 0 );
+          }
+        } else {
+          Print( "SUCCESS Buy [" + TimeToStr( TimeCurrent() ) + "]" );
+          lastEntry = iTime( Symbol(), EntryTimeframe, 0 );
         }
-      } else {
-        Print( "SUCCESS Buy [" + TimeToStr( TimeCurrent() ) + "]" );
-        lastEntry = iTime( Symbol(), EntryTimeframe, 0 );
       }
     }
   // Short
   } else if(trend == 2) {
     if(upperBB < Close[0]) {
-      sl = Bid + ( upperBB - lowerBB );
-      ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, sl, 0, Comm, Magic, 0, Red );
-      if(ticket < 0) {
-        if(lastErrorLog != iTime( Symbol(), EntryTimeframe, 0 )) {
-          Print( "ERROR Sell [" + TimeToStr( TimeCurrent() ) + "]" );
-          Print( GetLastError() );
-          lastErrorLog = iTime( Symbol(), EntryTimeframe, 0 );
+      if(!DeeperEntry || upperBBPre < iHigh( Symbol(), EntryTimeframe, 1 )) {
+        sl = Bid + ( upperBB - lowerBB );
+        ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, sl, 0, Comm, Magic, 0, Red );
+        if(ticket < 0) {
+          if(lastErrorLog != iTime( Symbol(), EntryTimeframe, 0 )) {
+            Print( "ERROR Sell [" + TimeToStr( TimeCurrent() ) + "]" );
+            Print( GetLastError() );
+            lastErrorLog = iTime( Symbol(), EntryTimeframe, 0 );
+          }
+        } else {
+          Print( "SUCCESS Sell [" + TimeToStr( TimeCurrent() ) + "]" );
+          lastEntry = iTime( Symbol(), EntryTimeframe, 0 );
         }
-      } else {
-        Print( "SUCCESS Sell [" + TimeToStr( TimeCurrent() ) + "]" );
-        lastEntry = iTime( Symbol(), EntryTimeframe, 0 );
       }
     }
   }
