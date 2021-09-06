@@ -46,15 +46,16 @@ void OnInit(){
   lots = AccountBalance() / BalanceParLot;
 
   ObjectDelete( textTrend );
-  ObjectCreate( textTrend, OBJ_TEXT, 0, 0, 0 );
+  ObjectCreate(0, textTrend, OBJ_BUTTON, 0, 0, 0); // ボタン作成
   ObjectSetInteger(0, textTrend, OBJPROP_XDISTANCE, 10); // X座標
   ObjectSetInteger(0, textTrend, OBJPROP_YDISTANCE, 15); // Y座標
   ObjectSetInteger(0, textTrend, OBJPROP_XSIZE, 70); // 横サイズ
   ObjectSetInteger(0, textTrend, OBJPROP_YSIZE, 30); // 縦サイズ
   ObjectSetString(0, textTrend, OBJPROP_FONT, "Arial Bold"); // 文字フォント
-  ObjectSetString(0, textTrend, OBJPROP_TEXT, "EVEN" ); // 文字
+  ObjectSetString(0, textTrend, OBJPROP_TEXT, "EVEN"); // 文字
   ObjectSetInteger(0, textTrend, OBJPROP_FONTSIZE, 12); // 文字サイズ
-  ObjectSetInteger(0, textTrend, OBJPROP_COLOR, White); // 文字色
+  ObjectSetInteger(0, textTrend, OBJPROP_COLOR, Black); // 文字色
+  ObjectSetInteger(0, textTrend, OBJPROP_BGCOLOR, White); // ボタン色
   Print( "Trend = EVEN" );
   currentTrend = 0;
 }
@@ -172,7 +173,7 @@ void OnTick(){
   if(trend == 0) {
     if(currentTrend != 0) {
       ObjectSetString(0, textTrend, OBJPROP_TEXT, "EVEN" ); // 文字
-      ObjectSetInteger(0, textTrend, OBJPROP_COLOR, White); // 文字色
+      ObjectSetInteger(0, textTrend, OBJPROP_COLOR, Black); // 文字色
       ChartRedraw();
       Print( "Trend = EVEN" );
       currentTrend = 0;
