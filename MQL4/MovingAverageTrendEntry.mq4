@@ -44,6 +44,9 @@ int currentTrend; // even:0 long:1 short:2
 
 void OnInit(){
   lots = AccountBalance() / BalanceParLot;
+  Print( "TrandTimeframe = " + TrandTimeframe );
+  Print("MAMethod = " + MAMethod);
+  Print( "EntryTimeframe = " + EntryTimeframe );
 
   ObjectDelete( textTrend );
   ObjectCreate(0, textTrend, OBJ_BUTTON, 0, 0, 0); // ボタン作成
@@ -150,22 +153,24 @@ void OnTick(){
   // トレンド判定
   trend = 0;
   // Long
-  if(shortMA > middleMA > longMA) {
+  if(shortMA > middleMA && middleMA > longMA) {
     trend = 1;
     if(currentTrend != 1) {
       ObjectSetString(0, textTrend, OBJPROP_TEXT, "LONG" ); // 文字
       ObjectSetInteger(0, textTrend, OBJPROP_COLOR, Lime); // 文字色
       ChartRedraw();
+      Print( "LongMA = " + longMA + ", MiddleMA = " + middleMA + ", ShortMA = " + shortMA );
       Print( "Trend = LONG" );
       currentTrend = 1;
     }
   // Short
-  } else if(longMA > middleMA > shortMA) {
+  } else if(longMA > middleMA && middleMA > shortMA) {
     trend = 2;
     if(currentTrend != 2) {
       ObjectSetString(0, textTrend, OBJPROP_TEXT, "SHORT" ); // 文字
       ObjectSetInteger(0, textTrend, OBJPROP_COLOR, DeepPink); // 文字色
       ChartRedraw();
+      Print( "LongMA = " + longMA + ", MiddleMA = " + middleMA + ", ShortMA = " + shortMA );
       Print( "Trend = SHORT" );
       currentTrend = 2;
     }
@@ -175,6 +180,7 @@ void OnTick(){
       ObjectSetString(0, textTrend, OBJPROP_TEXT, "EVEN" ); // 文字
       ObjectSetInteger(0, textTrend, OBJPROP_COLOR, Black); // 文字色
       ChartRedraw();
+      Print( "LongMA = " + longMA + ", MiddleMA = " + middleMA + ", ShortMA = " + shortMA );
       Print( "Trend = EVEN" );
       currentTrend = 0;
     }
