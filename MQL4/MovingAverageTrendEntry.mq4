@@ -29,9 +29,12 @@ extern int MiddleMAPeriod = 11;
 extern int ShortMAPeriod = 5;
 extern string EntrySettings = "↓↓↓↓↓ ENTRY SETTINGS ↓↓↓↓↓";
 extern timeframe EntryTimeframe = M5;
-extern bool DeeperEntry = false;
 extern int BBPeriod = 20;
 extern double BBDeviation = 3.0;
+extern bool DeeperEntry = false;
+extern bool Envelopes = false;
+extern int EnvelopesTerm = 2;
+extern double EnvelopesDeviation = 0.05;
 extern string OrderSetting = "↓↓↓↓↓ ORDER SETTINGS ↓↓↓↓↓";
 extern int BalanceParLot = 10000;
 extern double MaxSpread = 1.0;
@@ -86,6 +89,10 @@ void OnTick(){
   double lowerBB;
   double upperBBPre;
   double lowerBBPre;
+  double upperEnv;
+  double lowerEnv;
+  double upperEnvPre;
+  double lowerEnvPre;
   int errChk;
   int hour;
   int min;
@@ -241,55 +248,71 @@ void OnTick(){
     upperBBPre = iBands( Symbol(), EntryTimeframe, BBPeriod, BBDeviation, 0, PRICE_CLOSE, MODE_UPPER, 1 );
     lowerBBPre = iBands( Symbol(), EntryTimeframe, BBPeriod, BBDeviation, 0, PRICE_CLOSE, MODE_LOWER, 1 );
   }
+  if(Envelopes) {
+    upperEnv = iEnvelopes( Symbol(), EntryTimeframe, EnvelopesTerm, MODE_SMMA, 0, PRICE_CLOSE, EnvelopesDeviation, MODE_UPPER, 0 );
+    lowerEnv = iEnvelopes( Symbol(), EntryTimeframe, EnvelopesTerm, MODE_SMMA, 0, PRICE_CLOSE, EnvelopesDeviation, MODE_LOWER, 0 );
+    if(DeeperEntry) {
+      upperEnvPre = iEnvelopes( Symbol(), EntryTimeframe, EnvelopesTerm, MODE_SMMA, 0, PRICE_CLOSE, EnvelopesDeviation, MODE_UPPER, 1 );
+      lowerEnvPre = iEnvelopes( Symbol(), EntryTimeframe, EnvelopesTerm, MODE_SMMA, 0, PRICE_CLOSE, EnvelopesDeviation, MODE_LOWER, 1 );
+    }
+  }
   // Long
   if(trend == 1) {
     if(Close[0] < lowerBB) {
-      if(!DeeperEntry || ( iLow( Symbol(), EntryTimeframe, 1 ) < lowerBBPre )) {
-        spread = MarketInfo( Symbol(), MODE_SPREAD );
-        if(spread > MaxSpread * 10) {
-          if(lastErrorLog != iTime( Symbol(), EntryTimeframe, 0 )) {
-            Print( "SKIP Buy [Spread = " + spread + "]" );
-            lastErrorLog = iTime( Symbol(), EntryTimeframe, 0 );
+      if(!Envelopes || Close[0] < lowerEnv) {
+        if(!DeeperEntry || ( iLow( Symbol(), EntryTimeframe, 1 ) < lowerBBPre )) {
+          if((!DeeperEntry || !Envelopes) || iLow( Symbol(), EntryTimeframe, 1 ) < lowerEnvPre) {
+            spread = MarketInfo( Symbol(), MODE_SPREAD );
+            if(spread > MaxSpread * 10) {
+              if(lastErrorLog != iTime( Symbol(), EntryTimeframe, 0 )) {
+                Print( "SKIP Buy [Spread = " + spread + "]" );
+                lastErrorLog = iTime( Symbol(), EntryTimeframe, 0 );
+              }
+              return;
+            }
+            sl = Ask - ( upperBB - lowerBB );
+            ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, sl, 0, Comm, Magic, 0, Blue );
+            if(ticket < 0) {
+              if(lastErrorLog != iTime( Symbol(), EntryTimeframe, 0 )) {
+                Print( "ERROR Buy [" + TimeToStr( TimeCurrent() ) + "]" );
+                Print( GetLastError() );
+                lastErrorLog = iTime( Symbol(), EntryTimeframe, 0 );
+              }
+            } else {
+              Print( "SUCCESS Buy [" + TimeToStr( TimeCurrent() ) + "]" );
+              lastEntry = iTime( Symbol(), EntryTimeframe, 0 );
+            }
           }
-          return;
-        }
-        sl = Ask - ( upperBB - lowerBB );
-        ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, sl, 0, Comm, Magic, 0, Blue );
-        if(ticket < 0) {
-          if(lastErrorLog != iTime( Symbol(), EntryTimeframe, 0 )) {
-            Print( "ERROR Buy [" + TimeToStr( TimeCurrent() ) + "]" );
-            Print( GetLastError() );
-            lastErrorLog = iTime( Symbol(), EntryTimeframe, 0 );
-          }
-        } else {
-          Print( "SUCCESS Buy [" + TimeToStr( TimeCurrent() ) + "]" );
-          lastEntry = iTime( Symbol(), EntryTimeframe, 0 );
         }
       }
     }
   // Short
   } else if(trend == 2) {
     if(upperBB < Close[0]) {
-      if(!DeeperEntry || upperBBPre < iHigh( Symbol(), EntryTimeframe, 1 )) {
-        spread = MarketInfo( Symbol(), MODE_SPREAD );
-        if(spread > MaxSpread * 10) {
-          if(lastErrorLog != iTime( Symbol(), EntryTimeframe, 0 )) {
-            Print( "SKIP Sell [Spread = " + spread + "]" );
-            lastErrorLog = iTime( Symbol(), EntryTimeframe, 0 );
+      if(!Envelopes || upperEnv < Close[0]) {
+        if(!DeeperEntry || upperBBPre < iHigh( Symbol(), EntryTimeframe, 1 )) {
+          if((!DeeperEntry || !Envelopes) || upperEnvPre < iHigh( Symbol(), EntryTimeframe, 1 )) {
+            spread = MarketInfo( Symbol(), MODE_SPREAD );
+            if(spread > MaxSpread * 10) {
+              if(lastErrorLog != iTime( Symbol(), EntryTimeframe, 0 )) {
+                Print( "SKIP Sell [Spread = " + spread + "]" );
+                lastErrorLog = iTime( Symbol(), EntryTimeframe, 0 );
+              }
+              return;
+            }
+            sl = Bid + ( upperBB - lowerBB );
+            ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, sl, 0, Comm, Magic, 0, Red );
+            if(ticket < 0) {
+              if(lastErrorLog != iTime( Symbol(), EntryTimeframe, 0 )) {
+                Print( "ERROR Sell [" + TimeToStr( TimeCurrent() ) + "]" );
+                Print( GetLastError() );
+                lastErrorLog = iTime( Symbol(), EntryTimeframe, 0 );
+              }
+            } else {
+              Print( "SUCCESS Sell [" + TimeToStr( TimeCurrent() ) + "]" );
+              lastEntry = iTime( Symbol(), EntryTimeframe, 0 );
+            }
           }
-          return;
-        }
-        sl = Bid + ( upperBB - lowerBB );
-        ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, sl, 0, Comm, Magic, 0, Red );
-        if(ticket < 0) {
-          if(lastErrorLog != iTime( Symbol(), EntryTimeframe, 0 )) {
-            Print( "ERROR Sell [" + TimeToStr( TimeCurrent() ) + "]" );
-            Print( GetLastError() );
-            lastErrorLog = iTime( Symbol(), EntryTimeframe, 0 );
-          }
-        } else {
-          Print( "SUCCESS Sell [" + TimeToStr( TimeCurrent() ) + "]" );
-          lastEntry = iTime( Symbol(), EntryTimeframe, 0 );
         }
       }
     }
