@@ -31,10 +31,11 @@ extern string EntrySettings = "↓↓↓↓↓ ENTRY SETTINGS ↓↓↓↓↓";
 extern timeframe EntryTimeframe = M5;
 extern int BBPeriod = 20;
 extern double BBDeviation = 3.0;
-extern bool DeeperEntry = false;
+extern bool DeeperBB = false;
 extern bool Envelopes = false;
 extern int EnvelopesTerm = 2;
 extern double EnvelopesDeviation = 0.05;
+extern bool DeeperEnv = false;
 extern string OrderSetting = "↓↓↓↓↓ ORDER SETTINGS ↓↓↓↓↓";
 extern int BalanceParLot = 10000;
 extern double MaxSpread = 1.0;
@@ -244,14 +245,14 @@ void OnTick(){
   // エントリー
   upperBB = iBands( Symbol(), EntryTimeframe, BBPeriod, BBDeviation, 0, PRICE_CLOSE, MODE_UPPER, 0 );
   lowerBB = iBands( Symbol(), EntryTimeframe, BBPeriod, BBDeviation, 0, PRICE_CLOSE, MODE_LOWER, 0 );
-  if(DeeperEntry) {
+  if(DeeperBB) {
     upperBBPre = iBands( Symbol(), EntryTimeframe, BBPeriod, BBDeviation, 0, PRICE_CLOSE, MODE_UPPER, 1 );
     lowerBBPre = iBands( Symbol(), EntryTimeframe, BBPeriod, BBDeviation, 0, PRICE_CLOSE, MODE_LOWER, 1 );
   }
   if(Envelopes) {
     upperEnv = iEnvelopes( Symbol(), EntryTimeframe, EnvelopesTerm, MODE_SMMA, 0, PRICE_CLOSE, EnvelopesDeviation, MODE_UPPER, 0 );
     lowerEnv = iEnvelopes( Symbol(), EntryTimeframe, EnvelopesTerm, MODE_SMMA, 0, PRICE_CLOSE, EnvelopesDeviation, MODE_LOWER, 0 );
-    if(DeeperEntry) {
+    if(DeeperEnv) {
       upperEnvPre = iEnvelopes( Symbol(), EntryTimeframe, EnvelopesTerm, MODE_SMMA, 0, PRICE_CLOSE, EnvelopesDeviation, MODE_UPPER, 1 );
       lowerEnvPre = iEnvelopes( Symbol(), EntryTimeframe, EnvelopesTerm, MODE_SMMA, 0, PRICE_CLOSE, EnvelopesDeviation, MODE_LOWER, 1 );
     }
@@ -260,8 +261,8 @@ void OnTick(){
   if(trend == 1) {
     if(Close[0] < lowerBB) {
       if(!Envelopes || Close[0] < lowerEnv) {
-        if(!DeeperEntry || ( iLow( Symbol(), EntryTimeframe, 1 ) < lowerBBPre )) {
-          if((!DeeperEntry || !Envelopes) || iLow( Symbol(), EntryTimeframe, 1 ) < lowerEnvPre) {
+        if(!DeeperBB || ( iLow( Symbol(), EntryTimeframe, 1 ) < lowerBBPre )) {
+          if(!DeeperEnv || iLow( Symbol(), EntryTimeframe, 1 ) < lowerEnvPre) {
             spread = MarketInfo( Symbol(), MODE_SPREAD );
             if(spread > MaxSpread * 10) {
               if(lastErrorLog != iTime( Symbol(), EntryTimeframe, 0 )) {
@@ -290,8 +291,8 @@ void OnTick(){
   } else if(trend == 2) {
     if(upperBB < Close[0]) {
       if(!Envelopes || upperEnv < Close[0]) {
-        if(!DeeperEntry || upperBBPre < iHigh( Symbol(), EntryTimeframe, 1 )) {
-          if((!DeeperEntry || !Envelopes) || upperEnvPre < iHigh( Symbol(), EntryTimeframe, 1 )) {
+        if(!DeeperBB || upperBBPre < iHigh( Symbol(), EntryTimeframe, 1 )) {
+          if(!DeeperEnv || upperEnvPre < iHigh( Symbol(), EntryTimeframe, 1 )) {
             spread = MarketInfo( Symbol(), MODE_SPREAD );
             if(spread > MaxSpread * 10) {
               if(lastErrorLog != iTime( Symbol(), EntryTimeframe, 0 )) {
