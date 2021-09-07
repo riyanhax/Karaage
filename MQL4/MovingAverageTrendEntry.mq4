@@ -32,6 +32,7 @@ extern int BBPeriod = 20;
 extern double BBDeviation = 3.0;
 extern string OrderSetting = "↓↓↓↓↓ ORDER SETTINGS ↓↓↓↓↓";
 extern int BalanceParLot = 10000;
+extern double MaxSpread = 1.0;
 extern int MaxOrder = 1;
 extern string Comm = "MovingAverageTrendEntry";
 
@@ -67,6 +68,7 @@ void OnTick(){
   int i;
   int ticket;
   double sl;
+  double spread;
   int entryCnt;
   double upperBB;
   double lowerBB;
@@ -200,6 +202,14 @@ void OnTick(){
   if(trend == 1) {
     if(Close[0] < lowerBB) {
       if(!DeeperEntry || ( iLow( Symbol(), EntryTimeframe, 1 ) < lowerBBPre )) {
+        spread = MarketInfo( Symbol(), MODE_SPREAD );
+        if(spread > MaxSpread) {
+          if(lastErrorLog != iTime( Symbol(), EntryTimeframe, 0 )) {
+            Print( "SKIP Buy [Spread = " + spread + "]" );
+            lastErrorLog = iTime( Symbol(), EntryTimeframe, 0 );
+          }
+          return;
+        }
         sl = Ask - ( upperBB - lowerBB );
         ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, sl, 0, Comm, Magic, 0, Blue );
         if(ticket < 0) {
@@ -218,6 +228,14 @@ void OnTick(){
   } else if(trend == 2) {
     if(upperBB < Close[0]) {
       if(!DeeperEntry || upperBBPre < iHigh( Symbol(), EntryTimeframe, 1 )) {
+        spread = MarketInfo( Symbol(), MODE_SPREAD );
+        if(spread > MaxSpread) {
+          if(lastErrorLog != iTime( Symbol(), EntryTimeframe, 0 )) {
+            Print( "SKIP Sell [Spread = " + spread + "]" );
+            lastErrorLog = iTime( Symbol(), EntryTimeframe, 0 );
+          }
+          return;
+        }
         sl = Bid + ( upperBB - lowerBB );
         ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, sl, 0, Comm, Magic, 0, Red );
         if(ticket < 0) {
