@@ -150,7 +150,7 @@ void OnTick(){
         if(OrderSelect( i, SELECT_BY_POS) == true){
           if(OrderSymbol() == Symbol() && OrderMagicNumber() == Magic){
             if(OrderType() == OP_BUY){
-              if(NormalizeDouble(sl - OrderStopLoss(), 8) > 0){
+              if(NormalizeDouble(NormalizeDouble( sl, Digits() ) - NormalizeDouble( OrderStopLoss(), Digits() ), Digits()) > 0){
                 while( !IsStopped() ) {
                   errChk = 0;
                   if(!OrderModify( OrderTicket(), OrderOpenPrice(), sl, OrderTakeProfit(), OrderExpiration(), CLR_NONE )) {
@@ -167,7 +167,7 @@ void OnTick(){
               }
             }
             if(OrderType() == OP_SELL){
-              if(NormalizeDouble(OrderStopLoss() - sl, 8) > 0){
+              if(NormalizeDouble(NormalizeDouble( OrderStopLoss(), Digits() ) - NormalizeDouble( sl, Digits() ), Digits()) > 0){
                 while( !IsStopped() ) {
                   errChk = 0;
                   if(!OrderModify( OrderTicket(), OrderOpenPrice(), sl, OrderTakeProfit(), OrderExpiration(), CLR_NONE )) {
