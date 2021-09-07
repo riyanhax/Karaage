@@ -58,7 +58,7 @@ void OnInit(){
   startHour = StrToInteger( StringSubstr( TimeStart, 0, 2 ) );
   startMin = StrToInteger( StringSubstr( TimeStart, 3, 2 ) );
   endHour = StrToInteger( StringSubstr( TimeEnd, 0, 2 ) );
-  endHour = StrToInteger( StringSubstr( TimeEnd, 3, 2 ) );
+  endMin = StrToInteger( StringSubstr( TimeEnd, 3, 2 ) );
   Print( "ActiveTime = " + startHour + ":" + startMin + " ~ " + endHour + ":" + endMin );
 
   ObjectDelete( textTrend );
@@ -157,7 +157,7 @@ void OnTick(){
   // 有効時間外はエントリーしない
   offTime = false;
   hour = TimeHour(TimeCurrent());
-  min = TimeMinute( TimeCurrent() );
+  min = TimeMinute(TimeCurrent());
   if(hour < startHour || endHour < hour) {
     offTime = true;
   }
@@ -167,7 +167,7 @@ void OnTick(){
     }
   }
   if(hour == endHour) {
-    if(endMin < min) {
+    if(endMin <= min) {
       offTime = true;
     }
   }
@@ -246,7 +246,7 @@ void OnTick(){
     if(Close[0] < lowerBB) {
       if(!DeeperEntry || ( iLow( Symbol(), EntryTimeframe, 1 ) < lowerBBPre )) {
         spread = MarketInfo( Symbol(), MODE_SPREAD );
-        if(spread > MaxSpread) {
+        if(spread > MaxSpread * 10) {
           if(lastErrorLog != iTime( Symbol(), EntryTimeframe, 0 )) {
             Print( "SKIP Buy [Spread = " + spread + "]" );
             lastErrorLog = iTime( Symbol(), EntryTimeframe, 0 );
@@ -272,7 +272,7 @@ void OnTick(){
     if(upperBB < Close[0]) {
       if(!DeeperEntry || upperBBPre < iHigh( Symbol(), EntryTimeframe, 1 )) {
         spread = MarketInfo( Symbol(), MODE_SPREAD );
-        if(spread > MaxSpread) {
+        if(spread > MaxSpread * 10) {
           if(lastErrorLog != iTime( Symbol(), EntryTimeframe, 0 )) {
             Print( "SKIP Sell [Spread = " + spread + "]" );
             lastErrorLog = iTime( Symbol(), EntryTimeframe, 0 );
