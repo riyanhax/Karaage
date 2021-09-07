@@ -18,6 +18,8 @@ enum timeframe {
 };
 
 extern int Magic = 10906;
+extern string TimeStart = "01:00";
+extern string TimeEnd = "19:00";
 extern string TrendSettings = "↓↓↓↓↓ TREND SETTINGS ↓↓↓↓↓";
 extern timeframe TrandTimeframe = H1;
 extern int TrendTimeShift = 0;
@@ -41,13 +43,23 @@ datetime lastErrorLog = 0;
 double lots;
 int trend; // even:0 long:1 short:2
 string textTrend = "trend";
-int currentTrend; // even:0 long:1 short:2
+int currentTrend; // even:0 long:1 short:2 off:3
+int startHour;
+int startMin;
+int endHour;
+int endMin;
 
 void OnInit(){
   lots = AccountBalance() / BalanceParLot;
   Print( "TrandTimeframe = " + TrandTimeframe );
   Print("MAMethod = " + MAMethod);
   Print( "EntryTimeframe = " + EntryTimeframe );
+
+  startHour = StrToInteger( StringSubstr( TimeStart, 0, 2 ) );
+  startMin = StrToInteger( StringSubstr( TimeStart, 3, 2 ) );
+  endHour = StrToInteger( StringSubstr( TimeEnd, 0, 2 ) );
+  endHour = StrToInteger( StringSubstr( TimeEnd, 3, 2 ) );
+  Print( "ActiveTime = " + startHour + ":" + startMin + " ~ " + endHour + ":" + endMin );
 
   ObjectDelete( textTrend );
   ObjectCreate(0, textTrend, OBJ_BUTTON, 0, 0, 0); // ボタン作成
@@ -75,6 +87,9 @@ void OnTick(){
   double upperBBPre;
   double lowerBBPre;
   int errChk;
+  int hour;
+  int min;
+  bool offTime;
 
   // 同じ通貨ペアのエントリー数をカウント
   entryCnt = 0;
@@ -137,6 +152,34 @@ void OnTick(){
         }
       }
     }
+  }
+
+  // 有効時間外はエントリーしない
+  offTime = false;
+  hour = TimeHour(TimeCurrent());
+  min = TimeMinute( TimeCurrent() );
+  if(hour < startHour || endHour < hour) {
+    offTime = true;
+  }
+  if(hour == startHour) {
+    if(min < startMin) {
+      offTime = true;
+    }
+  }
+  if(hour == endHour) {
+    if(endMin < min) {
+      offTime = true;
+    }
+  }
+  if(offTime) {
+    if(currentTrend != 3) {
+      ObjectSetString(0, textTrend, OBJPROP_TEXT, "OFF" ); // 文字
+      ObjectSetInteger(0, textTrend, OBJPROP_COLOR, LightSlateGray); // 文字色
+      ChartRedraw();
+      Print( "Off Time" );
+      currentTrend = 3;
+    }
+    return;
   }
 
   // エントリー数上限に達している場合はスキップ
