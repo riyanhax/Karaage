@@ -24,50 +24,36 @@ int init()
 //+------------------------------------------------------------------+
 //| Custom indicator deinitialization function                       |
 //+------------------------------------------------------------------+
-int deinit()
-  {
+int deinit() {
   Comment("");
- ObjectDelete("a label");
- ObjectDelete("b label");
- ObjectDelete("c label");
- ObjectDelete("d label");
- ObjectDelete("e label");
- ObjectDelete("f label");
+  ObjectDelete("d label");
+  ObjectDelete("e label");
 
-
-   return(0);
-  }
+  return(0);
+}
 //+------------------------------------------------------------------+
 //| Custom indicator iteration function                              |
 //+------------------------------------------------------------------+
-int start()
-  {
+int start() {
   double H=iHigh(Symbol(),PERIOD_D1,0);
   int H2=H;
 
- // if (Period()>1440) return(0);
-double A=((iHigh(Symbol(),0,Candle)-iLow(Symbol(),0,Candle))/Point);
-int AA=A;
+  // if (Period()>1440) return(0);
+  double A=((iHigh(Symbol(),0,Candle)-iLow(Symbol(),0,Candle))/Point);
+  int AA=A;
 
-    ObjectDelete("d label");
-      ObjectCreate("d label", OBJ_LABEL, 0,0,0);
-      ObjectSetText("d label","Candle Length = "+AA  , TextSize, "Arial Bold", TextColor);
-      ObjectSet("d label", OBJPROP_XDISTANCE,230);
-     ObjectSet("d label", OBJPROP_YDISTANCE,10);
+  ObjectDelete("d label");
+  ObjectCreate("d label", OBJ_LABEL, 0,0,0);
+  ObjectSetText("d label","Candle Length = " + AA, TextSize, "Arial Bold", TextColor);
+  ObjectSet("d label", OBJPROP_XDISTANCE,230);
+  ObjectSet("d label", OBJPROP_YDISTANCE,15);
 
+  ObjectDelete("e label");
+  ObjectCreate("e label", OBJ_LABEL, 0,0,0);
+  ObjectSetText("e label","Current Spread = " + MarketInfo( Symbol(), MODE_SPREAD ) , TextSize, "Arial Bold", TextColor);
+  ObjectSet("e label", OBJPROP_XDISTANCE,230);
+  ObjectSet("e label", OBJPROP_YDISTANCE,30);
 
- //   ObjectDelete("e label");
-   //   ObjectCreate("e label", OBJ_LABEL, 0,0,0);
-  //    ObjectSetText("e label","today low = "+DoubleToStr(iLow(Symbol(),PERIOD_D1,0),Digits)  , TextSize, "Arial", TextColor5);
-  //    ObjectSet("e label", OBJPROP_XDISTANCE,345);
-  //   ObjectSet("e label", OBJPROP_YDISTANCE,100);
-
-//    ObjectDelete("f label");
-  //    ObjectCreate("f label", OBJ_LABEL, 0,0,0);
-    //  ObjectSetText("f label","today close = "+DoubleToStr(iClose(Symbol(),PERIOD_D1,0),Digits)   , TextSize, "Arial", TextColor6);
-  //    ObjectSet("f label", OBJPROP_XDISTANCE,340);
-   //  ObjectSet("f label", OBJPROP_YDISTANCE,125);
-
-   return(0);
-  }
+  return(0);
+}
 
