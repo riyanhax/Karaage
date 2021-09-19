@@ -142,6 +142,11 @@ void OnTick(){
     }
   }
 
+  // トレーリング中はエントリーしない
+  if(trailEntryCnt > 0) {
+    return;
+  }
+
   // 足が変わってからの一定期間(指定%)はエントリーしない場合
   if(Delay) {
     if(DelayPercent == 0) {
