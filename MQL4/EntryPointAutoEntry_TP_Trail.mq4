@@ -7,7 +7,7 @@ enum trailingMethod {
 
 extern int TPMagic = 120;
 extern int TrailMagic = 130;
-extern int BalanceParLot = 10000;
+extern int BalanceParLot = 20000;
 extern int MaxSpreadPoints = 6;
 extern int MaxSizeOfSignalCandlePoints = 1000;
 extern bool UseDEMA = false;
@@ -29,6 +29,7 @@ datetime lastErrorLog1 = 0;
 datetime lastErrorLog2 = 0;
 datetime lastErrorLog3 = 0;
 double lots;
+bool firstSL = true;
 
 void OnInit(){
   lots = AccountBalance() / BalanceParLot;
@@ -94,15 +95,20 @@ void OnTick(){
               if(TPPoints > 0) {
                 tp = Bid + TPPoints * Point;
               }
-              if(OrderOpenPrice() > NormalizeDouble( sl, Digits() )) {
-                sl = OrderOpenPrice() + MarketInfo( Symbol(), MODE_SPREAD ) * Point;
-              }
               if(NormalizeDouble(NormalizeDouble( sl, Digits() ) - NormalizeDouble( OrderStopLoss(), Digits() ), Digits()) > 0){
                 errCnt = 0;
                 while( !IsStopped() ) {
                   errChk = 0;
-                  if(!OrderModify( OrderTicket(), OrderOpenPrice(), sl, tp, OrderExpiration(), CLR_NONE )) {
-                    errChk = 1;
+                  if(firstSL) {
+                    if(!OrderModify( OrderTicket(), OrderOpenPrice(), OrderOpenPrice() + MarketInfo( Symbol(), MODE_SPREAD ) * Point, tp, OrderExpiration(), CLR_NONE )) {
+                      errChk = 1;
+                    } else {
+                      firstSL = false;
+                    }
+                  } else {
+                    if(!OrderModify( OrderTicket(), OrderOpenPrice(), sl, tp, OrderExpiration(), CLR_NONE )) {
+                      errChk = 1;
+                    }
                   }
                   if( errChk == 0 ) {
                     break;
@@ -123,15 +129,20 @@ void OnTick(){
               if(TPPoints > 0) {
                 tp = Ask -TPPoints * Point;
               }
-              if(OrderOpenPrice() < NormalizeDouble( sl, Digits() )) {
-                sl = OrderOpenPrice() - MarketInfo( Symbol(), MODE_SPREAD ) * Point;
-              }
               if(NormalizeDouble(NormalizeDouble( OrderStopLoss(), Digits() ) - NormalizeDouble( sl, Digits() ), Digits()) > 0){
                 errCnt = 0;
                 while( !IsStopped() ) {
                   errChk = 0;
-                  if(!OrderModify( OrderTicket(), OrderOpenPrice(), sl, tp, OrderExpiration(), CLR_NONE )) {
-                    errChk = 1;
+                  if(firstSL) {
+                    if(!OrderModify( OrderTicket(), OrderOpenPrice(), OrderOpenPrice() - MarketInfo( Symbol(), MODE_SPREAD ) * Point, tp, OrderExpiration(), CLR_NONE )) {
+                      errChk = 1;
+                    } else {
+                      firstSL = false;
+                    }
+                  } else {
+                    if(!OrderModify( OrderTicket(), OrderOpenPrice(), sl, tp, OrderExpiration(), CLR_NONE )) {
+                      errChk = 1;
+                    }
                   }
                   if( errChk == 0 ) {
                     break;
@@ -247,6 +258,7 @@ void OnTick(){
     } else {
       Print( "SUCCESS Buy [" + TimeToStr( Time[0] ) + "]" );
       lastEntry2 = Time[0];
+      firstSL = true;
     }
   }
 
@@ -313,6 +325,7 @@ void OnTick(){
     } else {
       Print( "SUCCESS Sell [" + TimeToStr( Time[0] ) + "]" );
       lastEntry2 = Time[0];
+      firstSL = true;
     }
   }
 }
