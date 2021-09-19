@@ -133,7 +133,7 @@ void OnTick(){
                 while( !IsStopped() ) {
                   errChk = 0;
                   if(firstSL) {
-                    if(!OrderModify( OrderTicket(), OrderOpenPrice(), OrderOpenPrice()+(MarketInfo( Symbol(), MODE_SPREAD )+5)*Point, tp, OrderExpiration(), CLR_NONE )) {
+                    if(!OrderModify( OrderTicket(), OrderOpenPrice(), OrderOpenPrice()+(MarketInfo( Symbol(), MODE_SPREAD )+10)*Point, tp, OrderExpiration(), CLR_NONE )) {
                       errChk = 1;
                     } else {
                       firstSL = false;
@@ -167,7 +167,7 @@ void OnTick(){
                 while( !IsStopped() ) {
                   errChk = 0;
                   if(firstSL) {
-                    if(!OrderModify( OrderTicket(), OrderOpenPrice(), OrderOpenPrice()-(MarketInfo( Symbol(), MODE_SPREAD )+5)*Point, tp, OrderExpiration(), CLR_NONE )) {
+                    if(!OrderModify( OrderTicket(), OrderOpenPrice(), OrderOpenPrice()-(MarketInfo( Symbol(), MODE_SPREAD )+10)*Point, tp, OrderExpiration(), CLR_NONE )) {
                       errChk = 1;
                     } else {
                       firstSL = false;
