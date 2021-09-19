@@ -6,6 +6,7 @@ enum trailingMethod {
 };
 
 extern int Magic = 130;
+extern int TPMagic = 120;
 extern int BalanceParLot = 10000;
 extern int MaxSpreadPoints = 6;
 extern int MaxSizeOfSignalCandlePoints = 1000;
@@ -41,8 +42,8 @@ void OnTick(){
   int i;
   int errChk;
   int entryCnt;
+  int tpEntryCnt;
 
-  // トレーリング
   // エントリー数をカウント
   entryCnt = 0;
   if(OrdersTotal() > 0) {
@@ -56,7 +57,20 @@ void OnTick(){
       }
     }
   }
-  if(entryCnt > 0){
+  tpEntryCnt = 0;
+  if(OrdersTotal() > 0) {
+    for(i=0; i<OrdersTotal(); i++){
+      if(OrderSelect( i, SELECT_BY_POS) == true){
+        if(OrderSymbol() == Symbol() && OrderMagicNumber() == TPMagic){
+          if(OrderType() == OP_BUY || OrderType() == OP_SELL){
+            tpEntryCnt++;
+          }
+        }
+      }
+    }
+  }
+  // トレーリング
+  if(entryCnt > 0 && tpEntryCnt == 0){
     // SLを算出
     sl = 0.0;
     if(Method == Parabolic){
