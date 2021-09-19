@@ -16,6 +16,8 @@ extern string EndTime = "23:59";
 extern bool Delay = true;
 extern int DelayPercent = 20;
 extern bool Reverse = true;
+extern bool StopEntry = false;
+extern int LimitCandle = 1;
 extern trailingMethod Method = Parabolic;
 extern double ParabolicStep = 0.02;
 extern double ParabolicMax = 0.2;
@@ -47,6 +49,35 @@ void OnTick(){
   int trailEntryCnt;
   int tpEntryCnt;
   int errCnt;
+
+
+  // 一定時間経過した逆指値注文を取り消す
+  if(StopEntry) {
+    if(OrdersTotal() > 0) {
+      for(i=0; i<OrdersTotal(); i++){
+        if(OrderSelect( i, SELECT_BY_POS) == true){
+          if(OrderSymbol() == Symbol() && (OrderMagicNumber() == TPMagic || OrderMagicNumber() == TrailMagic)
+            && (OrderType() == OP_BUYSTOP || OrderType() == OP_SELLSTOP) ){
+            if(iBarShift( Symbol(), PERIOD_CURRENT, OrderOpenTime(), false ) >= LimitCandle) {
+              while( !IsStopped() ) {
+                errChk = 0;
+                if(!OrderDelete( OrderTicket(), Green )) {
+                  errChk = 1;
+                }
+                if( errChk == 0 ) {
+                  break;
+                }
+                Print( "StopOrder Delete Failure" );
+                Print( GetLastError() );
+                Sleep(500);
+                RefreshRates();
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 
   // エントリー数をカウント
   tpEntryCnt = 0;
@@ -100,7 +131,7 @@ void OnTick(){
                 while( !IsStopped() ) {
                   errChk = 0;
                   if(firstSL) {
-                    if(!OrderModify( OrderTicket(), OrderOpenPrice(), OrderOpenPrice() + MarketInfo( Symbol(), MODE_SPREAD ) * Point, tp, OrderExpiration(), CLR_NONE )) {
+                    if(!OrderModify( OrderTicket(), OrderOpenPrice(), OrderOpenPrice()+MarketInfo( Symbol(), MODE_SPREAD )*Point, tp, OrderExpiration(), CLR_NONE )) {
                       errChk = 1;
                     } else {
                       firstSL = false;
@@ -134,7 +165,7 @@ void OnTick(){
                 while( !IsStopped() ) {
                   errChk = 0;
                   if(firstSL) {
-                    if(!OrderModify( OrderTicket(), OrderOpenPrice(), OrderOpenPrice() - MarketInfo( Symbol(), MODE_SPREAD ) * Point, tp, OrderExpiration(), CLR_NONE )) {
+                    if(!OrderModify( OrderTicket(), OrderOpenPrice(), OrderOpenPrice()-MarketInfo( Symbol(), MODE_SPREAD )*Point, tp, OrderExpiration(), CLR_NONE )) {
                       errChk = 1;
                     } else {
                       firstSL = false;
@@ -215,7 +246,11 @@ void OnTick(){
     sl = upArrow;
     tp = Ask + (Ask - upArrow);
     // entry 1
-    ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, sl, tp, TPComm, TPMagic, 0, Blue );
+    if(StopEntry) {
+      ticket = OrderSend( Symbol(), OP_BUYSTOP, lots, High[1]+MarketInfo( Symbol(), MODE_SPREAD )*Point, 3, sl, 0, TPComm, TPMagic, 0, Blue );
+    } else {
+      ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, sl, tp, TPComm, TPMagic, 0, Blue );
+    }
     if(ticket < 0) {
       if(lastErrorLog1 != Time[0]) {
         Print( "ERROR Buy [" + TimeToStr( Time[0] ) + "]" );
@@ -247,7 +282,11 @@ void OnTick(){
     }
     sl = upArrow;
     // entry 2
-    ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, sl, 0, TrailComm, TrailMagic, 0, Blue );
+    if(StopEntry) {
+      ticket = OrderSend( Symbol(), OP_BUYSTOP, lots, High[1]+MarketInfo( Symbol(), MODE_SPREAD )*Point, 3, sl, 0, TrailComm, TrailMagic, 0, Blue );
+    } else {
+      ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, sl, 0, TrailComm, TrailMagic, 0, Blue );
+    }
     if(ticket < 0) {
       if(lastErrorLog1 != Time[0]) {
         Print( "ERROR Buy [" + TimeToStr( Time[0] ) + "]" );
@@ -282,7 +321,11 @@ void OnTick(){
     sl = downArrow;
     tp = Bid - (downArrow - Bid);
     // entry 1
-    ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, sl, tp, TPComm, TPMagic, 0, Red );
+    if(StopEntry) {
+      ticket = OrderSend( Symbol(), OP_SELLSTOP, lots, Low[1]-MarketInfo( Symbol(), MODE_SPREAD )*Point, 3, sl, 0, TPComm, TPMagic, 0, Red );
+    } else {
+      ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, sl, tp, TPComm, TPMagic, 0, Red );
+    }
     if(ticket < 0) {
       if(lastErrorLog1 != Time[0]){
         Print( "ERROR Sell [" + TimeToStr( Time[0] ) + "]" );
@@ -314,7 +357,11 @@ void OnTick(){
     }
     sl = downArrow;
     // entry 2
-    ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, sl, 0, TrailComm, TrailMagic, 0, Red );
+    if(StopEntry) {
+      ticket = OrderSend( Symbol(), OP_SELLSTOP, lots, Low[1]-MarketInfo( Symbol(), MODE_SPREAD )*Point, 3, sl, 0, TrailComm, TrailMagic, 0, Red );
+    } else {
+      ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, sl, 0, TrailComm, TrailMagic, 0, Red );
+    }
     if(ticket < 0) {
       if(lastErrorLog1 != Time[0]){
         Print( "ERROR Sell [" + TimeToStr( Time[0] ) + "]" );
