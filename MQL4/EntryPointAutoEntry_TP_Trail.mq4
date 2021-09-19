@@ -93,6 +93,9 @@ void OnTick(){
               if(TPPoints > 0) {
                 tp = Bid + TPPoints * Point;
               }
+              if(OrderOpenPrice() > NormalizeDouble( sl, Digits() )) {
+                sl = OrderOpenPrice();
+              }
               if(NormalizeDouble(NormalizeDouble( sl, Digits() ) - NormalizeDouble( OrderStopLoss(), Digits() ), Digits()) > 0){
                 while( !IsStopped() ) {
                   errChk = 0;
@@ -113,6 +116,9 @@ void OnTick(){
               tp = 0.0;
               if(TPPoints > 0) {
                 tp = Ask -TPPoints * Point;
+              }
+              if(OrderOpenPrice() < NormalizeDouble( sl, Digits() )) {
+                sl = OrderOpenPrice();
               }
               if(NormalizeDouble(NormalizeDouble( OrderStopLoss(), Digits() ) - NormalizeDouble( sl, Digits() ), Digits()) > 0){
                 while( !IsStopped() ) {
