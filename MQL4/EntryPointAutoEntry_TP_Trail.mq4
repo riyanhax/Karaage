@@ -45,6 +45,7 @@ void OnTick(){
   int errChk;
   int trailEntryCnt;
   int tpEntryCnt;
+  int errCnt;
 
   // エントリー数をカウント
   tpEntryCnt = 0;
@@ -94,9 +95,10 @@ void OnTick(){
                 tp = Bid + TPPoints * Point;
               }
               if(OrderOpenPrice() > NormalizeDouble( sl, Digits() )) {
-                sl = OrderOpenPrice();
+                sl = OrderOpenPrice() + MarketInfo( Symbol(), MODE_SPREAD ) * Point;
               }
               if(NormalizeDouble(NormalizeDouble( sl, Digits() ) - NormalizeDouble( OrderStopLoss(), Digits() ), Digits()) > 0){
+                errCnt = 0;
                 while( !IsStopped() ) {
                   errChk = 0;
                   if(!OrderModify( OrderTicket(), OrderOpenPrice(), sl, tp, OrderExpiration(), CLR_NONE )) {
@@ -107,6 +109,10 @@ void OnTick(){
                   }
                   Print( "Order Modify Failure" );
                   Print( GetLastError() );
+                  errCnt++;
+                  if(errCnt > 5) {
+                    return;
+                  }
                   Sleep(500);
                   RefreshRates();
                 }
@@ -118,9 +124,10 @@ void OnTick(){
                 tp = Ask -TPPoints * Point;
               }
               if(OrderOpenPrice() < NormalizeDouble( sl, Digits() )) {
-                sl = OrderOpenPrice();
+                sl = OrderOpenPrice() - MarketInfo( Symbol(), MODE_SPREAD ) * Point;
               }
               if(NormalizeDouble(NormalizeDouble( OrderStopLoss(), Digits() ) - NormalizeDouble( sl, Digits() ), Digits()) > 0){
+                errCnt = 0;
                 while( !IsStopped() ) {
                   errChk = 0;
                   if(!OrderModify( OrderTicket(), OrderOpenPrice(), sl, tp, OrderExpiration(), CLR_NONE )) {
@@ -131,6 +138,10 @@ void OnTick(){
                   }
                   Print( "Order Modify Failure" );
                   Print( GetLastError() );
+                  errCnt++;
+                  if(errCnt > 5) {
+                    return;
+                  }
                   Sleep(500);
                   RefreshRates();
                 }
