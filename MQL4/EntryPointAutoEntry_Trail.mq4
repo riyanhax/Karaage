@@ -5,7 +5,7 @@ enum trailingMethod {
   TrendLine = 1,
 };
 
-extern int Magic = 0;
+extern int Magic = 130;
 extern int BalanceParLot = 10000;
 extern int MaxSpreadPoints = 6;
 extern int MaxSizeOfSignalCandlePoints = 1000;
@@ -14,6 +14,7 @@ extern string StartTime = "00:00";
 extern string EndTime = "23:59";
 extern bool Delay = true;
 extern int DelayPercent = 20;
+extern bool Reverse = true;
 extern trailingMethod Method = Parabolic;
 extern double ParabolicStep = 0.02;
 extern double ParabolicMax = 0.2;
@@ -23,6 +24,7 @@ extern string Comm = "Entry Point Auto Trail";
 datetime lastEntry1 = 0;
 datetime lastErrorLog1 = 0;
 datetime lastErrorLog2 = 0;
+datetime lastErrorLog3 = 0;
 double lots;
 
 void OnInit(){
@@ -144,8 +146,15 @@ void OnTick(){
     downArrow = iCustom( Symbol(), PERIOD_CURRENT, "Market\\Entry Points Pro", MaxSizeOfSignalCandlePoints, true, "", UseDEMA, true, 500, "", true, "", StartTime, EndTime, "", false, 0, Red, LightCyan, White, 9, "", false, false, false, "alert2.wav", 3, 1 ); // Red Arrow
   }
 
-  // buy stop
+  // buy
   if(upArrow != EMPTY_VALUE && upArrow != 0) {
+    if(Reverse && Close[0] >= Open[0]) {
+      if(lastErrorLog3 != Time[0]) {
+        Print( "SKIP Buy [Open:" + Open[0] + " <= Current:" + Close[0] + "]" );
+        lastErrorLog3 = Time[0];
+        return;
+      }
+    }
     spread = MarketInfo( Symbol(), MODE_SPREAD );
     if(spread > MaxSpreadPoints) {
       if(lastErrorLog2 != Time[0]) {
@@ -171,8 +180,15 @@ void OnTick(){
     }
   }
 
-  // sell stop
+  // sell
   if(downArrow != EMPTY_VALUE && downArrow != 0) {
+    if(Reverse && Close[0] <= Open[0]) {
+      if(lastErrorLog3 != Time[0]) {
+        Print( "SKIP Sell [Current:" + Close[0] + " <= Open:" + Open[0] + "]" );
+        lastErrorLog3 = Time[0];
+        return;
+      }
+    }
     spread = MarketInfo( Symbol(), MODE_SPREAD );
     if(spread > MaxSpreadPoints) {
       if(lastErrorLog2 != Time[0]) {
