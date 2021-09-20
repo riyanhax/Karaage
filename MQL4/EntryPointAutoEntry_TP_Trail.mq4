@@ -11,7 +11,7 @@ enum trend {
   Against = 2,
 };
 
-extern string Explanation1 = "/////// ENTRY SETTING ///////";
+extern string Explanation1 = "/////// ENTRY SETTINGS ///////";
 extern int TPMagic = 120;
 extern string TPComm = "Entry Point Auto TP";
 extern int BalanceParLot = 20000;
@@ -24,7 +24,7 @@ extern int LimitCandle = 1;
 extern int SLx = 1;
 extern bool ManualSL = false;
 extern int SLPoints = 0;
-extern string Explanation2 = "/////// TRAILING SETTING ///////";
+extern string Explanation2 = "/////// TRAILING SETTINGS ///////";
 extern bool TrailEntry = true;
 extern int TrailMagic = 130;
 extern string TrailComm = "Entry Point Auto Trail";
@@ -32,12 +32,12 @@ extern trailingMethod Method = TrendLine;
 extern double ParabolicStep = 0.02;
 extern double ParabolicMax = 0.2;
 extern int TPPoints = 0;
-extern string Explanation3 = "/////// EA (EntryPointPro) SETTING ///////";
+extern string Explanation3 = "/////// EA (EntryPointPro) SETTINGS ///////";
 extern int MaxSizeOfSignalCandlePoints = 1000;
 extern bool UseDEMA = false;
 extern string StartTime = "00:00";
 extern string EndTime = "23:59";
-extern string Explanation4 = "/////// TREND SETTING ///////";
+extern string Explanation4 = "/////// TREND SETTINGS ///////";
 extern string Explanation5 = "0:None, 1:TrendFollow, 2:TrendAgainst, 3:Detail";
 extern int Trend = 0;
 extern string Explanation6 = "↓↓↓ Detail ↓↓↓";
@@ -50,6 +50,8 @@ extern trend TrendH4 = None;
 extern trend TrendD1 = None;
 extern trend TrendW1 = None;
 extern trend TrendMN = None;
+extern string Explanation7 = "/////// OTHER SETTINGS ///////";
+extern bool BackTest = false;
 
 datetime lastEntry1 = 0;
 datetime lastEntry2 = 0;
@@ -270,7 +272,9 @@ void OnTick(){
     trendLineUp = iCustom( Symbol(), PERIOD_CURRENT, "Market\\FX Trend", "", 6, 3.0, "", false, 1.0, true, false, true, true, true, Lime, DeepPink, 0, Black, 5000, "", 0, false, 80.0, false, false, false, false, false, "alert.wav", "", false, false, false, false, false, false, false, false, false, 12, 1 );
     trendLineDown = iCustom( Symbol(), PERIOD_CURRENT, "Market\\FX Trend", "", 6, 3.0, "", false, 1.0, true, false, true, true, true, Lime, DeepPink, 0, Black, 5000, "", 0, false, 80.0, false, false, false, false, false, "alert.wav", "", false, false, false, false, false, false, false, false, false, 13, 1 );
   } else if(Trend == 3) {
-    iCustom( Symbol(), PERIOD_CURRENT, "Market\\FX Trend", "", 6, 3.0, "", false, 1.0, false, true, true, true, true, Lime, DeepPink, 0, Black, 5000, "", 0, false, 80.0, false, false, false, false, false, "alert.wav", "", true, true, true, true, true, true, true, true, true, 12, 1 );
+    if(BackTest) {
+      iCustom( Symbol(), PERIOD_CURRENT, "Market\\FX Trend", "", 6, 3.0, "", false, 1.0, false, true, true, true, true, Lime, DeepPink, 0, Black, 5000, "", 0, false, 80.0, false, false, false, false, false, "alert.wav", "", true, true, true, true, true, true, true, true, true, 12, 1 );
+    }
     fxTrendM1 = StringTrimRight( StringTrimLeft( ObjectDescription( "FXTtrend1" ) ) ) ;
     fxTrendM5 = StringTrimRight( StringTrimLeft( ObjectDescription( "FXTtrend2" ) ) );
     fxTrendM15 = StringTrimRight( StringTrimLeft( ObjectDescription( "FXTtrend3" ) ) );
@@ -917,7 +921,11 @@ void OnTick(){
           sl = 0;
         }
       } else {
-        sl = downArrow;
+        if(StopEntry) {
+          sl = Low[1] + (downArrow - Low[1])*SLx;
+        } else {
+          sl = Bid + (downArrow - Bid)*SLx;
+        }
       }
       // entry 2
       if(StopEntry) {
