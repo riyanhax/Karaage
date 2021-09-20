@@ -5,34 +5,55 @@ enum trailingMethod {
   TrendLine = 1,
 };
 
+enum trend {
+  None = 0,
+  Follow = 1,
+  Against = 2,
+};
+
+extern string Explanation1 = "/////// ENTRY SETTING ///////";
 extern int TPMagic = 120;
-extern bool TrailEntry = true;
-extern int TrailMagic = 130;
+extern string TPComm = "Entry Point Auto TP";
 extern int BalanceParLot = 20000;
 extern int MaxSpreadPoints = 6;
-extern int MaxSizeOfSignalCandlePoints = 1000;
-extern bool UseDEMA = false;
-extern string StartTime = "00:00";
-extern string EndTime = "23:59";
-extern string TrendSetting = "0:ALL, 1:TrendFollow, 2:TrendAgainst";
-extern int Trend = 0;
 extern bool Delay = true;
 extern int DelayPercent = 20;
 extern bool Reverse = true;
 extern bool StopEntry = false;
 extern int LimitCandle = 1;
+extern string Explanation2 = "/////// TRAILING SETTING ///////";
+extern bool TrailEntry = true;
+extern int TrailMagic = 130;
+extern string TrailComm = "Entry Point Auto Trail";
 extern trailingMethod Method = Parabolic;
 extern double ParabolicStep = 0.02;
 extern double ParabolicMax = 0.2;
 extern int TPPoints = 0;
-extern string TPComm = "Entry Point Auto TP";
-extern string TrailComm = "Entry Point Auto Trail";
+extern string Explanation3 = "/////// EntryPoint SETTING ///////";
+extern int MaxSizeOfSignalCandlePoints = 1000;
+extern bool UseDEMA = false;
+extern string StartTime = "00:00";
+extern string EndTime = "23:59";
+extern string Explanation4 = "/////// TREND SETTING ///////";
+extern string Explanation5 = "0:None, 1:TrendFollow, 2:TrendAgainst, 3:Detail";
+extern int Trend = 0;
+extern string Explanation6 = "↓↓↓ Detail ↓↓↓";
+extern trend TrendM1 = None;
+extern trend TrendM5 = None;
+extern trend TrendM15 = None;
+extern trend TrendM30 = None;
+extern trend TrendH1 = None;
+extern trend TrendH4 = None;
+extern trend TrendD1 = None;
+extern trend TrendW1 = None;
+extern trend TrendMN = None;
 
 datetime lastEntry1 = 0;
 datetime lastEntry2 = 0;
 datetime lastErrorLog1 = 0;
 datetime lastErrorLog2 = 0;
 datetime lastErrorLog3 = 0;
+datetime lastErrorLog4 = 0;
 double lots;
 bool firstSL = true;
 
@@ -233,9 +254,29 @@ void OnTick(){
   }
   double trendLineUp;
   double trendLineDown;
-  if(Trend != 0) {
+  string fxTrendM1;
+  string fxTrendM5;
+  string fxTrendM15;
+  string fxTrendM30;
+  string fxTrendH1;
+  string fxTrendH4;
+  string fxTrendD1;
+  string fxTrendW1;
+  string fxTrendMN;
+  if(Trend == 1 || Trend == 2) {
     trendLineUp = iCustom( Symbol(), PERIOD_CURRENT, "Market\\FX Trend", "", 6, 3.0, "", false, 1.0, true, false, true, true, true, Lime, DeepPink, 0, Black, 5000, "", 0, false, 80.0, false, false, false, false, false, "alert.wav", "", false, false, false, false, false, false, false, false, false, 12, 1 );
     trendLineDown = iCustom( Symbol(), PERIOD_CURRENT, "Market\\FX Trend", "", 6, 3.0, "", false, 1.0, true, false, true, true, true, Lime, DeepPink, 0, Black, 5000, "", 0, false, 80.0, false, false, false, false, false, "alert.wav", "", false, false, false, false, false, false, false, false, false, 13, 1 );
+  } else if(Trend == 3) {
+    trendLineUp = iCustom( Symbol(), PERIOD_CURRENT, "Market\\FX Trend", "", 6, 3.0, "", false, 1.0, false, false, true, true, true, Lime, DeepPink, 0, Black, 5000, "", 0, false, 80.0, false, false, false, false, false, "alert.wav", "", true, true, true, true, true, true, true, true, true, 12, 1 );
+    fxTrendM1 = ObjectDescription( "FXTtrend1" );
+    fxTrendM5 = ObjectDescription( "FXTtrend2" );
+    fxTrendM15 = ObjectDescription( "FXTtrend3" );
+    fxTrendM30 = ObjectDescription( "FXTtrend4" );
+    fxTrendH1 = ObjectDescription( "FXTtrend5" );
+    fxTrendH4 = ObjectDescription( "FXTtrend6" );
+    fxTrendD1 = ObjectDescription( "FXTtrend7" );
+    fxTrendW1 = ObjectDescription( "FXTtrend8" );
+    fxTrendMN = ObjectDescription( "FXTtrend9" );
   }
 
   // TP Buy
@@ -269,7 +310,103 @@ void OnTick(){
         lastEntry2 = Time[0];
         return;
       }
+    } else if(Trend == 3){
+      if(lastErrorLog4 != Time[0]) {
+        Print( "M1=" + fxTrendM1 + ", M5=" + fxTrendM5 + ", M15=" + fxTrendM15 + ", M30=" + fxTrendM30 + ", H1=" + fxTrendH1 + ", H4=" + fxTrendH4 + ", D1=" + fxTrendD1 + ", W1=" + fxTrendW1 + ", MN=" + fxTrendMN );
+        lastErrorLog4 = Time[0];
+      }
+      // M1
+      if(TrendM1 == Follow) {
+        if(fxTrendM1 != "BUY") {
+          return;
+        }
+      } else if(TrendM1 == Against) {
+        if(fxTrendM1 != "SELL") {
+          return;
+        }
+      }
+      // M5
+      if(TrendM5 == Follow) {
+        if(fxTrendM5 != "BUY") {
+          return;
+        }
+      } else if(TrendM5 == Against) {
+        if(fxTrendM5 != "SELL") {
+          return;
+        }
+      }
+      // M15
+      if(TrendM15 == Follow) {
+        if(fxTrendM15 != "BUY") {
+          return;
+        }
+      } else if(TrendM15 == Against) {
+        if(fxTrendM15 != "SELL") {
+          return;
+        }
+      }
+      // M30
+      if(TrendM30 == Follow) {
+        if(fxTrendM30 != "BUY") {
+          return;
+        }
+      } else if(TrendM30 == Against) {
+        if(fxTrendM30 != "SELL") {
+          return;
+        }
+      }
+      // H1
+      if(TrendH1 == Follow) {
+        if(fxTrendH1 != "BUY") {
+          return;
+        }
+      } else if(TrendH1 == Against) {
+        if(fxTrendH1 != "SELL") {
+          return;
+        }
+      }
+      // H4
+      if(TrendH4 == Follow) {
+        if(fxTrendH4 != "BUY") {
+          return;
+        }
+      } else if(TrendH4 == Against) {
+        if(fxTrendH4 != "SELL") {
+          return;
+        }
+      }
+      // D1
+      if(TrendD1 == Follow) {
+        if(fxTrendD1 != "BUY") {
+          return;
+        }
+      } else if(TrendD1 == Against) {
+        if(fxTrendD1 != "SELL") {
+          return;
+        }
+      }
+      // W1
+      if(TrendW1 == Follow) {
+        if(fxTrendW1 != "BUY") {
+          return;
+        }
+      } else if(TrendW1 == Against) {
+        if(fxTrendW1 != "SELL") {
+          return;
+        }
+      }
+      // MN
+      if(TrendMN == Follow) {
+        if(fxTrendMN != "BUY") {
+          return;
+        }
+      } else if(TrendMN == Against) {
+        if(fxTrendMN != "SELL") {
+          return;
+        }
+      }
     }
+
     sl = upArrow;
     tp = Ask + (Ask - upArrow);
     // entry 1
@@ -322,7 +459,103 @@ void OnTick(){
           lastEntry2 = Time[0];
           return;
         }
+      } else if(Trend == 3){
+        if(lastErrorLog4 != Time[0]) {
+          Print( "M1=" + fxTrendM1 + ", M5=" + fxTrendM5 + ", M15=" + fxTrendM15 + ", M30=" + fxTrendM30 + ", H1=" + fxTrendH1 + ", H4=" + fxTrendH4 + ", D1=" + fxTrendD1 + ", W1=" + fxTrendW1 + ", MN=" + fxTrendMN );
+          lastErrorLog4 = Time[0];
+        }
+        // M1
+        if(TrendM1 == Follow) {
+          if(fxTrendM1 != "BUY") {
+            return;
+          }
+        } else if(TrendM1 == Against) {
+          if(fxTrendM1 != "SELL") {
+            return;
+          }
+        }
+        // M5
+        if(TrendM5 == Follow) {
+          if(fxTrendM5 != "BUY") {
+            return;
+          }
+        } else if(TrendM5 == Against) {
+          if(fxTrendM5 != "SELL") {
+            return;
+          }
+        }
+        // M15
+        if(TrendM15 == Follow) {
+          if(fxTrendM15 != "BUY") {
+            return;
+          }
+        } else if(TrendM15 == Against) {
+          if(fxTrendM15 != "SELL") {
+            return;
+          }
+        }
+        // M30
+        if(TrendM30 == Follow) {
+          if(fxTrendM30 != "BUY") {
+            return;
+          }
+        } else if(TrendM30 == Against) {
+          if(fxTrendM30 != "SELL") {
+            return;
+          }
+        }
+        // H1
+        if(TrendH1 == Follow) {
+          if(fxTrendH1 != "BUY") {
+            return;
+          }
+        } else if(TrendH1 == Against) {
+          if(fxTrendH1 != "SELL") {
+            return;
+          }
+        }
+        // H4
+        if(TrendH4 == Follow) {
+          if(fxTrendH4 != "BUY") {
+            return;
+          }
+        } else if(TrendH4 == Against) {
+          if(fxTrendH4 != "SELL") {
+            return;
+          }
+        }
+        // D1
+        if(TrendD1 == Follow) {
+          if(fxTrendD1 != "BUY") {
+            return;
+          }
+        } else if(TrendD1 == Against) {
+          if(fxTrendD1 != "SELL") {
+            return;
+          }
+        }
+        // W1
+        if(TrendW1 == Follow) {
+          if(fxTrendW1 != "BUY") {
+            return;
+          }
+        } else if(TrendW1 == Against) {
+          if(fxTrendW1 != "SELL") {
+            return;
+          }
+        }
+        // MN
+        if(TrendMN == Follow) {
+          if(fxTrendMN != "BUY") {
+            return;
+          }
+        } else if(TrendMN == Against) {
+          if(fxTrendMN != "SELL") {
+            return;
+          }
+        }
       }
+
       sl = upArrow;
       // entry 2
       if(StopEntry) {
@@ -376,7 +609,103 @@ void OnTick(){
         lastEntry2 = Time[0];
         return;
       }
+    } else if(Trend == 3){
+      if(lastErrorLog4 != Time[0]) {
+        Print( "M1=" + fxTrendM1 + ", M5=" + fxTrendM5 + ", M15=" + fxTrendM15 + ", M30=" + fxTrendM30 + ", H1=" + fxTrendH1 + ", H4=" + fxTrendH4 + ", D1=" + fxTrendD1 + ", W1=" + fxTrendW1 + ", MN=" + fxTrendMN );
+        lastErrorLog4 = Time[0];
+      }
+      // M1
+      if(TrendM1 == Follow) {
+        if(fxTrendM1 != "SELL") {
+          return;
+        }
+      } else if(TrendM1 == Against) {
+        if(fxTrendM1 != "BUY") {
+          return;
+        }
+      }
+      // M5
+      if(TrendM5 == Follow) {
+        if(fxTrendM5 != "SELL") {
+          return;
+        }
+      } else if(TrendM5 == Against) {
+        if(fxTrendM5 != "BUY") {
+          return;
+        }
+      }
+      // M15
+      if(TrendM15 == Follow) {
+        if(fxTrendM15 != "SELL") {
+          return;
+        }
+      } else if(TrendM15 == Against) {
+        if(fxTrendM15 != "BUY") {
+          return;
+        }
+      }
+      // M30
+      if(TrendM30 == Follow) {
+        if(fxTrendM30 != "SELL") {
+          return;
+        }
+      } else if(TrendM30 == Against) {
+        if(fxTrendM30 != "BUY") {
+          return;
+        }
+      }
+      // H1
+      if(TrendH1 == Follow) {
+        if(fxTrendH1 != "SELL") {
+          return;
+        }
+      } else if(TrendH1 == Against) {
+        if(fxTrendH1 != "BUY") {
+          return;
+        }
+      }
+      // H4
+      if(TrendH4 == Follow) {
+        if(fxTrendH4 != "SELL") {
+          return;
+        }
+      } else if(TrendH4 == Against) {
+        if(fxTrendH4 != "BUY") {
+          return;
+        }
+      }
+      // D1
+      if(TrendD1 == Follow) {
+        if(fxTrendD1 != "SELL") {
+          return;
+        }
+      } else if(TrendD1 == Against) {
+        if(fxTrendD1 != "BUY") {
+          return;
+        }
+      }
+      // W1
+      if(TrendW1 == Follow) {
+        if(fxTrendW1 != "SELL") {
+          return;
+        }
+      } else if(TrendW1 == Against) {
+        if(fxTrendW1 != "BUY") {
+          return;
+        }
+      }
+      // MN
+      if(TrendMN == Follow) {
+        if(fxTrendMN != "SELL") {
+          return;
+        }
+      } else if(TrendMN == Against) {
+        if(fxTrendMN != "BUY") {
+          return;
+        }
+      }
     }
+
     sl = downArrow;
     tp = Bid - (downArrow - Bid);
     // entry 1
@@ -429,7 +758,103 @@ void OnTick(){
           lastEntry2 = Time[0];
           return;
         }
+      } else if(Trend == 3){
+        if(lastErrorLog4 != Time[0]) {
+          Print( "M1=" + fxTrendM1 + ", M5=" + fxTrendM5 + ", M15=" + fxTrendM15 + ", M30=" + fxTrendM30 + ", H1=" + fxTrendH1 + ", H4=" + fxTrendH4 + ", D1=" + fxTrendD1 + ", W1=" + fxTrendW1 + ", MN=" + fxTrendMN );
+          lastErrorLog4 = Time[0];
+        }
+        // M1
+        if(TrendM1 == Follow) {
+          if(fxTrendM1 != "SELL") {
+            return;
+          }
+        } else if(TrendM1 == Against) {
+          if(fxTrendM1 != "BUY") {
+            return;
+          }
+        }
+        // M5
+        if(TrendM5 == Follow) {
+          if(fxTrendM5 != "SELL") {
+            return;
+          }
+        } else if(TrendM5 == Against) {
+          if(fxTrendM5 != "BUY") {
+            return;
+          }
+        }
+        // M15
+        if(TrendM15 == Follow) {
+          if(fxTrendM15 != "SELL") {
+            return;
+          }
+        } else if(TrendM15 == Against) {
+          if(fxTrendM15 != "BUY") {
+            return;
+          }
+        }
+        // M30
+        if(TrendM30 == Follow) {
+          if(fxTrendM30 != "SELL") {
+            return;
+          }
+        } else if(TrendM30 == Against) {
+          if(fxTrendM30 != "BUY") {
+            return;
+          }
+        }
+        // H1
+        if(TrendH1 == Follow) {
+          if(fxTrendH1 != "SELL") {
+            return;
+          }
+        } else if(TrendH1 == Against) {
+          if(fxTrendH1 != "BUY") {
+            return;
+          }
+        }
+        // H4
+        if(TrendH4 == Follow) {
+          if(fxTrendH4 != "SELL") {
+            return;
+          }
+        } else if(TrendH4 == Against) {
+          if(fxTrendH4 != "BUY") {
+            return;
+          }
+        }
+        // D1
+        if(TrendD1 == Follow) {
+          if(fxTrendD1 != "SELL") {
+            return;
+          }
+        } else if(TrendD1 == Against) {
+          if(fxTrendD1 != "BUY") {
+            return;
+          }
+        }
+        // W1
+        if(TrendW1 == Follow) {
+          if(fxTrendW1 != "SELL") {
+            return;
+          }
+        } else if(TrendW1 == Against) {
+          if(fxTrendW1 != "BUY") {
+            return;
+          }
+        }
+        // MN
+        if(TrendMN == Follow) {
+          if(fxTrendMN != "SELL") {
+            return;
+          }
+        } else if(TrendMN == Against) {
+          if(fxTrendMN != "BUY") {
+            return;
+          }
+        }
       }
+
       sl = downArrow;
       // entry 2
       if(StopEntry) {
