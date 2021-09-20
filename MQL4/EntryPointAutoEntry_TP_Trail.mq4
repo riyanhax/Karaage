@@ -21,6 +21,7 @@ extern int DelayPercent = 20;
 extern bool Reverse = false;
 extern bool StopEntry = false;
 extern int LimitCandle = 1;
+extern int SLx = 1;
 extern bool ManualSL = false;
 extern int SLPoints = 0;
 extern string Explanation2 = "/////// TRAILING SETTING ///////";
@@ -420,7 +421,11 @@ void OnTick(){
         sl = 0;
       }
     } else {
-      sl = upArrow;
+      if(StopEntry) {
+        sl = High[1] - (High[1] - upArrow)*SLx;
+      } else {
+        sl = Ask - (Ask - upArrow)*SLx;
+      }
     }
     tp = Ask + (Ask - upArrow);
     // entry 1
@@ -581,7 +586,11 @@ void OnTick(){
           sl = 0;
         }
       } else {
-        sl = upArrow;
+        if(StopEntry) {
+          sl = High[1] - (High[1] - upArrow)*SLx;
+        } else {
+          sl = Ask - (Ask - upArrow)*SLx;
+        }
       }
       // entry 2
       if(StopEntry) {
@@ -743,7 +752,11 @@ void OnTick(){
         sl = 0;
       }
     } else {
-      sl = downArrow;
+      if(StopEntry) {
+        sl = Low[1] + (downArrow - Low[1])*SLx;
+      } else {
+        sl = Bid + (downArrow - Bid)*SLx;
+      }
     }
     tp = Bid - (downArrow - Bid);
     // entry 1
