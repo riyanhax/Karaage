@@ -5,6 +5,13 @@ enum trailingMethod {
   TrendLine = 1,
 };
 
+enum trendSetting {
+  None_ = 0,
+  TrendFollow = 1,
+  TrendAgainst = 2,
+  Detail = 3,
+};
+
 enum trend {
   None = 0,
   Follow = 1,
@@ -38,9 +45,8 @@ extern bool UseDEMA = false;
 extern string StartTime = "00:00";
 extern string EndTime = "23:59";
 extern string Explanation4 = "/////// TREND SETTINGS ///////";
-extern string Explanation5 = "0:None, 1:TrendFollow, 2:TrendAgainst, 3:Detail";
-extern int Trend = 0;
-extern string Explanation6 = "↓↓↓ Detail ↓↓↓";
+extern trendSetting Trend = None_;
+extern string Explanation5 = "↓↓↓ Detail ↓↓↓";
 extern trend TrendM1 = None;
 extern trend TrendM5 = None;
 extern trend TrendM15 = None;
@@ -50,7 +56,7 @@ extern trend TrendH4 = None;
 extern trend TrendD1 = None;
 extern trend TrendW1 = None;
 extern trend TrendMN = None;
-extern string Explanation7 = "/////// OTHER SETTINGS ///////";
+extern string Explanation6 = "/////// OTHER SETTINGS ///////";
 extern bool BackTest = false;
 
 datetime lastEntry1 = 0;
@@ -268,10 +274,10 @@ void OnTick(){
   string fxTrendD1;
   string fxTrendW1;
   string fxTrendMN;
-  if(Trend == 1 || Trend == 2) {
+  if(Trend == TrendFollow || Trend == TrendAgainst) {
     trendLineUp = iCustom( Symbol(), PERIOD_CURRENT, "Market\\FX Trend", "", 6, 3.0, "", false, 1.0, true, false, true, true, true, Lime, DeepPink, 0, Black, 5000, "", 0, false, 80.0, false, false, false, false, false, "alert.wav", "", false, false, false, false, false, false, false, false, false, 12, 1 );
     trendLineDown = iCustom( Symbol(), PERIOD_CURRENT, "Market\\FX Trend", "", 6, 3.0, "", false, 1.0, true, false, true, true, true, Lime, DeepPink, 0, Black, 5000, "", 0, false, 80.0, false, false, false, false, false, "alert.wav", "", false, false, false, false, false, false, false, false, false, 13, 1 );
-  } else if(Trend == 3) {
+  } else if(Trend == Detail) {
     if(BackTest) {
       iCustom( Symbol(), PERIOD_CURRENT, "Market\\FX Trend", "", 6, 3.0, "", false, 1.0, false, true, true, true, true, Lime, DeepPink, 0, Black, 5000, "", 0, false, 80.0, false, false, false, false, false, "alert.wav", "", true, true, true, true, true, true, true, true, true, 12, 1 );
       ChartRedraw(0);
@@ -304,21 +310,21 @@ void OnTick(){
       }
       return;
     }
-    if(Trend == 1) {
+    if(Trend == TrendFollow) {
       if(trendLineUp == EMPTY_VALUE || trendLineUp == 0) {
         Print( "SKIP Buy [Trend Down]" );
         lastEntry1 = Time[0];
         lastEntry2 = Time[0];
         return;
       }
-    } else if(Trend == 2) {
+    } else if(Trend == TrendAgainst) {
       if(trendLineDown == EMPTY_VALUE || trendLineDown == 0) {
         Print( "SKIP Buy [Trend Up]" );
         lastEntry1 = Time[0];
         lastEntry2 = Time[0];
         return;
       }
-    } else if(Trend == 3){
+    } else if(Trend == Detail){
       if(lastErrorLog4 != Time[0]) {
         Print( "Buy M1=" + fxTrendM1 + ", M5=" + fxTrendM5 + ", M15=" + fxTrendM15 + ", M30=" + fxTrendM30 + ", H1=" + fxTrendH1 + ", H4=" + fxTrendH4 + ", D1=" + fxTrendD1 + ", W1=" + fxTrendW1 + ", MN=" + fxTrendMN );
         lastErrorLog4 = Time[0];
@@ -469,21 +475,21 @@ void OnTick(){
         }
         return;
       }
-      if(Trend == 1) {
+      if(Trend == TrendFollow) {
         if(trendLineUp == EMPTY_VALUE || trendLineUp == 0) {
           Print( "SKIP Buy [Trend Down]" );
           lastEntry1 = Time[0];
           lastEntry2 = Time[0];
           return;
         }
-      } else if(Trend == 2) {
+      } else if(Trend == TrendAgainst) {
         if(trendLineDown == EMPTY_VALUE || trendLineDown == 0) {
           Print( "SKIP Buy [Trend Up]" );
           lastEntry1 = Time[0];
           lastEntry2 = Time[0];
           return;
         }
-      } else if(Trend == 3){
+      } else if(Trend == Detail){
         if(lastErrorLog4 != Time[0]) {
           Print( "Buy M1=" + fxTrendM1 + ", M5=" + fxTrendM5 + ", M15=" + fxTrendM15 + ", M30=" + fxTrendM30 + ", H1=" + fxTrendH1 + ", H4=" + fxTrendH4 + ", D1=" + fxTrendD1 + ", W1=" + fxTrendW1 + ", MN=" + fxTrendMN );
           lastErrorLog4 = Time[0];
@@ -635,21 +641,21 @@ void OnTick(){
       }
       return;
     }
-    if(Trend == 1) {
+    if(Trend == TrendFollow) {
       if(trendLineDown == EMPTY_VALUE || trendLineDown == 0) {
         Print( "SKIP Sell [Trend Up]" );
         lastEntry1 = Time[0];
         lastEntry2 = Time[0];
         return;
       }
-    } else if(Trend == 2) {
+    } else if(Trend == TrendAgainst) {
       if(trendLineUp == EMPTY_VALUE || trendLineUp == 0) {
         Print( "SKIP Sell [Trend Sell]" );
         lastEntry1 = Time[0];
         lastEntry2 = Time[0];
         return;
       }
-    } else if(Trend == 3){
+    } else if(Trend == Detail){
       if(lastErrorLog4 != Time[0]) {
         Print( "Sell M1=" + fxTrendM1 + ", M5=" + fxTrendM5 + ", M15=" + fxTrendM15 + ", M30=" + fxTrendM30 + ", H1=" + fxTrendH1 + ", H4=" + fxTrendH4 + ", D1=" + fxTrendD1 + ", W1=" + fxTrendW1 + ", MN=" + fxTrendMN );
         lastErrorLog4 = Time[0];
@@ -800,21 +806,21 @@ void OnTick(){
         }
         return;
       }
-      if(Trend == 1) {
+      if(Trend == TrendFollow) {
         if(trendLineDown == EMPTY_VALUE || trendLineDown == 0) {
           Print( "SKIP Sell [Trend Up]" );
           lastEntry1 = Time[0];
           lastEntry2 = Time[0];
           return;
         }
-      } else if(Trend == 2) {
+      } else if(Trend == TrendAgainst) {
         if(trendLineUp == EMPTY_VALUE || trendLineUp == 0) {
           Print( "SKIP Sell [Trend Sell]" );
           lastEntry1 = Time[0];
           lastEntry2 = Time[0];
           return;
         }
-      } else if(Trend == 3){
+      } else if(Trend == Detail){
         if(lastErrorLog4 != Time[0]) {
           Print( "Sell M1=" + fxTrendM1 + ", M5=" + fxTrendM5 + ", M15=" + fxTrendM15 + ", M30=" + fxTrendM30 + ", H1=" + fxTrendH1 + ", H4=" + fxTrendH4 + ", D1=" + fxTrendD1 + ", W1=" + fxTrendW1 + ", MN=" + fxTrendMN );
           lastErrorLog4 = Time[0];
