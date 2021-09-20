@@ -208,6 +208,7 @@ void OnTick(){
       immediately = false;
       ObjectSetInteger(0, buttonImmed, OBJPROP_COLOR, DeepPink); // 文字色
       ObjectSetInteger(0, buttonImmed, OBJPROP_BGCOLOR, LightCyan); // ボタン色
+      ObjectSetInteger(0, buttonImmed, OBJPROP_STATE, false); // ボタン非押下
       Print( "immediately = " + immediately );
     }
     return;
