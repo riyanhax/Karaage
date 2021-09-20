@@ -274,6 +274,7 @@ void OnTick(){
   } else if(Trend == 3) {
     if(BackTest) {
       iCustom( Symbol(), PERIOD_CURRENT, "Market\\FX Trend", "", 6, 3.0, "", false, 1.0, false, true, true, true, true, Lime, DeepPink, 0, Black, 5000, "", 0, false, 80.0, false, false, false, false, false, "alert.wav", "", true, true, true, true, true, true, true, true, true, 12, 1 );
+      ChartRedraw(0);
     }
     fxTrendM1 = StringTrimRight( StringTrimLeft( ObjectDescription( "FXTtrend1" ) ) ) ;
     fxTrendM5 = StringTrimRight( StringTrimLeft( ObjectDescription( "FXTtrend2" ) ) );
