@@ -269,16 +269,16 @@ void OnTick(){
     trendLineUp = iCustom( Symbol(), PERIOD_CURRENT, "Market\\FX Trend", "", 6, 3.0, "", false, 1.0, true, false, true, true, true, Lime, DeepPink, 0, Black, 5000, "", 0, false, 80.0, false, false, false, false, false, "alert.wav", "", false, false, false, false, false, false, false, false, false, 12, 1 );
     trendLineDown = iCustom( Symbol(), PERIOD_CURRENT, "Market\\FX Trend", "", 6, 3.0, "", false, 1.0, true, false, true, true, true, Lime, DeepPink, 0, Black, 5000, "", 0, false, 80.0, false, false, false, false, false, "alert.wav", "", false, false, false, false, false, false, false, false, false, 13, 1 );
   } else if(Trend == 3) {
-    trendLineUp = iCustom( Symbol(), PERIOD_CURRENT, "Market\\FX Trend", "", 6, 3.0, "", false, 1.0, false, false, true, true, true, Lime, DeepPink, 0, Black, 5000, "", 0, false, 80.0, false, false, false, false, false, "alert.wav", "", true, true, true, true, true, true, true, true, true, 12, 1 );
-    fxTrendM1 = ObjectDescription( "FXTtrend1" );
-    fxTrendM5 = ObjectDescription( "FXTtrend2" );
-    fxTrendM15 = ObjectDescription( "FXTtrend3" );
-    fxTrendM30 = ObjectDescription( "FXTtrend4" );
-    fxTrendH1 = ObjectDescription( "FXTtrend5" );
-    fxTrendH4 = ObjectDescription( "FXTtrend6" );
-    fxTrendD1 = ObjectDescription( "FXTtrend7" );
-    fxTrendW1 = ObjectDescription( "FXTtrend8" );
-    fxTrendMN = ObjectDescription( "FXTtrend9" );
+    iCustom( Symbol(), PERIOD_CURRENT, "Market\\FX Trend", "", 6, 3.0, "", false, 1.0, false, true, true, true, true, Lime, DeepPink, 0, Black, 5000, "", 0, false, 80.0, false, false, false, false, false, "alert.wav", "", true, true, true, true, true, true, true, true, true, 12, 1 );
+    fxTrendM1 = StringTrimRight( StringTrimLeft( ObjectDescription( "FXTtrend1" ) ) ) ;
+    fxTrendM5 = StringTrimRight( StringTrimLeft( ObjectDescription( "FXTtrend2" ) ) );
+    fxTrendM15 = StringTrimRight( StringTrimLeft( ObjectDescription( "FXTtrend3" ) ) );
+    fxTrendM30 = StringTrimRight( StringTrimLeft( ObjectDescription( "FXTtrend4" ) ) );
+    fxTrendH1 = StringTrimRight( StringTrimLeft( ObjectDescription( "FXTtrend5" ) ) );
+    fxTrendH4 = StringTrimRight( StringTrimLeft( ObjectDescription( "FXTtrend6" ) ) );
+    fxTrendD1 = StringTrimRight( StringTrimLeft( ObjectDescription( "FXTtrend7" ) ) );
+    fxTrendW1 = StringTrimRight( StringTrimLeft( ObjectDescription( "FXTtrend8" ) ) );
+    fxTrendMN = StringTrimRight( StringTrimLeft( ObjectDescription( "FXTtrend9" ) ) );
   }
 
   // TP Buy
