@@ -21,6 +21,8 @@ extern int DelayPercent = 20;
 extern bool Reverse = true;
 extern bool StopEntry = false;
 extern int LimitCandle = 1;
+extern bool ManualSL = false;
+extern int SLPoints = 0;
 extern string Explanation2 = "/////// TRAILING SETTING ///////";
 extern bool TrailEntry = true;
 extern int TrailMagic = 130;
@@ -29,7 +31,7 @@ extern trailingMethod Method = Parabolic;
 extern double ParabolicStep = 0.02;
 extern double ParabolicMax = 0.2;
 extern int TPPoints = 0;
-extern string Explanation3 = "/////// EntryPoint SETTING ///////";
+extern string Explanation3 = "/////// EA (EntryPointPro) SETTING ///////";
 extern int MaxSizeOfSignalCandlePoints = 1000;
 extern bool UseDEMA = false;
 extern string StartTime = "00:00";
@@ -407,7 +409,19 @@ void OnTick(){
       }
     }
 
-    sl = upArrow;
+    if(ManualSL) {
+      if(SLPoints > 0) {
+        if(StopEntry) {
+          sl = High[1]+MarketInfo( Symbol(), MODE_SPREAD )*Point - SLPoints*Point;
+        } else {
+          sl = Ask - SLPoints*Point;
+        }
+      } else {
+        sl = 0;
+      }
+    } else {
+      sl = upArrow;
+    }
     tp = Ask + (Ask - upArrow);
     // entry 1
     if(StopEntry) {
@@ -556,7 +570,19 @@ void OnTick(){
         }
       }
 
-      sl = upArrow;
+      if(ManualSL) {
+        if(SLPoints > 0) {
+          if(StopEntry) {
+            sl = High[1]+MarketInfo( Symbol(), MODE_SPREAD )*Point - SLPoints*Point;
+          } else {
+            sl = Ask - SLPoints*Point;
+          }
+        } else {
+          sl = 0;
+        }
+      } else {
+        sl = upArrow;
+      }
       // entry 2
       if(StopEntry) {
         ticket = OrderSend( Symbol(), OP_BUYSTOP, lots, High[1]+MarketInfo( Symbol(), MODE_SPREAD )*Point, 3, sl, 0, TrailComm, TrailMagic, 0, Blue );
@@ -706,7 +732,19 @@ void OnTick(){
       }
     }
 
-    sl = downArrow;
+    if(ManualSL) {
+      if(SLPoints > 0) {
+        if(StopEntry) {
+          sl = Low[1]-MarketInfo( Symbol(), MODE_SPREAD )*Point + SLPoints*Point;
+        } else {
+          sl = Bid + SLPoints*Point;
+        }
+      } else {
+        sl = 0;
+      }
+    } else {
+      sl = downArrow;
+    }
     tp = Bid - (downArrow - Bid);
     // entry 1
     if(StopEntry) {
@@ -855,7 +893,19 @@ void OnTick(){
         }
       }
 
-      sl = downArrow;
+      if(ManualSL) {
+        if(SLPoints > 0) {
+          if(StopEntry) {
+            sl = Low[1]-MarketInfo( Symbol(), MODE_SPREAD )*Point + SLPoints*Point;
+          } else {
+            sl = Bid + SLPoints*Point;
+          }
+        } else {
+          sl = 0;
+        }
+      } else {
+        sl = downArrow;
+      }
       // entry 2
       if(StopEntry) {
         ticket = OrderSend( Symbol(), OP_SELLSTOP, lots, Low[1]-MarketInfo( Symbol(), MODE_SPREAD )*Point, 3, sl, 0, TrailComm, TrailMagic, 0, Red );
