@@ -16,9 +16,9 @@ extern int TPMagic = 120;
 extern string TPComm = "Entry Point Auto TP";
 extern int BalanceParLot = 20000;
 extern int MaxSpreadPoints = 6;
-extern bool Delay = true;
+extern bool Delay = false;
 extern int DelayPercent = 20;
-extern bool Reverse = true;
+extern bool Reverse = false;
 extern bool StopEntry = false;
 extern int LimitCandle = 1;
 extern bool ManualSL = false;
@@ -27,7 +27,7 @@ extern string Explanation2 = "/////// TRAILING SETTING ///////";
 extern bool TrailEntry = true;
 extern int TrailMagic = 130;
 extern string TrailComm = "Entry Point Auto Trail";
-extern trailingMethod Method = Parabolic;
+extern trailingMethod Method = TrendLine;
 extern double ParabolicStep = 0.02;
 extern double ParabolicMax = 0.2;
 extern int TPPoints = 0;
@@ -314,7 +314,7 @@ void OnTick(){
       }
     } else if(Trend == 3){
       if(lastErrorLog4 != Time[0]) {
-        Print( "M1=" + fxTrendM1 + ", M5=" + fxTrendM5 + ", M15=" + fxTrendM15 + ", M30=" + fxTrendM30 + ", H1=" + fxTrendH1 + ", H4=" + fxTrendH4 + ", D1=" + fxTrendD1 + ", W1=" + fxTrendW1 + ", MN=" + fxTrendMN );
+        Print( "Buy M1=" + fxTrendM1 + ", M5=" + fxTrendM5 + ", M15=" + fxTrendM15 + ", M30=" + fxTrendM30 + ", H1=" + fxTrendH1 + ", H4=" + fxTrendH4 + ", D1=" + fxTrendD1 + ", W1=" + fxTrendW1 + ", MN=" + fxTrendMN );
         lastErrorLog4 = Time[0];
       }
       // M1
@@ -475,7 +475,7 @@ void OnTick(){
         }
       } else if(Trend == 3){
         if(lastErrorLog4 != Time[0]) {
-          Print( "M1=" + fxTrendM1 + ", M5=" + fxTrendM5 + ", M15=" + fxTrendM15 + ", M30=" + fxTrendM30 + ", H1=" + fxTrendH1 + ", H4=" + fxTrendH4 + ", D1=" + fxTrendD1 + ", W1=" + fxTrendW1 + ", MN=" + fxTrendMN );
+          Print( "Buy M1=" + fxTrendM1 + ", M5=" + fxTrendM5 + ", M15=" + fxTrendM15 + ", M30=" + fxTrendM30 + ", H1=" + fxTrendH1 + ", H4=" + fxTrendH4 + ", D1=" + fxTrendD1 + ", W1=" + fxTrendW1 + ", MN=" + fxTrendMN );
           lastErrorLog4 = Time[0];
         }
         // M1
@@ -637,7 +637,7 @@ void OnTick(){
       }
     } else if(Trend == 3){
       if(lastErrorLog4 != Time[0]) {
-        Print( "M1=" + fxTrendM1 + ", M5=" + fxTrendM5 + ", M15=" + fxTrendM15 + ", M30=" + fxTrendM30 + ", H1=" + fxTrendH1 + ", H4=" + fxTrendH4 + ", D1=" + fxTrendD1 + ", W1=" + fxTrendW1 + ", MN=" + fxTrendMN );
+        Print( "Sell M1=" + fxTrendM1 + ", M5=" + fxTrendM5 + ", M15=" + fxTrendM15 + ", M30=" + fxTrendM30 + ", H1=" + fxTrendH1 + ", H4=" + fxTrendH4 + ", D1=" + fxTrendD1 + ", W1=" + fxTrendW1 + ", MN=" + fxTrendMN );
         lastErrorLog4 = Time[0];
       }
       // M1
@@ -798,7 +798,7 @@ void OnTick(){
         }
       } else if(Trend == 3){
         if(lastErrorLog4 != Time[0]) {
-          Print( "M1=" + fxTrendM1 + ", M5=" + fxTrendM5 + ", M15=" + fxTrendM15 + ", M30=" + fxTrendM30 + ", H1=" + fxTrendH1 + ", H4=" + fxTrendH4 + ", D1=" + fxTrendD1 + ", W1=" + fxTrendW1 + ", MN=" + fxTrendMN );
+          Print( "Sell M1=" + fxTrendM1 + ", M5=" + fxTrendM5 + ", M15=" + fxTrendM15 + ", M30=" + fxTrendM30 + ", H1=" + fxTrendH1 + ", H4=" + fxTrendH4 + ", D1=" + fxTrendD1 + ", W1=" + fxTrendW1 + ", MN=" + fxTrendMN );
           lastErrorLog4 = Time[0];
         }
         // M1
