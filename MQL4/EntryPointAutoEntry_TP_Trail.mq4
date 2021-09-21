@@ -46,6 +46,12 @@ extern int MaxSizeOfSignalCandlePoints = 1000;
 extern bool UseDEMA = false;
 extern string StartTime = "00:00";
 extern string EndTime = "23:59";
+extern bool Clculate = false;
+extern int ClculateDays = 30;
+extern int ClculateStartPoints = 10;
+extern int ClculateEndPoints = 100;
+extern int ClculateStepPoints = 10;
+extern int MinEntry = 150;
 extern string Explanation4 = "/////// TREND SETTINGS ///////";
 extern trendSetting Trend = None_;
 extern string Explanation5 = "↓↓↓ Detail ↓↓↓";
@@ -69,9 +75,17 @@ datetime lastErrorLog3 = 0;
 datetime lastErrorLog4 = 0;
 double lots;
 bool firstSL = true;
+int maxSizeOfSignalCandlePoints;
+int lastClculateDay = 0;
 
 void OnInit(){
   lots = AccountBalance() / BalanceParLot;
+
+  if(Clculate) {
+    maxSizeOfSignalCandlePoints = ClculateWinRate();
+  } else {
+    maxSizeOfSignalCandlePoints = MaxSizeOfSignalCandlePoints;
+  }
 }
 
 void OnTick(){
@@ -87,6 +101,11 @@ void OnTick(){
   int tpEntryCnt;
   int errCnt;
 
+  if(BackTest && Clculate) {
+    if(lastClculateDay != TimeDay( Time[0] )) {
+      maxSizeOfSignalCandlePoints = ClculateWinRate();
+    }
+  }
 
   // 一定時間経過した逆指値注文を取り消す
   if(StopEntry) {
@@ -261,9 +280,9 @@ void OnTick(){
   // パラメータ取得
   double upArrow;
   double downArrow;
-  upArrow = iCustom( Symbol(), PERIOD_CURRENT, "Market\\Entry Points Pro", MaxSizeOfSignalCandlePoints, true, "", UseDEMA, false, 500, "", true, "", StartTime, EndTime, "", false, 0, Red, LightCyan, White, 9, "", false, false, false, "alert2.wav", 2, 1 ); // Blue Arrow
+  upArrow = iCustom( Symbol(), PERIOD_CURRENT, "Market\\Entry Points Pro", maxSizeOfSignalCandlePoints, true, "", UseDEMA, false, 500, "", true, "", StartTime, EndTime, "", false, 0, Red, LightCyan, White, 9, "", false, false, false, "alert2.wav", 2, 1 ); // Blue Arrow
   if(upArrow == EMPTY_VALUE || upArrow == 0) {
-    downArrow = iCustom( Symbol(), PERIOD_CURRENT, "Market\\Entry Points Pro", MaxSizeOfSignalCandlePoints, true, "", UseDEMA, true, 500, "", true, "", StartTime, EndTime, "", false, 0, Red, LightCyan, White, 9, "", false, false, false, "alert2.wav", 3, 1 ); // Red Arrow
+    downArrow = iCustom( Symbol(), PERIOD_CURRENT, "Market\\Entry Points Pro", maxSizeOfSignalCandlePoints, true, "", UseDEMA, true, 500, "", true, "", StartTime, EndTime, "", false, 0, Red, LightCyan, White, 9, "", false, false, false, "alert2.wav", 3, 1 ); // Red Arrow
   }
   double trendLineUp;
   double trendLineDown;
@@ -280,10 +299,8 @@ void OnTick(){
     trendLineUp = iCustom( Symbol(), PERIOD_CURRENT, "Market\\FX Trend", "", 6, 3.0, "", false, 1.0, true, false, true, true, true, Lime, DeepPink, 0, Black, 5000, "", 0, false, 80.0, false, false, false, false, false, "alert.wav", "", false, false, false, false, false, false, false, false, false, 12, 1 );
     trendLineDown = iCustom( Symbol(), PERIOD_CURRENT, "Market\\FX Trend", "", 6, 3.0, "", false, 1.0, true, false, true, true, true, Lime, DeepPink, 0, Black, 5000, "", 0, false, 80.0, false, false, false, false, false, "alert.wav", "", false, false, false, false, false, false, false, false, false, 13, 1 );
   } else if(Trend == Detail) {
-    if(BackTest) {
-      iCustom( Symbol(), PERIOD_CURRENT, "Market\\FX Trend", "", 6, 3.0, "", false, 1.0, false, true, true, true, true, Lime, DeepPink, 0, Black, 5000, "", 0, false, 80.0, false, false, false, false, false, "alert.wav", "", true, true, true, true, true, true, true, true, true, 12, 1 );
-      ChartRedraw(0);
-    }
+    iCustom( Symbol(), PERIOD_CURRENT, "Market\\FX Trend", "", 6, 3.0, "", false, 1.0, false, true, true, true, true, Lime, DeepPink, 0, Black, 5000, "", 0, false, 80.0, false, false, false, false, false, "alert.wav", "", true, true, true, true, true, true, true, true, true, 12, 1 );
+    ChartRedraw(0);
     fxTrendM1 = StringTrimRight( StringTrimLeft( ObjectDescription( "FXTtrend1" ) ) ) ;
     fxTrendM5 = StringTrimRight( StringTrimLeft( ObjectDescription( "FXTtrend2" ) ) );
     fxTrendM15 = StringTrimRight( StringTrimLeft( ObjectDescription( "FXTtrend3" ) ) );
@@ -1070,4 +1087,58 @@ void OnTick(){
       }
     }
   }
+}
+
+int ClculateWinRate() {
+  int bestWinRate = 0;
+  int bestPoints;
+  int tmpWinRate;
+  int tmpPoints = ClculateStartPoints;
+  int i;
+  string objName;
+  string pl;
+  int win;
+  int lose;
+
+  while(tmpPoints <= ClculateEndPoints) {
+    // パラメーター表示
+    iCustom( Symbol(), PERIOD_CURRENT, "Market\\Entry Points Pro", tmpPoints, true, "", UseDEMA, false, 500, "", true, "", StartTime, EndTime, "", true, ClculateDays, Red, LightCyan, White, 9, "", false, false, false, "alert2.wav", 2, 1 );
+    ChartRedraw(0);
+
+    // 勝率計算
+    win = 0;
+    lose = 0;
+    for(i=0; i<ObjectsTotal(); i++){
+      objName = ObjectName(i);
+      if(StringFind( objName, "dnTrend", 0) >= 0 || StringFind( objName, "upTrend", 0) >= 0) {
+        if(StringFind( objName, " t", 30 ) > 0) {
+          pl = ObjectDescription( objName );
+          if(StringFind( pl, "+", 0 ) >= 0) {
+            win++;
+          } else if(StringFind( pl, "-", 0 ) >= 0) {
+            lose++;
+          }
+        }
+      }
+    }
+    if(win+lose == 0) {
+      tmpWinRate = 0;
+    } else {
+      tmpWinRate = win*100 / (win+lose);
+    }
+    Print( tmpPoints + ": " + tmpWinRate + "%[Win: " + win + " / Lose: " + lose + "]" );
+
+    // 最大値保存
+    if(bestWinRate <= tmpWinRate && win+lose >= MinEntry) {
+      bestWinRate = tmpWinRate;
+      bestPoints = tmpPoints;
+    }
+
+    // インクリメント
+    tmpPoints = tmpPoints + ClculateStepPoints;
+  }
+
+  lastClculateDay = TimeDay( Time[0] );
+  Print( "Best WinRate MaxSizeOfSignalCandlePoints: " + bestPoints + "[" + bestWinRate + "%]" );
+  return bestPoints;
 }
