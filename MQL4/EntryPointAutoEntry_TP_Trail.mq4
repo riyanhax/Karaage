@@ -25,12 +25,14 @@ extern int BalanceParLot = 20000;
 extern int MaxSpreadPoints = 6;
 extern bool Delay = false;
 extern int DelayPercent = 20;
-extern bool Reverse = false;
+extern bool Reverse = false; // 逆に動いている場合にエントリーする
 extern bool StopEntry = false;
 extern int LimitCandle = 1;
-extern int SLx = 1;
+extern double TPx = 1.0;
+extern double SLx = 1.0;
 extern bool ManualSL = false;
 extern int SLPoints = 0;
+extern bool ReverseEntry = false; // BuyとSellを逆にする
 extern string Explanation2 = "/////// TRAILING SETTINGS ///////";
 extern bool TrailEntry = true;
 extern int TrailMagic = 130;
@@ -421,29 +423,58 @@ void OnTick(){
       }
     }
 
-    if(ManualSL) {
-      if(SLPoints > 0) {
-        if(StopEntry) {
-          sl = High[1]+MarketInfo( Symbol(), MODE_SPREAD )*Point - SLPoints*Point;
+    if(ReverseEntry) {
+      if(ManualSL) {
+        if(SLPoints > 0) {
+          if(StopEntry) {
+            sl = Low[1]-MarketInfo( Symbol(), MODE_SPREAD )*Point + SLPoints*Point;
+          } else {
+            sl = Bid + SLPoints*Point;
+          }
         } else {
-          sl = Ask - SLPoints*Point;
+          sl = 0;
         }
       } else {
-        sl = 0;
+        if(StopEntry) {
+          sl = Low[1] + (downArrow - Low[1])*SLx;
+        } else {
+          sl = Bid + (downArrow - Bid)*SLx;
+        }
       }
+      tp = Bid - (downArrow - Bid)*TPx;
     } else {
-      if(StopEntry) {
-        sl = High[1] - (High[1] - upArrow)*SLx;
+      if(ManualSL) {
+        if(SLPoints > 0) {
+          if(StopEntry) {
+            sl = High[1]+MarketInfo( Symbol(), MODE_SPREAD )*Point - SLPoints*Point;
+          } else {
+            sl = Ask - SLPoints*Point;
+          }
+        } else {
+          sl = 0;
+        }
       } else {
-        sl = Ask - (Ask - upArrow)*SLx;
+        if(StopEntry) {
+          sl = High[1] - (High[1] - upArrow)*SLx;
+        } else {
+          sl = Ask - (Ask - upArrow)*SLx;
+        }
       }
+      tp = Ask + (Ask - upArrow)*TPx;
     }
-    tp = Ask + (Ask - upArrow);
     // entry 1
     if(StopEntry) {
-      ticket = OrderSend( Symbol(), OP_BUYSTOP, lots, High[1]+MarketInfo( Symbol(), MODE_SPREAD )*Point, 3, sl, 0, TPComm, TPMagic, 0, Blue );
+      if(ReverseEntry) {
+        ticket = OrderSend( Symbol(), OP_SELLSTOP, lots, Low[1]-MarketInfo( Symbol(), MODE_SPREAD )*Point, 3, sl, 0, TPComm, TPMagic, 0, Red );
+      } else {
+        ticket = OrderSend( Symbol(), OP_BUYSTOP, lots, High[1]+MarketInfo( Symbol(), MODE_SPREAD )*Point, 3, sl, 0, TPComm, TPMagic, 0, Blue );
+      }
     } else {
-      ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, sl, tp, TPComm, TPMagic, 0, Blue );
+      if(ReverseEntry) {
+        ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, sl, tp, TPComm, TPMagic, 0, Red );
+      } else {
+        ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, sl, tp, TPComm, TPMagic, 0, Blue );
+      }
     }
     if(ticket < 0) {
       if(lastErrorLog1 != Time[0]) {
@@ -586,28 +617,56 @@ void OnTick(){
         }
       }
 
-      if(ManualSL) {
-        if(SLPoints > 0) {
-          if(StopEntry) {
-            sl = High[1]+MarketInfo( Symbol(), MODE_SPREAD )*Point - SLPoints*Point;
+      if(ReverseEntry) {
+        if(ManualSL) {
+          if(SLPoints > 0) {
+            if(StopEntry) {
+              sl = Low[1]-MarketInfo( Symbol(), MODE_SPREAD )*Point + SLPoints*Point;
+            } else {
+              sl = Bid + SLPoints*Point;
+            }
           } else {
-            sl = Ask - SLPoints*Point;
+            sl = 0;
           }
         } else {
-          sl = 0;
+          if(StopEntry) {
+            sl = Low[1] + (downArrow - Low[1])*SLx;
+          } else {
+            sl = Bid + (downArrow - Bid)*SLx;
+          }
         }
       } else {
-        if(StopEntry) {
-          sl = High[1] - (High[1] - upArrow)*SLx;
+        if(ManualSL) {
+          if(SLPoints > 0) {
+            if(StopEntry) {
+              sl = High[1]+MarketInfo( Symbol(), MODE_SPREAD )*Point - SLPoints*Point;
+            } else {
+              sl = Ask - SLPoints*Point;
+            }
+          } else {
+            sl = 0;
+          }
         } else {
-          sl = Ask - (Ask - upArrow)*SLx;
+          if(StopEntry) {
+            sl = High[1] - (High[1] - upArrow)*SLx;
+          } else {
+            sl = Ask - (Ask - upArrow)*SLx;
+          }
         }
       }
       // entry 2
       if(StopEntry) {
-        ticket = OrderSend( Symbol(), OP_BUYSTOP, lots, High[1]+MarketInfo( Symbol(), MODE_SPREAD )*Point, 3, sl, 0, TrailComm, TrailMagic, 0, Blue );
+        if(ReverseEntry) {
+          ticket = OrderSend( Symbol(), OP_SELLSTOP, lots, Low[1]-MarketInfo( Symbol(), MODE_SPREAD )*Point, 3, sl, 0, TrailComm, TrailMagic, 0, Red );
+        } else {
+          ticket = OrderSend( Symbol(), OP_BUYSTOP, lots, High[1]+MarketInfo( Symbol(), MODE_SPREAD )*Point, 3, sl, 0, TrailComm, TrailMagic, 0, Blue );
+        }
       } else {
-        ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, sl, 0, TrailComm, TrailMagic, 0, Blue );
+        if(ReverseEntry) {
+          ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, sl, 0, TrailComm, TrailMagic, 0, Red );
+        } else {
+          ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, sl, 0, TrailComm, TrailMagic, 0, Blue );
+        }
       }
       if(ticket < 0) {
         if(lastErrorLog1 != Time[0]) {
@@ -752,29 +811,58 @@ void OnTick(){
       }
     }
 
-    if(ManualSL) {
-      if(SLPoints > 0) {
-        if(StopEntry) {
-          sl = Low[1]-MarketInfo( Symbol(), MODE_SPREAD )*Point + SLPoints*Point;
+    if(ReverseEntry) {
+      if(ManualSL) {
+        if(SLPoints > 0) {
+          if(StopEntry) {
+            sl = High[1]+MarketInfo( Symbol(), MODE_SPREAD )*Point - SLPoints*Point;
+          } else {
+            sl = Ask - SLPoints*Point;
+          }
         } else {
-          sl = Bid + SLPoints*Point;
+          sl = 0;
         }
       } else {
-        sl = 0;
+        if(StopEntry) {
+          sl = High[1] - (High[1] - upArrow)*SLx;
+        } else {
+          sl = Ask - (Ask - upArrow)*SLx;
+        }
       }
+      tp = Ask + (Ask - upArrow)*TPx;
     } else {
-      if(StopEntry) {
-        sl = Low[1] + (downArrow - Low[1])*SLx;
+      if(ManualSL) {
+        if(SLPoints > 0) {
+          if(StopEntry) {
+            sl = Low[1]-MarketInfo( Symbol(), MODE_SPREAD )*Point + SLPoints*Point;
+          } else {
+            sl = Bid + SLPoints*Point;
+          }
+        } else {
+          sl = 0;
+        }
       } else {
-        sl = Bid + (downArrow - Bid)*SLx;
+        if(StopEntry) {
+          sl = Low[1] + (downArrow - Low[1])*SLx;
+        } else {
+          sl = Bid + (downArrow - Bid)*SLx;
+        }
       }
+      tp = Bid - (downArrow - Bid)*TPx;
     }
-    tp = Bid - (downArrow - Bid);
     // entry 1
     if(StopEntry) {
-      ticket = OrderSend( Symbol(), OP_SELLSTOP, lots, Low[1]-MarketInfo( Symbol(), MODE_SPREAD )*Point, 3, sl, 0, TPComm, TPMagic, 0, Red );
+      if(ReverseEntry) {
+        ticket = OrderSend( Symbol(), OP_BUYSTOP, lots, High[1]+MarketInfo( Symbol(), MODE_SPREAD )*Point, 3, sl, 0, TPComm, TPMagic, 0, Blue );
+      } else {
+        ticket = OrderSend( Symbol(), OP_SELLSTOP, lots, Low[1]-MarketInfo( Symbol(), MODE_SPREAD )*Point, 3, sl, 0, TPComm, TPMagic, 0, Red );
+      }
     } else {
-      ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, sl, tp, TPComm, TPMagic, 0, Red );
+      if(ReverseEntry) {
+        ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, sl, tp, TPComm, TPMagic, 0, Blue );
+      } else {
+        ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, sl, tp, TPComm, TPMagic, 0, Red );
+      }
     }
     if(ticket < 0) {
       if(lastErrorLog1 != Time[0]){
@@ -917,28 +1005,56 @@ void OnTick(){
         }
       }
 
-      if(ManualSL) {
-        if(SLPoints > 0) {
-          if(StopEntry) {
-            sl = Low[1]-MarketInfo( Symbol(), MODE_SPREAD )*Point + SLPoints*Point;
+      if(ReverseEntry) {
+        if(ManualSL) {
+          if(SLPoints > 0) {
+            if(StopEntry) {
+              sl = High[1]+MarketInfo( Symbol(), MODE_SPREAD )*Point - SLPoints*Point;
+            } else {
+              sl = Ask - SLPoints*Point;
+            }
           } else {
-            sl = Bid + SLPoints*Point;
+            sl = 0;
           }
         } else {
-          sl = 0;
+          if(StopEntry) {
+            sl = High[1] - (High[1] - upArrow)*SLx;
+          } else {
+            sl = Ask - (Ask - upArrow)*SLx;
+          }
         }
       } else {
-        if(StopEntry) {
-          sl = Low[1] + (downArrow - Low[1])*SLx;
+        if(ManualSL) {
+          if(SLPoints > 0) {
+            if(StopEntry) {
+              sl = Low[1]-MarketInfo( Symbol(), MODE_SPREAD )*Point + SLPoints*Point;
+            } else {
+              sl = Bid + SLPoints*Point;
+            }
+          } else {
+            sl = 0;
+          }
         } else {
-          sl = Bid + (downArrow - Bid)*SLx;
+          if(StopEntry) {
+            sl = Low[1] + (downArrow - Low[1])*SLx;
+          } else {
+            sl = Bid + (downArrow - Bid)*SLx;
+          }
         }
       }
       // entry 2
       if(StopEntry) {
-        ticket = OrderSend( Symbol(), OP_SELLSTOP, lots, Low[1]-MarketInfo( Symbol(), MODE_SPREAD )*Point, 3, sl, 0, TrailComm, TrailMagic, 0, Red );
+        if(ReverseEntry) {
+          ticket = OrderSend( Symbol(), OP_BUYSTOP, lots, High[1]+MarketInfo( Symbol(), MODE_SPREAD )*Point, 3, sl, 0, TrailComm, TrailMagic, 0, Blue );
+        } else {
+          ticket = OrderSend( Symbol(), OP_SELLSTOP, lots, Low[1]-MarketInfo( Symbol(), MODE_SPREAD )*Point, 3, sl, 0, TrailComm, TrailMagic, 0, Red );
+        }
       } else {
-        ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, sl, 0, TrailComm, TrailMagic, 0, Red );
+        if(ReverseEntry) {
+          ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, sl, 0, TrailComm, TrailMagic, 0, Blue );
+        } else {
+          ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, sl, 0, TrailComm, TrailMagic, 0, Red );
+        }
       }
       if(ticket < 0) {
         if(lastErrorLog1 != Time[0]){
