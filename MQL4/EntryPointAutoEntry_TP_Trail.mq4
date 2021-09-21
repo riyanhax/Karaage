@@ -436,12 +436,12 @@ void OnTick(){
         }
       } else {
         if(StopEntry) {
-          sl = Low[1] + (downArrow - Low[1])*SLx;
+          sl = Low[1] + (High[1] - upArrow)*SLx;
         } else {
-          sl = Bid + (downArrow - Bid)*SLx;
+          sl = Bid + (Ask - upArrow)*SLx;
         }
       }
-      tp = Bid - (downArrow - Bid)*TPx;
+      tp = Bid - (Ask - upArrow)*TPx;
     } else {
       if(ManualSL) {
         if(SLPoints > 0) {
@@ -630,9 +630,9 @@ void OnTick(){
           }
         } else {
           if(StopEntry) {
-            sl = Low[1] + (downArrow - Low[1])*SLx;
+            sl = High[1] + (High[1] - upArrow)*SLx;
           } else {
-            sl = Bid + (downArrow - Bid)*SLx;
+            sl = Bid + (Ask - upArrow)*SLx;
           }
         }
       } else {
@@ -824,12 +824,12 @@ void OnTick(){
         }
       } else {
         if(StopEntry) {
-          sl = High[1] - (High[1] - upArrow)*SLx;
+          sl = Low[1] - (downArrow - Low[1])*SLx;
         } else {
-          sl = Ask - (Ask - upArrow)*SLx;
+          sl = Ask - (downArrow - Bid)*SLx;
         }
       }
-      tp = Ask + (Ask - upArrow)*TPx;
+      tp = Ask + (downArrow - Bid)*TPx;
     } else {
       if(ManualSL) {
         if(SLPoints > 0) {
@@ -1018,9 +1018,9 @@ void OnTick(){
           }
         } else {
           if(StopEntry) {
-            sl = High[1] - (High[1] - upArrow)*SLx;
+            sl = Low[1] - (downArrow - Low[1])*SLx;
           } else {
-            sl = Ask - (Ask - upArrow)*SLx;
+            sl = Ask - (downArrow - Bid)*SLx;
           }
         }
       } else {
