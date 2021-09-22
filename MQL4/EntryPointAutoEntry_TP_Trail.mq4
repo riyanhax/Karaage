@@ -16,6 +16,8 @@ enum trend {
   None = 0,
   Follow = 1,
   Against = 2,
+  NotFollow = -1,
+  NotAgainst = -2,
 };
 
 extern string Explanation1 = "/////// ENTRY SETTINGS ///////";
@@ -64,8 +66,6 @@ extern trend TrendH4 = None;
 extern trend TrendD1 = None;
 extern trend TrendW1 = None;
 extern trend TrendMN = None;
-extern string Explanation6 = "/////// OTHER SETTINGS ///////";
-extern bool BackTest = false;
 
 datetime lastEntry1 = 0;
 datetime lastEntry2 = 0;
@@ -101,7 +101,7 @@ void OnTick(){
   int tpEntryCnt;
   int errCnt;
 
-  if(BackTest && Clculate) {
+  if(Clculate) {
     if(lastClculateDay != TimeDay( Time[0] )) {
       maxSizeOfSignalCandlePoints = ClculateWinRate();
     }
@@ -357,6 +357,14 @@ void OnTick(){
         if(fxTrendM1 != "SELL") {
           return;
         }
+      } else if(TrendM1 == NotFollow) {
+        if(fxTrendM1 == "BUY") {
+          return;
+        }
+      } else if(TrendM1 == NotAgainst) {
+        if(fxTrendM1 == "SELL") {
+          return;
+        }
       }
       // M5
       if(TrendM5 == Follow) {
@@ -365,6 +373,14 @@ void OnTick(){
         }
       } else if(TrendM5 == Against) {
         if(fxTrendM5 != "SELL") {
+          return;
+        }
+      } else if(TrendM5 == NotFollow) {
+        if(fxTrendM5 == "BUY") {
+          return;
+        }
+      } else if(TrendM5 == NotAgainst) {
+        if(fxTrendM5 == "SELL") {
           return;
         }
       }
@@ -377,6 +393,14 @@ void OnTick(){
         if(fxTrendM15 != "SELL") {
           return;
         }
+      } else if(TrendM15 == NotFollow) {
+        if(fxTrendM15 == "BUY") {
+          return;
+        }
+      } else if(TrendM15 == NotAgainst) {
+        if(fxTrendM15 == "SELL") {
+          return;
+        }
       }
       // M30
       if(TrendM30 == Follow) {
@@ -385,6 +409,14 @@ void OnTick(){
         }
       } else if(TrendM30 == Against) {
         if(fxTrendM30 != "SELL") {
+          return;
+        }
+      } else if(TrendM30 == NotFollow) {
+        if(fxTrendM30 == "BUY") {
+          return;
+        }
+      } else if(TrendM30 == NotAgainst) {
+        if(fxTrendM30 == "SELL") {
           return;
         }
       }
@@ -397,6 +429,14 @@ void OnTick(){
         if(fxTrendH1 != "SELL") {
           return;
         }
+      } else if(TrendH1 == NotFollow) {
+        if(fxTrendH1 == "BUY") {
+          return;
+        }
+      } else if(TrendH1 == NotAgainst) {
+        if(fxTrendH1 == "SELL") {
+          return;
+        }
       }
       // H4
       if(TrendH4 == Follow) {
@@ -405,6 +445,14 @@ void OnTick(){
         }
       } else if(TrendH4 == Against) {
         if(fxTrendH4 != "SELL") {
+          return;
+        }
+      } else if(TrendH4 == NotFollow) {
+        if(fxTrendH4 == "BUY") {
+          return;
+        }
+      } else if(TrendH4 == NotAgainst) {
+        if(fxTrendH4 == "SELL") {
           return;
         }
       }
@@ -417,6 +465,14 @@ void OnTick(){
         if(fxTrendD1 != "SELL") {
           return;
         }
+      } else if(TrendD1 == NotFollow) {
+        if(fxTrendD1 == "BUY") {
+          return;
+        }
+      } else if(TrendD1 == NotAgainst) {
+        if(fxTrendD1 == "SELL") {
+          return;
+        }
       }
       // W1
       if(TrendW1 == Follow) {
@@ -427,6 +483,14 @@ void OnTick(){
         if(fxTrendW1 != "SELL") {
           return;
         }
+      } else if(TrendW1 == NotFollow) {
+        if(fxTrendW1 == "BUY") {
+          return;
+        }
+      } else if(TrendW1 == NotAgainst) {
+        if(fxTrendW1 == "SELL") {
+          return;
+        }
       }
       // MN
       if(TrendMN == Follow) {
@@ -435,6 +499,14 @@ void OnTick(){
         }
       } else if(TrendMN == Against) {
         if(fxTrendMN != "SELL") {
+          return;
+        }
+      } else if(TrendMN == NotFollow) {
+        if(fxTrendMN == "BUY") {
+          return;
+        }
+      } else if(TrendMN == NotAgainst) {
+        if(fxTrendMN == "SELL") {
           return;
         }
       }
@@ -551,6 +623,14 @@ void OnTick(){
           if(fxTrendM1 != "SELL") {
             return;
           }
+        } else if(TrendM1 == NotFollow) {
+          if(fxTrendM1 == "BUY") {
+            return;
+          }
+        } else if(TrendM1 == NotAgainst) {
+          if(fxTrendM1 == "SELL") {
+            return;
+          }
         }
         // M5
         if(TrendM5 == Follow) {
@@ -559,6 +639,14 @@ void OnTick(){
           }
         } else if(TrendM5 == Against) {
           if(fxTrendM5 != "SELL") {
+            return;
+          }
+        } else if(TrendM5 == NotFollow) {
+          if(fxTrendM5 == "BUY") {
+            return;
+          }
+        } else if(TrendM5 == NotAgainst) {
+          if(fxTrendM5 == "SELL") {
             return;
           }
         }
@@ -571,6 +659,14 @@ void OnTick(){
           if(fxTrendM15 != "SELL") {
             return;
           }
+        } else if(TrendM15 == NotFollow) {
+          if(fxTrendM15 == "BUY") {
+            return;
+          }
+        } else if(TrendM15 == NotAgainst) {
+          if(fxTrendM15 == "SELL") {
+            return;
+          }
         }
         // M30
         if(TrendM30 == Follow) {
@@ -579,6 +675,14 @@ void OnTick(){
           }
         } else if(TrendM30 == Against) {
           if(fxTrendM30 != "SELL") {
+            return;
+          }
+        } else if(TrendM30 == NotFollow) {
+          if(fxTrendM30 == "BUY") {
+            return;
+          }
+        } else if(TrendM30 == NotAgainst) {
+          if(fxTrendM30 == "SELL") {
             return;
           }
         }
@@ -591,6 +695,14 @@ void OnTick(){
           if(fxTrendH1 != "SELL") {
             return;
           }
+        } else if(TrendH1 == NotFollow) {
+          if(fxTrendH1 == "BUY") {
+            return;
+          }
+        } else if(TrendH1 == NotAgainst) {
+          if(fxTrendH1 == "SELL") {
+            return;
+          }
         }
         // H4
         if(TrendH4 == Follow) {
@@ -599,6 +711,14 @@ void OnTick(){
           }
         } else if(TrendH4 == Against) {
           if(fxTrendH4 != "SELL") {
+            return;
+          }
+        } else if(TrendH4 == NotFollow) {
+          if(fxTrendH4 == "BUY") {
+            return;
+          }
+        } else if(TrendH4 == NotAgainst) {
+          if(fxTrendH4 == "SELL") {
             return;
           }
         }
@@ -611,6 +731,14 @@ void OnTick(){
           if(fxTrendD1 != "SELL") {
             return;
           }
+        } else if(TrendD1 == NotFollow) {
+          if(fxTrendD1 == "BUY") {
+            return;
+          }
+        } else if(TrendD1 == NotAgainst) {
+          if(fxTrendD1 == "SELL") {
+            return;
+          }
         }
         // W1
         if(TrendW1 == Follow) {
@@ -621,6 +749,14 @@ void OnTick(){
           if(fxTrendW1 != "SELL") {
             return;
           }
+        } else if(TrendW1 == NotFollow) {
+          if(fxTrendW1 == "BUY") {
+            return;
+          }
+        } else if(TrendW1 == NotAgainst) {
+          if(fxTrendW1 == "SELL") {
+            return;
+          }
         }
         // MN
         if(TrendMN == Follow) {
@@ -629,6 +765,14 @@ void OnTick(){
           }
         } else if(TrendMN == Against) {
           if(fxTrendMN != "SELL") {
+            return;
+          }
+        } else if(TrendMN == NotFollow) {
+          if(fxTrendMN == "BUY") {
+            return;
+          }
+        } else if(TrendMN == NotAgainst) {
+          if(fxTrendMN == "SELL") {
             return;
           }
         }
@@ -745,6 +889,14 @@ void OnTick(){
         if(fxTrendM1 != "BUY") {
           return;
         }
+      } else if(TrendM1 == NotFollow) {
+        if(fxTrendM1 == "SELL") {
+          return;
+        }
+      } else if(TrendM1 == NotAgainst) {
+        if(fxTrendM1 == "BUY") {
+          return;
+        }
       }
       // M5
       if(TrendM5 == Follow) {
@@ -753,6 +905,14 @@ void OnTick(){
         }
       } else if(TrendM5 == Against) {
         if(fxTrendM5 != "BUY") {
+          return;
+        }
+      } else if(TrendM5 == NotFollow) {
+        if(fxTrendM5 == "SELL") {
+          return;
+        }
+      } else if(TrendM5 == NotAgainst) {
+        if(fxTrendM5 == "BUY") {
           return;
         }
       }
@@ -765,6 +925,14 @@ void OnTick(){
         if(fxTrendM15 != "BUY") {
           return;
         }
+      } else if(TrendM15 == NotFollow) {
+        if(fxTrendM15 == "SELL") {
+          return;
+        }
+      } else if(TrendM15 == NotAgainst) {
+        if(fxTrendM15 == "BUY") {
+          return;
+        }
       }
       // M30
       if(TrendM30 == Follow) {
@@ -773,6 +941,14 @@ void OnTick(){
         }
       } else if(TrendM30 == Against) {
         if(fxTrendM30 != "BUY") {
+          return;
+        }
+      } else if(TrendM30 == NotFollow) {
+        if(fxTrendM30 == "SELL") {
+          return;
+        }
+      } else if(TrendM30 == NotAgainst) {
+        if(fxTrendM30 == "BUY") {
           return;
         }
       }
@@ -785,6 +961,14 @@ void OnTick(){
         if(fxTrendH1 != "BUY") {
           return;
         }
+      } else if(TrendH1 == NotFollow) {
+        if(fxTrendH1 == "SELL") {
+          return;
+        }
+      } else if(TrendH1 == NotAgainst) {
+        if(fxTrendH1 == "BUY") {
+          return;
+        }
       }
       // H4
       if(TrendH4 == Follow) {
@@ -793,6 +977,14 @@ void OnTick(){
         }
       } else if(TrendH4 == Against) {
         if(fxTrendH4 != "BUY") {
+          return;
+        }
+      } else if(TrendH4 == NotFollow) {
+        if(fxTrendH4 == "SELL") {
+          return;
+        }
+      } else if(TrendH4 == NotAgainst) {
+        if(fxTrendH4 == "BUY") {
           return;
         }
       }
@@ -805,6 +997,14 @@ void OnTick(){
         if(fxTrendD1 != "BUY") {
           return;
         }
+      } else if(TrendD1 == NotFollow) {
+        if(fxTrendD1 == "SELL") {
+          return;
+        }
+      } else if(TrendD1 == NotAgainst) {
+        if(fxTrendD1 == "BUY") {
+          return;
+        }
       }
       // W1
       if(TrendW1 == Follow) {
@@ -815,6 +1015,14 @@ void OnTick(){
         if(fxTrendW1 != "BUY") {
           return;
         }
+      } else if(TrendW1 == NotFollow) {
+        if(fxTrendW1 == "SELL") {
+          return;
+        }
+      } else if(TrendW1 == NotAgainst) {
+        if(fxTrendW1 == "BUY") {
+          return;
+        }
       }
       // MN
       if(TrendMN == Follow) {
@@ -823,6 +1031,14 @@ void OnTick(){
         }
       } else if(TrendMN == Against) {
         if(fxTrendMN != "BUY") {
+          return;
+        }
+      } else if(TrendMN == NotFollow) {
+        if(fxTrendMN == "SELL") {
+          return;
+        }
+      } else if(TrendMN == NotAgainst) {
+        if(fxTrendMN == "BUY") {
           return;
         }
       }
@@ -939,6 +1155,14 @@ void OnTick(){
           if(fxTrendM1 != "BUY") {
             return;
           }
+        } else if(TrendM1 == NotFollow) {
+          if(fxTrendM1 == "SELL") {
+            return;
+          }
+        } else if(TrendM1 == NotAgainst) {
+          if(fxTrendM1 == "BUY") {
+            return;
+          }
         }
         // M5
         if(TrendM5 == Follow) {
@@ -947,6 +1171,14 @@ void OnTick(){
           }
         } else if(TrendM5 == Against) {
           if(fxTrendM5 != "BUY") {
+            return;
+          }
+        } else if(TrendM5 == NotFollow) {
+          if(fxTrendM5 == "SELL") {
+            return;
+          }
+        } else if(TrendM5 == NotAgainst) {
+          if(fxTrendM5 == "BUY") {
             return;
           }
         }
@@ -959,6 +1191,14 @@ void OnTick(){
           if(fxTrendM15 != "BUY") {
             return;
           }
+        } else if(TrendM15 == NotFollow) {
+          if(fxTrendM15 == "SELL") {
+            return;
+          }
+        } else if(TrendM15 == NotAgainst) {
+          if(fxTrendM15 == "BUY") {
+            return;
+          }
         }
         // M30
         if(TrendM30 == Follow) {
@@ -967,6 +1207,14 @@ void OnTick(){
           }
         } else if(TrendM30 == Against) {
           if(fxTrendM30 != "BUY") {
+            return;
+          }
+        } else if(TrendM30 == NotFollow) {
+          if(fxTrendM30 == "SELL") {
+            return;
+          }
+        } else if(TrendM30 == NotAgainst) {
+          if(fxTrendM30 == "BUY") {
             return;
           }
         }
@@ -979,6 +1227,14 @@ void OnTick(){
           if(fxTrendH1 != "BUY") {
             return;
           }
+        } else if(TrendH1 == NotFollow) {
+          if(fxTrendH1 == "SELL") {
+            return;
+          }
+        } else if(TrendH1 == NotAgainst) {
+          if(fxTrendH1 == "BUY") {
+            return;
+          }
         }
         // H4
         if(TrendH4 == Follow) {
@@ -987,6 +1243,14 @@ void OnTick(){
           }
         } else if(TrendH4 == Against) {
           if(fxTrendH4 != "BUY") {
+            return;
+          }
+        } else if(TrendH4 == NotFollow) {
+          if(fxTrendH4 == "SELL") {
+            return;
+          }
+        } else if(TrendH4 == NotAgainst) {
+          if(fxTrendH4 == "BUY") {
             return;
           }
         }
@@ -999,6 +1263,14 @@ void OnTick(){
           if(fxTrendD1 != "BUY") {
             return;
           }
+        } else if(TrendD1 == NotFollow) {
+          if(fxTrendD1 == "SELL") {
+            return;
+          }
+        } else if(TrendD1 == NotAgainst) {
+          if(fxTrendD1 == "BUY") {
+            return;
+          }
         }
         // W1
         if(TrendW1 == Follow) {
@@ -1009,6 +1281,14 @@ void OnTick(){
           if(fxTrendW1 != "BUY") {
             return;
           }
+        } else if(TrendW1 == NotFollow) {
+          if(fxTrendW1 == "SELL") {
+            return;
+          }
+        } else if(TrendW1 == NotAgainst) {
+          if(fxTrendW1 == "BUY") {
+            return;
+          }
         }
         // MN
         if(TrendMN == Follow) {
@@ -1017,6 +1297,14 @@ void OnTick(){
           }
         } else if(TrendMN == Against) {
           if(fxTrendMN != "BUY") {
+            return;
+          }
+        } else if(TrendMN == NotFollow) {
+          if(fxTrendMN == "SELL") {
+            return;
+          }
+        } else if(TrendMN == NotAgainst) {
+          if(fxTrendMN == "BUY") {
             return;
           }
         }
