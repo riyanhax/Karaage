@@ -8,7 +8,8 @@ input bool     Logging=true;
 
 string Currencies[] = {"EURUSD","GBPUSD","USDCHF","USDJPY","USDCAD","EURJPY",
                        "EURGBP","EURCHF","EURCAD","EURAUD","GBPAUD","GBPCAD",
-                       "GBPCHF","AUDCAD"};
+                       "GBPCHF","AUDCAD","CADCHF","CHFJPY","AUDJPY","AUDCHF",
+                       "AUDUSD","GBPJPY"};
 
 //+------------------------------------------------------------------+
 //| Custom indicator initialization function                         |
