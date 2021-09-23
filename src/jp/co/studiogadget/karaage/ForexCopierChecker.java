@@ -83,6 +83,7 @@ public class ForexCopierChecker {
         String eaName4 = PropertyUtil.getValue("forexCopierChecker", "eaName4");
         String eaName5 = PropertyUtil.getValue("forexCopierChecker", "eaName5");
         String eaName6 = PropertyUtil.getValue("forexCopierChecker", "eaName6");
+        boolean sourceEA = "TRUE".equals(PropertyUtil.getValue("forexCopierChecker", "sourceEA").toUpperCase());
         String mailTo = PropertyUtil.getValue("forexCopierChecker", "mailTo");
         int intervalMin = Integer.parseInt(PropertyUtil.getValue("forexCopierChecker", "intervalMin"));
         int logHistory = Integer.parseInt(PropertyUtil.getValue("forexCopierChecker", "logHistory"));
@@ -456,6 +457,9 @@ public class ForexCopierChecker {
                     if(eaName6.isEmpty()) {
                         terms6 = true;
                     }
+                    if(!sourceEA) {
+                        terms7 = true;
+                    }
 
                     // ログファイル読込 (後ろから)
                     ReversedLinesFileReader fr = null;
@@ -625,6 +629,10 @@ public class ForexCopierChecker {
                         MailUtil.send(mailTo, "ERROR " + serverlName + " Logfile Read Error.", mailBody + "\r\n" + e.getMessage());
                         System.exit(1);
                     }
+                }
+
+                if(!sourceEA) {
+                    System.exit(0);
                 }
 
                 // 送信側エキスパート
