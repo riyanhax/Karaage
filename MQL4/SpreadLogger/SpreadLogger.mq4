@@ -66,10 +66,6 @@ int OnCalculate(const int rates_total,
       {
          pair += ".";
       }
-      string audusd = DoubleToStr(MarketInfo("AUDUSD"+periodChar,MODE_ASK));
-      string audjpy = DoubleToStr(MarketInfo("AUDJPY"+periodChar,MODE_ASK));
-      string euraud = DoubleToStr(MarketInfo("EURAUD"+periodChar,MODE_ASK));
-      string gbpaud = DoubleToStr(MarketInfo("GBPAUD"+periodChar,MODE_ASK));
 
       int handle;
       string date = TimeToStr(TimeCurrent(), TIME_DATE);
@@ -79,7 +75,7 @@ int OnCalculate(const int rates_total,
         spreadTemp = MarketInfo(pair, MODE_SPREAD) / 10;
         handle = FileOpen("SpreadLog_"+pair+"_"+date+".csv", FILE_CSV|FILE_READ|FILE_WRITE,",");
         FileSeek(handle, 0, SEEK_END);
-        FileWrite(handle, TimeToStr(TimeCurrent(), TIME_DATE|TIME_SECONDS), DoubleToStr(spreadTemp, 1), MarketInfo(pair, MODE_ASK), audusd, audjpy, euraud, gbpaud);
+        FileWrite(handle, TimeToStr(TimeCurrent(), TIME_DATE|TIME_SECONDS), DoubleToStr(spreadTemp, 1), "1", "1", "1", "1", "1");
         FileClose(handle);
       }
    }
