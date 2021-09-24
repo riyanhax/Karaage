@@ -71,10 +71,11 @@ int OnCalculate(const int rates_total,
       int handle;
       string date = TimeToStr(TimeCurrent(), TIME_DATE);
       StringReplace(date, ".", "");
+      FolderCreate("SpreadLog_"+date);
       for (int i = 0; i < ArraySize(Currencies); i++) {
         pair = Currencies[i];
         spreadTemp = MarketInfo(pair, MODE_SPREAD) / 10;
-        handle = FileOpen("SpreadLog_"+pair+"_"+date+".csv", FILE_CSV|FILE_READ|FILE_WRITE,",");
+        handle = FileOpen("SpreadLog_"+date+"/SpreadLog_"+pair+"_"+date+".csv", FILE_CSV|FILE_READ|FILE_WRITE,",");
         FileSeek(handle, 0, SEEK_END);
         FileWrite(handle, TimeToStr(TimeCurrent(), TIME_DATE|TIME_SECONDS), DoubleToStr(spreadTemp, 1), "1", "1", "1", "1", "1");
         FileClose(handle);
