@@ -97,7 +97,7 @@ int OnCalculate(const int rates_total,
   // Long
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag2 >= zigzag4) {
     alertText = alertText + "ZigZag: Long" + "\n";
-    mailSubject = Symbol() + " " + periodText + " LONG " + TimeCurrent();
+    mailSubject = "[Long] " + Symbol() + " " + periodText + " " + TimeCurrent();
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), PERIOD_CURRENT, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maCurrentEma = iMA( Symbol(), PERIOD_CURRENT, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
@@ -123,7 +123,7 @@ int OnCalculate(const int rates_total,
   // Short
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag2 <= zigzag4) {
     alertText = alertText + "Short" + "\n";
-    mailSubject = Symbol() + " " + periodText + " SHORT " + TimeCurrent();
+    mailSubject = "[Short] " + Symbol() + " " + periodText + " " + TimeCurrent();
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), PERIOD_CURRENT, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maCurrentEma = iMA( Symbol(), PERIOD_CURRENT, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
@@ -152,14 +152,14 @@ int OnCalculate(const int rates_total,
     Alert(alertText);
     if(MailAlert) {
       mailBody = mailBody + Symbol() + "\n"; // 通貨ペア
-      mailBody = mailBody + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + "\n"; // 時間
+      mailBody = mailBody + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
       mailBody = mailBody + periodText + "\n"; // 時間足
       mailBody = mailBody + alertText; // ロング or ショート
       mailBody = mailBody + "Zigzag: " + zigzag2 + ", " + zigzag3 + ", " + zigzag4 + "\n";
       double lengthPoints23 = MathAbs( zigzag2 - zigzag3 ) / Point();
       double lengthPoints34 = MathAbs( zigzag3 - zigzag4 ) / Point();
       double lengthPercent = (lengthPoints23 / lengthPoints34) * 100;
-      mailBody = mailBody + "LengthPoints:" + DoubleToStr( lengthPoints23, 1 ) + ", " + DoubleToStr( lengthPoints34, 1 ) + "[" + DoubleToStr( lengthPercent, 1 ) + "%]\n";
+      mailBody = mailBody + "LengthPoints: " + DoubleToStr( lengthPoints23, 1 ) + ", " + DoubleToStr( lengthPoints34, 1 ) + " [" + DoubleToStr( lengthPercent, 1 ) + "%]\n";
       SendMail( mailSubject, mailBody );
     }
 
