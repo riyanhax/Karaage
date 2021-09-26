@@ -96,8 +96,8 @@ int OnCalculate(const int rates_total,
   cnt = 0;
   // Long
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag2 >= zigzag4) {
-    alertText = alertText + "ZigZag: Long" + "\n";
-    mailSubject = "[Long] " + Symbol() + " " + periodText + " " + TimeCurrent();
+    alertText = alertText + "Long " + Symbol() + " " + periodText + "\n";
+    mailSubject = "[Long] " + Symbol() + " " + periodText + " " + Time[0];
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), PERIOD_CURRENT, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maCurrentEma = iMA( Symbol(), PERIOD_CURRENT, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
@@ -122,8 +122,8 @@ int OnCalculate(const int rates_total,
   }
   // Short
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag2 <= zigzag4) {
-    alertText = alertText + "Short" + "\n";
-    mailSubject = "[Short] " + Symbol() + " " + periodText + " " + TimeCurrent();
+    alertText = alertText + "Short " + Symbol() + " " + periodText + "\n";
+    mailSubject = "[Short] " + Symbol() + " " + periodText + " " + Time[0];
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), PERIOD_CURRENT, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maCurrentEma = iMA( Symbol(), PERIOD_CURRENT, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
@@ -151,10 +151,8 @@ int OnCalculate(const int rates_total,
   if(cnt >= AlertRequirementCount && lastAlert != Time[0] && lastAlertZigzag2 != zigzag2) {
     Alert(alertText);
     if(MailAlert) {
-      mailBody = mailBody + Symbol() + "\n"; // 通貨ペア
       mailBody = mailBody + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-      mailBody = mailBody + periodText + "\n"; // 時間足
-      mailBody = mailBody + alertText; // ロング or ショート
+      mailBody = mailBody + alertText; // ロング or ショート、通貨ペア、時間足
       mailBody = mailBody + "Zigzag: " + zigzag2 + ", " + zigzag3 + ", " + zigzag4 + "\n";
       double lengthPoints23 = MathAbs( zigzag2 - zigzag3 ) / Point();
       double lengthPoints34 = MathAbs( zigzag3 - zigzag4 ) / Point();
