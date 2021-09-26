@@ -157,7 +157,7 @@ int OnCalculate(const int rates_total,
       double lengthPoints23 = MathAbs( zigzag2 - zigzag3 ) / Point();
       double lengthPoints34 = MathAbs( zigzag3 - zigzag4 ) / Point();
       double lengthPercent = (lengthPoints23 / lengthPoints34) * 100;
-      mailBody = mailBody + "LengthPoints: " + DoubleToStr( lengthPoints23, 1 ) + ", " + DoubleToStr( lengthPoints34, 1 ) + " [" + DoubleToStr( lengthPercent, 1 ) + "%]\n";
+      mailBody = mailBody + "LengthPoints: " + DoubleToStr( lengthPoints23, 0 ) + " / " + DoubleToStr( lengthPoints34, 0 ) + " [" + DoubleToStr( lengthPercent, 1 ) + "%]\n";
       SendMail( mailSubject, mailBody );
     }
 
