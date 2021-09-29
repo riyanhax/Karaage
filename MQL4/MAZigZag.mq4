@@ -12,6 +12,7 @@ input int MALongPeriod = 80;
 input string AlertSetting = "/////// AlertSetting ///////";
 input int AlertRequirementCount = 3;
 input bool MailAlert = true;
+input bool FileOutput = true;
 
 datetime lastAlert = 0;
 double lastAlertZigzag2;
@@ -68,6 +69,7 @@ int OnCalculate(const int rates_total,
   string alertText;
   string mailSubject;
   string mailBody;
+  string direction;
 
   // ZigZag取得
   cnt = 0;
@@ -98,6 +100,7 @@ int OnCalculate(const int rates_total,
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag2 >= zigzag4) {
     alertText = alertText + "Long " + Symbol() + " " + periodText + "\n";
     mailSubject = "[Long] " + Symbol() + " " + periodText + " " + Time[0];
+    direction = "long";
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), PERIOD_CURRENT, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maCurrentEma = iMA( Symbol(), PERIOD_CURRENT, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
@@ -124,6 +127,7 @@ int OnCalculate(const int rates_total,
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag2 <= zigzag4) {
     alertText = alertText + "Short " + Symbol() + " " + periodText + "\n";
     mailSubject = "[Short] " + Symbol() + " " + periodText + " " + Time[0];
+    direction = "short";
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), PERIOD_CURRENT, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maCurrentEma = iMA( Symbol(), PERIOD_CURRENT, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
@@ -163,6 +167,16 @@ int OnCalculate(const int rates_total,
 
     lastAlert = Time[0];
     lastAlertZigzag2 = zigzag2;
+  }
+  // ファイル出力
+  if(FileOutput) {
+    int handle;
+    string date = TimeToStr(TimeCurrent(), TIME_DATE);
+    StringReplace(date, ".", "");
+    handle = FileOpen("MAZigzag_"+date+"_"+Symbol()+".csv", FILE_CSV|FILE_READ|FILE_WRITE,",");
+    FileSeek(handle, 0, SEEK_END);
+    FileWrite(handle, Symbol(), periodText, direction, TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ), Time[0]);
+    FileClose(handle);
   }
 
   return(0);
