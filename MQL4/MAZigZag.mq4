@@ -171,9 +171,7 @@ int OnCalculate(const int rates_total,
   // ファイル出力
   if(FileOutput) {
     int handle;
-    string date = TimeToStr(TimeCurrent(), TIME_DATE);
-    StringReplace(date, ".", "");
-    handle = FileOpen("MAZigzag_"+date+"_"+Symbol()+".csv", FILE_CSV|FILE_READ|FILE_WRITE,",");
+    handle = FileOpen("MAZigzag_"+Symbol()+".csv", FILE_CSV|FILE_READ|FILE_WRITE,",");
     FileSeek(handle, 0, SEEK_END);
     FileWrite(handle, Symbol(), periodText, direction, TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ), Time[0]);
     FileClose(handle);
