@@ -5,6 +5,7 @@ enum timeframe {
   H1_ = 60,
   H4_ = 240,
   D1_ = 1440,
+  Point_ = 0,
 };
 
 extern string Explanation1 = "/////// ENTRY SETTINGS ///////";
@@ -16,18 +17,20 @@ extern int MaxSpreadPoints = 100;
 extern int EntryMax = 99;
 extern int BarShift = 1;
 extern string Explanation2 = "/////// TIME SCOPE SETTINGS ///////";
-extern bool PerfectOrder_M5 = false;
-extern bool TimeScope_H1 = false;
-extern bool TimeScope_H4 = false;
+extern bool PerfectOrder_M5 = true;
+extern bool TimeScope_H1 = true;
+extern bool TimeScope_H4 = true;
 extern bool TimeScope_D1 = true;
-extern timeframe CloseTimeframe = D1_;
+extern timeframe CloseTimeframe = M5_;
+extern int SLPoints = 100;
+extern int TPPoints = 100;
 extern string Explanation3 = "/////// RCI SETTINGS ///////";
-extern double RCILine = 0.7; // 2本が条件を満たす、どの2本かは不明
+extern double RCILine = 0.7;
 extern bool RCI_Low = true;
 extern int RCIRange_Low = 9;
 extern bool RCI_Middle = true;
 extern int RCIRange_Middle = 24;
-extern bool RCI_High = true;
+extern bool RCI_High = false;
 extern int RCIRange_High = 48;
 extern string Explanation4 = "/////// KUMO SETTINGS ///////";
 extern double KumoAtsumiPips = 50.0; // 不明
@@ -73,6 +76,8 @@ void OnTick() {
   double kumoB;
   bool kumoUp;
   double kumoThicknessPips;
+  double sl;
+  double tp;
 
   // パラメータ取得
   if(TimeScope_H1 || CloseTimeframe == H1_) {
@@ -93,74 +98,76 @@ void OnTick() {
 
   // 決済
   closeFlg = false;
-  if(OrdersTotal() > 0) {
-    for(i=0; i<OrdersTotal(); i++) {
-      if(OrderSelect(i, SELECT_BY_POS) == true) {
-        if(OrderSymbol() == Symbol() && OrderMagicNumber() == Magic) {
-          if(OrderType() == OP_BUY) {
-            if(CloseTimeframe == M5_) {
-              if(perfectOrder_M5_Y != EMPTY_VALUE && perfectOrder_M5_Y != 0) {
-                closeFlg = true;
-              }
-            } else if(CloseTimeframe == H1_) {
-              if(timeScope_H1_down != EMPTY_VALUE && timeScope_H1_down != 0) {
-                closeFlg = true;
-              }
-            } else if(CloseTimeframe == H4_) {
-              if(timeScope_H4_down != EMPTY_VALUE && timeScope_H4_down != 0) {
-                closeFlg = true;
-              }
-            } else if(CloseTimeframe == D1_) {
-              if(timeScope_D1_down != EMPTY_VALUE && timeScope_D1_down != 0) {
-                closeFlg = true;
-              }
-            }
-            if(closeFlg) {
-              while( !IsStopped() ) {
-                errChk = 0;
-                if(!OrderClose( OrderTicket(), OrderLots(), Bid, 3, CLR_NONE )) {
-                  errChk = 1;
+  if(CloseTimeframe != Point_) {
+    if(OrdersTotal() > 0) {
+      for(i=0; i<OrdersTotal(); i++) {
+        if(OrderSelect(i, SELECT_BY_POS) == true) {
+          if(OrderSymbol() == Symbol() && OrderMagicNumber() == Magic) {
+            if(OrderType() == OP_BUY) {
+              if(CloseTimeframe == M5_) {
+                if(perfectOrder_M5_Y != EMPTY_VALUE && perfectOrder_M5_Y != 0) {
+                  closeFlg = true;
                 }
-                if( errChk == 0 ) {
-                  break;
+              } else if(CloseTimeframe == H1_) {
+                if(timeScope_H1_down != EMPTY_VALUE && timeScope_H1_down != 0) {
+                  closeFlg = true;
                 }
-                Print( "BuyOrder Close Failure." );
-                Print( GetLastError() );
-                Sleep(500);
-                RefreshRates();
-              }
-            }
-          } else if(OrderType() == OP_SELL) {
-            if(CloseTimeframe == M5_) {
-              if(perfectOrder_M5_Y != EMPTY_VALUE && perfectOrder_M5_Y != 0) {
-                closeFlg = true;
-              }
-            } else if(CloseTimeframe == H1_) {
-              if(timeScope_H1_up != EMPTY_VALUE && timeScope_H1_up != 0) {
-                closeFlg = true;
-              }
-            } else if(CloseTimeframe == H4_) {
-              if(timeScope_H4_up != EMPTY_VALUE && timeScope_H4_up != 0) {
-                closeFlg = true;
-              }
-            } else if(CloseTimeframe == D1_) {
-              if(timeScope_D1_up != EMPTY_VALUE && timeScope_D1_up != 0) {
-                closeFlg = true;
-              }
-            }
-            if(closeFlg) {
-              while( !IsStopped() ) {
-                errChk = 0;
-                if(!OrderClose( OrderTicket(), OrderLots(), Ask, 3, CLR_NONE )) {
-                  errChk = 1;
+              } else if(CloseTimeframe == H4_) {
+                if(timeScope_H4_down != EMPTY_VALUE && timeScope_H4_down != 0) {
+                  closeFlg = true;
                 }
-                if( errChk == 0 ) {
-                  break;
+              } else if(CloseTimeframe == D1_) {
+                if(timeScope_D1_down != EMPTY_VALUE && timeScope_D1_down != 0) {
+                  closeFlg = true;
                 }
-                Print( "SellOrder Close Failure." );
-                Print( GetLastError() );
-                Sleep(500);
-                RefreshRates();
+              }
+              if(closeFlg) {
+                while( !IsStopped() ) {
+                  errChk = 0;
+                  if(!OrderClose( OrderTicket(), OrderLots(), Bid, 3, CLR_NONE )) {
+                    errChk = 1;
+                  }
+                  if( errChk == 0 ) {
+                    break;
+                  }
+                  Print( "BuyOrder Close Failure." );
+                  Print( GetLastError() );
+                  Sleep(500);
+                  RefreshRates();
+                }
+              }
+            } else if(OrderType() == OP_SELL) {
+              if(CloseTimeframe == M5_) {
+                if(perfectOrder_M5_Y != EMPTY_VALUE && perfectOrder_M5_Y != 0) {
+                  closeFlg = true;
+                }
+              } else if(CloseTimeframe == H1_) {
+                if(timeScope_H1_up != EMPTY_VALUE && timeScope_H1_up != 0) {
+                  closeFlg = true;
+                }
+              } else if(CloseTimeframe == H4_) {
+                if(timeScope_H4_up != EMPTY_VALUE && timeScope_H4_up != 0) {
+                  closeFlg = true;
+                }
+              } else if(CloseTimeframe == D1_) {
+                if(timeScope_D1_up != EMPTY_VALUE && timeScope_D1_up != 0) {
+                  closeFlg = true;
+                }
+              }
+              if(closeFlg) {
+                while( !IsStopped() ) {
+                  errChk = 0;
+                  if(!OrderClose( OrderTicket(), OrderLots(), Ask, 3, CLR_NONE )) {
+                    errChk = 1;
+                  }
+                  if( errChk == 0 ) {
+                    break;
+                  }
+                  Print( "SellOrder Close Failure." );
+                  Print( GetLastError() );
+                  Sleep(500);
+                  RefreshRates();
+                }
               }
             }
           }
@@ -168,7 +175,6 @@ void OnTick() {
       }
     }
   }
-
   // エントリー制限
   if(lastEntry == Time[0]) {
     return;
@@ -207,14 +213,14 @@ void OnTick() {
   if(RCI_High) {
     rci_high = iCustom( Symbol(), PERIOD_CURRENT, "RCI", RCIRange_High, 0, RCIRange_High, true, 0, BarShift );
   }
-  kumoA = iCustom( Symbol(), PERIOD_CURRENT, "KumoOnly", 9, 26, 52, 5, BarShift );
-  kumoB = iCustom( Symbol(), PERIOD_CURRENT, "KumoOnly", 9, 26, 52, 6, BarShift );
+  kumoA = iCustom( Symbol(), PERIOD_H4, "KumoOnly", 9, 26, 52, 5, 0 );
+  kumoB = iCustom( Symbol(), PERIOD_H4, "KumoOnly", 9, 26, 52, 6, 0 );
   if(kumoA > kumoB) {
     kumoUp = true;
   } else {
     kumoUp = false;
   }
-  kumoThicknessPips = MathAbs( kumoA - kumoB )*10 / Point;
+  kumoThicknessPips = MathAbs( kumoA - kumoB ) / (Point*10);
 
   // Buy
   buyFlg = false;
@@ -271,16 +277,23 @@ void OnTick() {
     buyFlg = false;
     return;
   }
-  if(buyFlg && Close[BarShift] <= kumoA) {
+  if(buyFlg && iClose( Symbol(), PERIOD_H4, 0 ) <= kumoA) {
     buyFlg = false;
     return;
   }
-  if(buyFlg && MathAbs(Open[0] - kumoA)*10/Point < KumoKairiPips) {
+  if(buyFlg && MathAbs(iOpen( Symbol(), PERIOD_H4, 0 ) - kumoA)/(Point*10) < KumoKairiPips) {
     buyFlg = false;
     return;
   }
   if(buyFlg) {
-    ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, 0, 0, Comm, Magic, 0, CLR_NONE );
+    if(CloseTimeframe == Point_) {
+      sl = Ask - SLPoints*Point;
+      tp = Ask + TPPoints*Point;
+    } else {
+      sl = 0;
+      tp = 0;
+    }
+    ticket = OrderSend( Symbol(), OP_BUY, lots, Ask, 3, sl, tp, Comm, Magic, 0, CLR_NONE );
     if(ticket < 0) {
       if(lastErrorLog != Time[0]) {
         Print( "ERROR Buy [" + TimeToStr( Time[0] ) + "]" );
@@ -290,6 +303,7 @@ void OnTick() {
       return;
     } else {
       Print( "SUCCESS Buy [" + TimeToStr( Time[0] ) + "]" );
+      Print( iOpen( Symbol(), PERIOD_H4, 0 ) + "," + iClose( Symbol(), PERIOD_H4, 0 ) + "," + kumoA + "," + kumoB );
       lastEntry = Time[0];
     }
   }
@@ -349,16 +363,23 @@ void OnTick() {
     sellFlg = false;
     return;
   }
-  if(sellFlg && Close[BarShift] >= kumoA) {
+  if(sellFlg && iClose( Symbol(), PERIOD_H4, 0 ) >= kumoA) {
     sellFlg = false;
     return;
   }
-  if(sellFlg && MathAbs(kumoA - Open[0])*10/Point < KumoKairiPips) {
+  if(sellFlg && MathAbs(kumoA - iOpen( Symbol(), PERIOD_H4, 0 ))/(Point*10) < KumoKairiPips) {
     sellFlg = false;
     return;
   }
   if(sellFlg) {
-    ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, 0, 0, Comm, Magic, 0, CLR_NONE );
+    if(CloseTimeframe == Point_) {
+      sl = Bid + SLPoints*Point;
+      tp = Bid - TPPoints*Point;
+    } else {
+      sl = 0;
+      tp = 0;
+    }
+    ticket = OrderSend( Symbol(), OP_SELL, lots, Bid, 3, sl, tp, Comm, Magic, 0, CLR_NONE );
     if(ticket < 0) {
       if(lastErrorLog != Time[0]) {
         Print( "ERROR Sell [" + TimeToStr( Time[0] ) + "]" );
@@ -368,6 +389,7 @@ void OnTick() {
       return;
     } else {
       Print( "SUCCESS Sell [" + TimeToStr( Time[0] ) + "]" );
+      Print( iOpen( Symbol(), PERIOD_H4, 0 ) + "," + iClose( Symbol(), PERIOD_H4, 0 ) + "," + kumoA + "," + kumoB );
       lastEntry = Time[0];
     }
   }
