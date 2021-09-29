@@ -99,19 +99,19 @@ void OnTick() {
         if(OrderSymbol() == Symbol() && OrderMagicNumber() == Magic) {
           if(OrderType() == OP_BUY) {
             if(CloseTimeframe == M5_) {
-              if(perfectOrder_M5_Y != EMPTY_VALUE || perfectOrder_M5_Y != 0) {
+              if(perfectOrder_M5_Y != EMPTY_VALUE && perfectOrder_M5_Y != 0) {
                 closeFlg = true;
               }
             } else if(CloseTimeframe == H1_) {
-              if(timeScope_H1_down != EMPTY_VALUE || timeScope_H1_down != 0) {
+              if(timeScope_H1_down != EMPTY_VALUE && timeScope_H1_down != 0) {
                 closeFlg = true;
               }
             } else if(CloseTimeframe == H4_) {
-              if(timeScope_H4_down != EMPTY_VALUE || timeScope_H4_down != 0) {
+              if(timeScope_H4_down != EMPTY_VALUE && timeScope_H4_down != 0) {
                 closeFlg = true;
               }
             } else if(CloseTimeframe == D1_) {
-              if(timeScope_D1_down != EMPTY_VALUE || timeScope_D1_down != 0) {
+              if(timeScope_D1_down != EMPTY_VALUE && timeScope_D1_down != 0) {
                 closeFlg = true;
               }
             }
@@ -132,19 +132,19 @@ void OnTick() {
             }
           } else if(OrderType() == OP_SELL) {
             if(CloseTimeframe == M5_) {
-              if(perfectOrder_M5_Y != EMPTY_VALUE || perfectOrder_M5_Y != 0) {
+              if(perfectOrder_M5_Y != EMPTY_VALUE && perfectOrder_M5_Y != 0) {
                 closeFlg = true;
               }
             } else if(CloseTimeframe == H1_) {
-              if(timeScope_H1_up != EMPTY_VALUE || timeScope_H1_up != 0) {
+              if(timeScope_H1_up != EMPTY_VALUE && timeScope_H1_up != 0) {
                 closeFlg = true;
               }
             } else if(CloseTimeframe == H4_) {
-              if(timeScope_H4_up != EMPTY_VALUE || timeScope_H4_up != 0) {
+              if(timeScope_H4_up != EMPTY_VALUE && timeScope_H4_up != 0) {
                 closeFlg = true;
               }
             } else if(CloseTimeframe == D1_) {
-              if(timeScope_D1_up != EMPTY_VALUE || timeScope_D1_up != 0) {
+              if(timeScope_D1_up != EMPTY_VALUE && timeScope_D1_up != 0) {
                 closeFlg = true;
               }
             }
