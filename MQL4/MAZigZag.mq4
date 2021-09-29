@@ -10,6 +10,8 @@ input string MovingAverageSetting = "/////// MovingAverageSetting ///////";
 input int MACurrentPeriod = 20;
 input int MALongPeriod = 80;
 input string AlertSetting = "/////// AlertSetting ///////";
+input bool Trend = true;
+input bool TrendSwitching = true;
 input int AlertRequirementCount = 3;
 input bool MailAlert = true;
 input bool FileOutput = true;
@@ -106,7 +108,7 @@ int OnCalculate(const int rates_total,
   requirement = 0;
   requirement_2 = 0;
   // Long
-  if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag2 >= zigzag4) {
+  if(Trend && zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag2 >= zigzag4) {
     alertText = alertText + "Long " + Symbol() + " " + periodText + "\n";
     mailSubject = "[Long] " + Symbol() + " " + periodText + " " + Time[0];
     direction = "long";
@@ -129,7 +131,8 @@ int OnCalculate(const int rates_total,
       alertText = alertText + "EMA: Golden Cross" + "\n";
     }
   }
-  if(zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag3 <= zigzag5) {
+  // Long 切り替わり
+  if(TrendSwitching && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag3 <= zigzag5) {
     if(zigzag3 < Close[1]) {
       // MovingAverage取得
       maCurrentSma = iMA( Symbol(), PERIOD_CURRENT, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
@@ -160,7 +163,7 @@ int OnCalculate(const int rates_total,
     }
   }
   // Short
-  if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag2 <= zigzag4) {
+  if(Trend && zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag2 <= zigzag4) {
     alertText = alertText + "Short " + Symbol() + " " + periodText + "\n";
     mailSubject = "[Short] " + Symbol() + " " + periodText + " " + Time[0];
     direction = "short";
@@ -183,7 +186,8 @@ int OnCalculate(const int rates_total,
       alertText = alertText + "EMA: Dead Cross" + "\n";
     }
   }
-  if(zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag3 >= zigzag5) {
+  // Short 切り替わり
+  if(TrendSwitching && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag3 >= zigzag5) {
     if(zigzag3 > Close[1]) {
       // MovingAverage取得
       maCurrentSma = iMA( Symbol(), PERIOD_CURRENT, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
@@ -216,7 +220,7 @@ int OnCalculate(const int rates_total,
   }
 
   // 条件を満たした数によってアラート
-  if(requirement >= AlertRequirementCount && lastAlert != Time[0] && lastAlertZigzag != zigzag2) {
+  if(Trend && requirement >= AlertRequirementCount && lastAlert != Time[0] && lastAlertZigzag != zigzag2) {
     Alert(alertText);
     if(MailAlert) {
       mailBody = mailBody + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
@@ -240,7 +244,7 @@ int OnCalculate(const int rates_total,
     lastAlert = Time[0];
     lastAlertZigzag = zigzag2;
   }
-  if(requirement_2 >= AlertRequirementCount && lastAlert_2 != Time[0] && lastAlertZigzag_2 != zigzag2) {
+  if(TrendSwitching && requirement_2 >= AlertRequirementCount && lastAlert_2 != Time[0] && lastAlertZigzag_2 != zigzag2) {
     Alert(alertText_2);
     if(MailAlert) {
       mailBody_2 = mailBody_2 + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
