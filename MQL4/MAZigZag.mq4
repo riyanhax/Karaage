@@ -3,10 +3,12 @@
 #property indicator_chart_window
 
 input string ZigZagSetting = "/////// ZigZagSetting ///////";
+input ENUM_TIMEFRAMES ZigzagTimeframe = PERIOD_CURRENT;
 input int Depth = 7;
 input int Deviation = 5;
 input int Backstep = 1;
 input string MovingAverageSetting = "/////// MovingAverageSetting ///////";
+input ENUM_TIMEFRAMES MATimeframe = PERIOD_CURRENT;
 input int MACurrentPeriod = 20;
 input int MALongPeriod = 80;
 input string AlertSetting = "/////// AlertSetting ///////";
@@ -73,8 +75,8 @@ int OnCalculate(const int rates_total,
 
   // ZigZag取得
   cnt = 0;
-  for(i=0; i<iBars( Symbol(), PERIOD_CURRENT); i++) {
-    zigzagTmp = iCustom(Symbol(), PERIOD_CURRENT, "ZigZag", Depth, Deviation, Backstep, 0, i);
+  for(i=0; i<iBars( Symbol(), ZigzagTimeframe); i++) {
+    zigzagTmp = iCustom(Symbol(), ZigzagTimeframe, "ZigZag", Depth, Deviation, Backstep, 0, i);
     if(cnt == 0 && zigzagTmp != EMPTY_VALUE && zigzagTmp != 0) {
       zigzag1 = zigzagTmp;
       cnt = 1;
@@ -102,10 +104,10 @@ int OnCalculate(const int rates_total,
     mailSubject = "[Long] " + Symbol() + " " + periodText + " " + Time[0];
     direction = "long";
     // MovingAverage取得
-    maCurrentSma = iMA( Symbol(), PERIOD_CURRENT, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
-    maCurrentEma = iMA( Symbol(), PERIOD_CURRENT, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
-    maLongSma = iMA( Symbol(), PERIOD_CURRENT, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
-    maLongEma = iMA( Symbol(), PERIOD_CURRENT, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+    maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+    maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+    maLongSma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+    maLongEma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
 
     if(maCurrentSma < maCurrentEma) {
       requirement1 = true;
@@ -129,10 +131,10 @@ int OnCalculate(const int rates_total,
     mailSubject = "[Short] " + Symbol() + " " + periodText + " " + Time[0];
     direction = "short";
     // MovingAverage取得
-    maCurrentSma = iMA( Symbol(), PERIOD_CURRENT, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
-    maCurrentEma = iMA( Symbol(), PERIOD_CURRENT, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
-    maLongSma = iMA( Symbol(), PERIOD_CURRENT, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
-    maLongEma = iMA( Symbol(), PERIOD_CURRENT, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+    maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+    maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+    maLongSma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+    maLongEma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
 
     if(maCurrentSma > maCurrentEma) {
       requirement1 = true;
