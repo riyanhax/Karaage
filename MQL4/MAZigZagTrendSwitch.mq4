@@ -103,13 +103,13 @@ int OnCalculate(const int rates_total,
   if(zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag3 <= zigzag5) {
     if(zigzag3 < Close[1]) {
       if(zigzag2 <= zigzag4) {
-        alertText_2 = alertText_2 + "Long_HS " + Symbol() + " " + periodText + "\n";
-        mailSubject_2 = "[Long_HS] " + Symbol() + " " + periodText + " " + Time[0];
-        direction_2 = "long_hs";
-      } else if(zigzag2 > zigzag4) {
         alertText_2 = alertText_2 + "Long_MW " + Symbol() + " " + periodText + "\n";
         mailSubject_2 = "[Long_MW] " + Symbol() + " " + periodText + " " + Time[0];
         direction_2 = "long_mw";
+      } else if(zigzag2 > zigzag4) {
+        alertText_2 = alertText_2 + "Long_HS " + Symbol() + " " + periodText + "\n";
+        mailSubject_2 = "[Long_HS] " + Symbol() + " " + periodText + " " + Time[0];
+        direction_2 = "long_hs";
       }
       // MovingAverage取得
       maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
@@ -134,13 +134,13 @@ int OnCalculate(const int rates_total,
   if(zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag3 >= zigzag5) {
     if(zigzag3 > Close[1]) {
       if(zigzag2 >= zigzag4) {
-        alertText_2 = alertText_2 + "Short_HS " + Symbol() + " " + periodText + "\n";
-        mailSubject_2 = "[Short_HS] " + Symbol() + " " + periodText + " " + Time[0];
-        direction_2 = "short_hs";
-      } else if(zigzag2 < zigzag4) {
         alertText_2 = alertText_2 + "Short_MW " + Symbol() + " " + periodText + "\n";
         mailSubject_2 = "[Short_MW] " + Symbol() + " " + periodText + " " + Time[0];
         direction_2 = "short_mw";
+      } else if(zigzag2 < zigzag4) {
+        alertText_2 = alertText_2 + "Short_HS " + Symbol() + " " + periodText + "\n";
+        mailSubject_2 = "[Short_HS] " + Symbol() + " " + periodText + " " + Time[0];
+        direction_2 = "short_hs";
       }
       // MovingAverage取得
       maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
