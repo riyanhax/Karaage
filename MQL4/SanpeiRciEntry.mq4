@@ -15,13 +15,14 @@ extern double FixedLots = 0.01;
 extern int BalanceParLot = 20000;
 extern int MaxSpreadPoints = 100;
 extern int EntryMax = 99;
-extern int BarShift = 1;
+extern int BarShift = 0;
 extern string Explanation2 = "/////// TIME SCOPE SETTINGS ///////";
-extern bool PerfectOrder_M5 = true;
-extern bool TimeScope_H1 = true;
-extern bool TimeScope_H4 = true;
+extern bool TakahashiMethod = false;
+extern bool PerfectOrder_M5 = false;
+extern bool TimeScope_H1 = false;
+extern bool TimeScope_H4 = false;
 extern bool TimeScope_D1 = true;
-extern timeframe CloseTimeframe = M5_;
+extern timeframe CloseTimeframe = Point_;
 extern int SLPoints = 100;
 extern int TPPoints = 100;
 extern string Explanation3 = "/////// RCI SETTINGS ///////";
@@ -195,9 +196,11 @@ void OnTick() {
   }
 
   // パラメータ取得
-  signUp = iCustom( Symbol(), PERIOD_CURRENT, "TAKAHASHI_method_Sign", false, false, false, false, 0, BarShift );
-  signDown = iCustom( Symbol(), PERIOD_CURRENT, "TAKAHASHI_method_Sign", false, false, false, false, 1, BarShift );
-  if((signUp == EMPTY_VALUE || signUp == 0) && (signDown == EMPTY_VALUE || signDown == 0)) {
+  if(TakahashiMethod) {
+    signUp = iCustom( Symbol(), PERIOD_CURRENT, "TAKAHASHI_method_Sign", false, false, false, false, 0, BarShift );
+    signDown = iCustom( Symbol(), PERIOD_CURRENT, "TAKAHASHI_method_Sign", false, false, false, false, 1, BarShift );
+  }
+  if(TakahashiMethod && (signUp == EMPTY_VALUE || signUp == 0) && (signDown == EMPTY_VALUE || signDown == 0)) {
     return;
   }
   if(PerfectOrder_M5) {
@@ -223,9 +226,12 @@ void OnTick() {
   kumoThicknessPips = MathAbs( kumoA - kumoB ) / (Point*10);
 
   // Buy
-  buyFlg = false;
-  if(signUp != EMPTY_VALUE && signUp != 0) {
-    buyFlg = true;
+  buyFlg = true;
+  if(buyFlg && TakahashiMethod) {
+    if(signUp == EMPTY_VALUE || signUp == 0) {
+      buyFlg = false;
+      return;
+    }
   }
   if(buyFlg && PerfectOrder_M5) {
     if(perfectOrder_M5_up == EMPTY_VALUE || perfectOrder_M5_up == 0) {
@@ -309,9 +315,12 @@ void OnTick() {
   }
 
   // Sell
-  sellFlg = false;
-  if(signDown != EMPTY_VALUE && signDown != 0) {
-    sellFlg = true;
+  sellFlg = true;
+  if(sellFlg && TakahashiMethod) {
+    if(signDown == EMPTY_VALUE || signDown == 0) {
+      sellFlg = false;
+      return;
+    }
   }
   if(sellFlg && PerfectOrder_M5) {
     if(perfectOrder_M5_down == EMPTY_VALUE || perfectOrder_M5_down == 0) {
