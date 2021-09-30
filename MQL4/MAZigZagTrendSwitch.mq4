@@ -100,92 +100,62 @@ int OnCalculate(const int rates_total,
   // Long 切り替わり
   if(zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag3 <= zigzag5) {
     if(zigzag3 < Close[1]) {
+      if(zigzag2 <= zigzag4) {
+        alertText_2 = alertText_2 + "Long_HS " + Symbol() + " " + periodText + "\n";
+        mailSubject_2 = "[Long_HS] " + Symbol() + " " + periodText + " " + Time[0];
+        direction_2 = "long_hs";
+      } else if(zigzag2 > zigzag4) {
+        alertText_2 = alertText_2 + "Long_MW " + Symbol() + " " + periodText + "\n";
+        mailSubject_2 = "[Long_MW] " + Symbol() + " " + periodText + " " + Time[0];
+        direction_2 = "long_mw";
+      }
       // MovingAverage取得
       maCurrentSma = iMA( Symbol(), PERIOD_CURRENT, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
       maCurrentEma = iMA( Symbol(), PERIOD_CURRENT, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
       maLongSma = iMA( Symbol(), PERIOD_CURRENT, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
       maLongEma = iMA( Symbol(), PERIOD_CURRENT, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
-
-      if(zigzag2 <= zigzag4) {
-        alertText_2 = alertText_2 + "Long_HS " + Symbol() + " " + periodText + "\n";
-        mailSubject_2 = "[Long_HS] " + Symbol() + " " + periodText + " " + Time[0];
-        direction_2 = "long_hs";
-
-        if(maCurrentSma < maCurrentEma) {
-          requirement_2++;
-          alertText_2 = alertText_2 + "Short MA: Golden Cross" + "\n";
-        }
-        if(maLongSma < maLongEma) {
-          requirement_2++;
-          alertText_2 = alertText_2 + "Long MA: Golden Cross" + "\n";
-        }
-        if(maLongEma < maCurrentEma) {
-          requirement_2++;
-          alertText_2 = alertText_2 + "EMA: Golden Cross" + "\n";
-        }
-      } else if(zigzag2 > zigzag4) {
-        alertText_2 = alertText_2 + "Long_MW " + Symbol() + " " + periodText + "\n";
-        mailSubject_2 = "[Long_MW] " + Symbol() + " " + periodText + " " + Time[0];
-        direction_2 = "long_mw";
-
-        if(maCurrentSma < maCurrentEma) {
-          requirement_2++;
-          alertText_2 = alertText_2 + "Short MA: Golden Cross" + "\n";
-        }
-        if(maLongSma < maLongEma) {
-          requirement_2++;
-          alertText_2 = alertText_2 + "Long MA: Golden Cross" + "\n";
-        }
-        if(maLongEma < maCurrentEma) {
-          requirement_2++;
-          alertText_2 = alertText_2 + "EMA: Golden Cross" + "\n";
-        }
+      if(maCurrentSma < maCurrentEma) {
+        requirement_2++;
+        alertText_2 = alertText_2 + "Short MA: Golden Cross" + "\n";
+      }
+      if(maLongSma < maLongEma) {
+        requirement_2++;
+        alertText_2 = alertText_2 + "Long MA: Golden Cross" + "\n";
+      }
+      if(maLongEma < maCurrentEma) {
+        requirement_2++;
+        alertText_2 = alertText_2 + "EMA: Golden Cross" + "\n";
       }
     }
   }
   // Short 切り替わり
   if(zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag3 >= zigzag5) {
     if(zigzag3 > Close[1]) {
+      if(zigzag2 >= zigzag4) {
+        alertText_2 = alertText_2 + "Short_HS " + Symbol() + " " + periodText + "\n";
+        mailSubject_2 = "[Short_HS] " + Symbol() + " " + periodText + " " + Time[0];
+        direction_2 = "short_hs";
+      } else if(zigzag2 < zigzag4) {
+        alertText_2 = alertText_2 + "Short_MW " + Symbol() + " " + periodText + "\n";
+        mailSubject_2 = "[Short_MW] " + Symbol() + " " + periodText + " " + Time[0];
+        direction_2 = "short_mw";
+      }
       // MovingAverage取得
       maCurrentSma = iMA( Symbol(), PERIOD_CURRENT, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
       maCurrentEma = iMA( Symbol(), PERIOD_CURRENT, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
       maLongSma = iMA( Symbol(), PERIOD_CURRENT, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
       maLongEma = iMA( Symbol(), PERIOD_CURRENT, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
-
-      if(zigzag2 >= zigzag4) {
-        alertText_2 = alertText_2 + "Short_HS " + Symbol() + " " + periodText + "\n";
-        mailSubject_2 = "[Short_HS] " + Symbol() + " " + periodText + " " + Time[0];
-        direction_2 = "short_hs";
-
-        if(maCurrentSma > maCurrentEma) {
-          requirement_2++;
-          alertText_2 = alertText_2 + "Short MA: Dead Cross" + "\n";
-        }
-        if(maLongSma > maLongEma) {
-          requirement_2++;
-          alertText_2 = alertText_2 + "Long MA: Dead Cross" + "\n";
-        }
-        if(maLongEma > maCurrentEma) {
-          requirement_2++;
-          alertText_2 = alertText_2 + "EMA: Dead Cross" + "\n";
-        }
-      } else if(zigzag2 < zigzag4) {
-        alertText_2 = alertText_2 + "Short_MW " + Symbol() + " " + periodText + "\n";
-        mailSubject_2 = "[Short_MW] " + Symbol() + " " + periodText + " " + Time[0];
-        direction_2 = "short_mw";
-
-        if(maCurrentSma > maCurrentEma) {
-          requirement_2++;
-          alertText_2 = alertText_2 + "Short MA: Dead Cross" + "\n";
-        }
-        if(maLongSma > maLongEma) {
-          requirement_2++;
-          alertText_2 = alertText_2 + "Long MA: Dead Cross" + "\n";
-        }
-        if(maLongEma > maCurrentEma) {
-          requirement_2++;
-          alertText_2 = alertText_2 + "EMA: Dead Cross" + "\n";
-        }
+      if(maCurrentSma > maCurrentEma) {
+        requirement_2++;
+        alertText_2 = alertText_2 + "Short MA: Dead Cross" + "\n";
+      }
+      if(maLongSma > maLongEma) {
+        requirement_2++;
+        alertText_2 = alertText_2 + "Long MA: Dead Cross" + "\n";
+      }
+      if(maLongEma > maCurrentEma) {
+        requirement_2++;
+        alertText_2 = alertText_2 + "EMA: Dead Cross" + "\n";
       }
     }
   }
