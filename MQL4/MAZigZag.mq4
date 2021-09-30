@@ -18,26 +18,32 @@ input bool FileOutput = true;
 
 datetime lastAlert = 0;
 double lastAlertZigzag2;
+int period;
 string periodText;
 
 int OnInit() {
-  if(Period() == 1) {
+  if(ZigzagTimeframe == PERIOD_CURRENT) {
+    period = Period();
+  } else {
+    period = ZigzagTimeframe;
+  }
+  if(period == 1) {
     periodText = "M1";
-  } else if(Period() == 5) {
+  } else if(period == 5) {
     periodText = "M5";
-  } else if(Period() == 15) {
+  } else if(period == 15) {
     periodText = "M15";
-  } else if(Period() == 30) {
+  } else if(period == 30) {
     periodText = "M30";
-  } else if(Period() == 60) {
+  } else if(period == 60) {
     periodText = "H1";
-  } else if(Period() == 240) {
+  } else if(period == 240) {
     periodText = "H4";
-  } else if(Period() == 1440) {
+  } else if(period == 1440) {
     periodText = "D1";
-  } else if(Period() == 10080) {
+  } else if(period == 10080) {
     periodText = "W1";
-  } else if(Period() == 43200) {
+  } else if(period == 43200) {
     periodText = "MN";
   }
 
