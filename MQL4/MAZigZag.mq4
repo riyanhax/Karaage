@@ -220,29 +220,31 @@ int OnCalculate(const int rates_total,
   }
 
   // 条件を満たした数によってアラート
-  if(requirement >= AlertRequirementCount && lastAlert != Time[0] && lastAlertZigzag != zigzag2) {
-    Alert(alertText);
-    if(MailAlert) {
-      mailBody = mailBody + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-      mailBody = mailBody + alertText; // ロング or ショート、通貨ペア、時間足
-      mailBody = mailBody + "Price: " + Close[0];
-      mailBody = mailBody + "Zigzag: " + zigzag2 + ", " + zigzag3 + ", " + zigzag4 + "\n";
-      lengthPoints23 = MathAbs( zigzag2 - zigzag3 ) / Point();
-      lengthPoints34 = MathAbs( zigzag3 - zigzag4 ) / Point();
-      lengthPercent = (lengthPoints23 / lengthPoints34) * 100;
-      mailBody = mailBody + "LengthPoints: " + DoubleToStr( lengthPoints23, 0 ) + " / " + DoubleToStr( lengthPoints34, 0 ) + " [" + DoubleToStr( lengthPercent, 1 ) + "%]\n";
-      SendMail( mailSubject, mailBody );
-    }
-    // ファイル出力
-    if(FileOutput) {
-      handle = FileOpen("MAZigzag_"+Symbol()+".csv", FILE_CSV|FILE_READ|FILE_WRITE,",");
-      FileSeek(handle, 0, SEEK_END);
-      FileWrite(handle, Symbol(), periodText, direction, TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ), Time[0]);
-      FileClose(handle);
-    }
+  if(requirement_tr < AlertRequirementCount) {
+    if(requirement >= AlertRequirementCount && lastAlert != Time[0] && lastAlertZigzag != zigzag2) {
+      Alert(alertText);
+      if(MailAlert) {
+        mailBody = mailBody + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+        mailBody = mailBody + alertText; // ロング or ショート、通貨ペア、時間足
+        mailBody = mailBody + "Price: " + Close[0];
+        mailBody = mailBody + "Zigzag: " + zigzag2 + ", " + zigzag3 + ", " + zigzag4 + "\n";
+        lengthPoints23 = MathAbs( zigzag2 - zigzag3 ) / Point();
+        lengthPoints34 = MathAbs( zigzag3 - zigzag4 ) / Point();
+        lengthPercent = (lengthPoints23 / lengthPoints34) * 100;
+        mailBody = mailBody + "LengthPoints: " + DoubleToStr( lengthPoints23, 0 ) + " / " + DoubleToStr( lengthPoints34, 0 ) + " [" + DoubleToStr( lengthPercent, 1 ) + "%]\n";
+        SendMail( mailSubject, mailBody );
+      }
+      // ファイル出力
+      if(FileOutput) {
+        handle = FileOpen("MAZigzag_"+Symbol()+".csv", FILE_CSV|FILE_READ|FILE_WRITE,",");
+        FileSeek(handle, 0, SEEK_END);
+        FileWrite(handle, Symbol(), periodText, direction, TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ), Time[0]);
+        FileClose(handle);
+      }
 
-    lastAlert = Time[0];
-    lastAlertZigzag = zigzag2;
+      lastAlert = Time[0];
+      lastAlertZigzag = zigzag2;
+    }
   }
   if(requirement_tr >= AlertRequirementCount && lastAlert_tr != Time[0] && lastAlertZigzag_tr != zigzag2) {
     Alert(alertText_tr);
