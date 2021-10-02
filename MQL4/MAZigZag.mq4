@@ -71,9 +71,7 @@ int OnCalculate(const int rates_total,
   double maLongSma;
   int i;
   int cnt;
-  bool requirement1; // MACurrentのEMAとSMAのクロス
-  bool requirement2; // MALongのEMAとSMAのクロス
-  bool requirement3; // EMAのMACurrentとMALongのクロス
+  int requirement;
   string alertText;
   string mailSubject;
   string mailBody;
@@ -100,10 +98,7 @@ int OnCalculate(const int rates_total,
   }
 
   // 条件
-  requirement1 = false;
-  requirement2 = false;
-  requirement3 = false;
-  cnt = 0;
+  requirement = 0;
   // Long
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag2 >= zigzag4) {
     alertText = alertText + "Long " + Symbol() + " " + periodText + "\n";
@@ -116,18 +111,15 @@ int OnCalculate(const int rates_total,
     maLongEma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
 
     if(maCurrentSma < maCurrentEma) {
-      requirement1 = true;
-      cnt++;
+      requirement++;
       alertText = alertText + "Short MA: Golden Cross" + "\n";
     }
     if(maLongSma < maLongEma) {
-      requirement2 = true;
-      cnt++;
+      requirement++;
       alertText = alertText + "Long MA: Golden Cross" + "\n";
     }
     if(maLongEma < maCurrentEma) {
-      requirement3 = true;
-      cnt++;
+      requirement++;
       alertText = alertText + "EMA: Golden Cross" + "\n";
     }
   }
@@ -143,24 +135,21 @@ int OnCalculate(const int rates_total,
     maLongEma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
 
     if(maCurrentSma > maCurrentEma) {
-      requirement1 = true;
-      cnt++;
+      requirement++;
       alertText = alertText + "Short MA: Dead Cross" + "\n";
     }
     if(maLongSma > maLongEma) {
-      requirement2 = true;
-      cnt++;
+      requirement++;
       alertText = alertText + "Long MA: Dead Cross" + "\n";
     }
     if(maLongEma > maCurrentEma) {
-      requirement3 = true;
-      cnt++;
+      requirement++;
       alertText = alertText + "EMA: Dead Cross" + "\n";
     }
   }
 
   // 条件を満たした数によってアラート
-  if(cnt >= AlertRequirementCount && lastAlert != Time[0] && lastAlertZigzag2 != zigzag2) {
+  if(requirement >= AlertRequirementCount && lastAlert != Time[0] && lastAlertZigzag2 != zigzag2) {
     Alert(alertText);
     if(MailAlert) {
       mailBody = mailBody + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
