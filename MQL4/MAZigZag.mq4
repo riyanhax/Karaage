@@ -65,6 +65,8 @@ int OnCalculate(const int rates_total,
   double zigzag2;
   double zigzag3;
   double zigzag4;
+  double zigzag5;
+  double zigzag6;
   double maCurrentEma;
   double maCurrentSma;
   double maLongEma;
@@ -93,6 +95,12 @@ int OnCalculate(const int rates_total,
     } else if(cnt == 3 && zigzagTmp != EMPTY_VALUE && zigzagTmp != 0) {
       zigzag4 = zigzagTmp;
       cnt = 4;
+    } else if(cnt == 4 && zigzagTmp != EMPTY_VALUE && zigzagTmp != 0) {
+      zigzag5 = zigzagTmp;
+      cnt = 5;
+    } else if(cnt == 5 && zigzagTmp != EMPTY_VALUE && zigzagTmp != 0) {
+      zigzag6 = zigzagTmp;
+      cnt = 6;
       break;
     }
   }
@@ -123,11 +131,61 @@ int OnCalculate(const int rates_total,
       alertText = alertText + "EMA: Golden Cross" + "\n";
     }
   }
+  // Long_TR
+  if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag5 > zigzag6
+    && zigzag3 > zigzag5 && zigzag2 >= zigzag5 && zigzag4 >= zigzag6) {
+    alertText = alertText + "Long_TR " + Symbol() + " " + periodText + "\n";
+    mailSubject = "[Long_TR] " + Symbol() + " " + periodText + " " + Time[0];
+    direction = "long_tr";
+    // MovingAverage取得
+    maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+    maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+    maLongSma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+    maLongEma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+
+    if(maCurrentSma < maCurrentEma) {
+      requirement++;
+      alertText = alertText + "Short MA: Golden Cross" + "\n";
+    }
+    if(maLongSma < maLongEma) {
+      requirement++;
+      alertText = alertText + "Long MA: Golden Cross" + "\n";
+    }
+    if(maLongEma < maCurrentEma) {
+      requirement++;
+      alertText = alertText + "EMA: Golden Cross" + "\n";
+    }
+  }
   // Short
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag2 <= zigzag4) {
     alertText = alertText + "Short " + Symbol() + " " + periodText + "\n";
     mailSubject = "[Short] " + Symbol() + " " + periodText + " " + Time[0];
     direction = "short";
+    // MovingAverage取得
+    maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+    maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+    maLongSma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+    maLongEma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+
+    if(maCurrentSma > maCurrentEma) {
+      requirement++;
+      alertText = alertText + "Short MA: Dead Cross" + "\n";
+    }
+    if(maLongSma > maLongEma) {
+      requirement++;
+      alertText = alertText + "Long MA: Dead Cross" + "\n";
+    }
+    if(maLongEma > maCurrentEma) {
+      requirement++;
+      alertText = alertText + "EMA: Dead Cross" + "\n";
+    }
+  }
+  // Short_TR
+  if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag5 < zigzag6
+    && zigzag3 < zigzag5 && zigzag2 <= zigzag5 && zigzag4 <= zigzag6) {
+    alertText = alertText + "Short_TR " + Symbol() + " " + periodText + "\n";
+    mailSubject = "[Short_TR] " + Symbol() + " " + periodText + " " + Time[0];
+    direction = "short_tr";
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
