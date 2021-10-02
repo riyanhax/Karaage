@@ -182,10 +182,10 @@ int OnCalculate(const int rates_total,
       mailBody = mailBody + alertText; // ロング or ショート、通貨ペア、時間足
       mailBody = mailBody + "Price: " + Close[0];
       mailBody = mailBody + "Zigzag: " + zigzag2 + ", " + zigzag3 + ", " + zigzag4 + ", " + zigzag5 + "\n";
-      double lengthPoints23_2 = MathAbs( zigzag3 - zigzag4 ) / Point();
-      double lengthPoints34_2 = MathAbs( zigzag4 - zigzag5 ) / Point();
-      double lengthPercent_2 = (lengthPoints23_2 / lengthPoints34_2) * 100;
-      mailBody = mailBody + "LengthPoints: " + DoubleToStr( lengthPoints23_2, 0 ) + " / " + DoubleToStr( lengthPoints34_2, 0 ) + " [" + DoubleToStr( lengthPercent_2, 1 ) + "%]\n";
+      double lengthPoints23 = MathAbs( zigzag2 - zigzag3 ) / Point();
+      double lengthPoints34 = MathAbs( zigzag3 - zigzag4 ) / Point();
+      double lengthPercent = (lengthPoints23 / lengthPoints34) * 100;
+      mailBody = mailBody + "LengthPoints: " + DoubleToStr( lengthPoints23, 0 ) + " / " + DoubleToStr( lengthPoints34, 0 ) + " [" + DoubleToStr( lengthPercent, 1 ) + "%]\n";
       SendMail( mailSubject, mailBody );
     }
 
