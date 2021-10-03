@@ -115,7 +115,7 @@ int OnCalculate(const int rates_total,
   requirement = 0;
   // Long 切り替わり
   if(zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag5 > zigzag6 && zigzag6 < zigzag7
-      && zigzag5 <= zigzag7 && zigzag3 >= zigzag5) {
+      && zigzag5 <= zigzag7 && zigzag3 >= zigzag5 && zigzag2 >= zigzag4) {
     if(zigzag4 <= zigzag6) {
       alertText = alertText + "Long_MW_HS " + Symbol() + " " + periodText + "\n";
       mailSubject = "[Long_MW_HS] " + Symbol() + " " + periodText + " " + Time[0];
@@ -145,7 +145,7 @@ int OnCalculate(const int rates_total,
   }
   // Short 切り替わり
   if(zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag5 < zigzag6 && zigzag6 > zigzag7
-      && zigzag5 >= zigzag7 && zigzag3 <= zigzag5) {
+      && zigzag5 >= zigzag7 && zigzag3 <= zigzag5 && zigzag2 <= zigzag4) {
     if(zigzag4 >= zigzag6) {
       alertText = alertText + "Short_MW_HS " + Symbol() + " " + periodText + "\n";
       mailSubject = "[Short_MW_HS] " + Symbol() + " " + periodText + " " + Time[0];

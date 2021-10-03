@@ -170,7 +170,7 @@ int OnCalculate(const int rates_total,
   requirement_tr = 0;
   // Long_TR
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag5 > zigzag6
-    && zigzag3 > zigzag5 && zigzag2 >= zigzag5 && zigzag4 >= zigzag6) {
+    && zigzag3 > zigzag5 && zigzag2 >= zigzag5 && zigzag4 >= zigzag6 && zigzag2 >= zigzag4) {
     alertText_tr = alertText_tr + "Long_TR " + Symbol() + " " + periodText + "\n";
     mailSubject_tr = "[Long_TR] " + Symbol() + " " + periodText + " " + Time[0];
     direction_tr = "long_tr";
@@ -195,7 +195,7 @@ int OnCalculate(const int rates_total,
   }
   // Short_TR
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag5 < zigzag6
-    && zigzag3 < zigzag5 && zigzag2 <= zigzag5 && zigzag4 <= zigzag6) {
+    && zigzag3 < zigzag5 && zigzag2 <= zigzag5 && zigzag4 <= zigzag6 && zigzag2 <= zigzag4) {
     alertText_tr = alertText_tr + "Short_TR " + Symbol() + " " + periodText + "\n";
     mailSubject_tr = "[Short_TR] " + Symbol() + " " + periodText + " " + Time[0];
     direction_tr = "short_tr";
