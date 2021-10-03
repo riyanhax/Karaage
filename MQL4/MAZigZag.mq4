@@ -86,9 +86,11 @@ int OnCalculate(const int rates_total,
   string mailBody_tr;
   string direction_tr;
   int handle;
+  double lengthPoints12;
   double lengthPoints23;
   double lengthPoints34;
-  double lengthPercent;
+  double lengthPercent_rr;
+  double lengthPercent_fibo;
 
   // ZigZag取得
   cnt = 0;
@@ -228,10 +230,13 @@ int OnCalculate(const int rates_total,
         mailBody = mailBody + alertText; // ロング or ショート、通貨ペア、時間足
         mailBody = mailBody + "Price: " + Close[0];
         mailBody = mailBody + "Zigzag: " + zigzag2 + ", " + zigzag3 + ", " + zigzag4 + "\n";
+        lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
         lengthPoints23 = MathAbs( zigzag2 - zigzag3 ) / Point();
+        lengthPercent_rr = (lengthPoints23 / lengthPoints12) * 100;
+        mailBody = mailBody + "RRPoints: " + DoubleToStr( lengthPoints23, 0 ) + " / " + DoubleToStr( lengthPoints12, 0 ) + " [" + DoubleToStr( lengthPercent_rr, 1 ) + "%]\n";
         lengthPoints34 = MathAbs( zigzag3 - zigzag4 ) / Point();
-        lengthPercent = (lengthPoints23 / lengthPoints34) * 100;
-        mailBody = mailBody + "LengthPoints: " + DoubleToStr( lengthPoints23, 0 ) + " / " + DoubleToStr( lengthPoints34, 0 ) + " [" + DoubleToStr( lengthPercent, 1 ) + "%]\n";
+        lengthPercent_fibo = (lengthPoints23 / lengthPoints34) * 100;
+        mailBody = mailBody + "FiboPoints: " + DoubleToStr( lengthPoints23, 0 ) + " / " + DoubleToStr( lengthPoints34, 0 ) + " [" + DoubleToStr( lengthPercent_fibo, 1 ) + "%]\n";
         SendMail( mailSubject, mailBody );
       }
       // ファイル出力
@@ -253,10 +258,13 @@ int OnCalculate(const int rates_total,
       mailBody_tr = mailBody_tr + alertText_tr; // ロング or ショート、通貨ペア、時間足
       mailBody = mailBody + "Price: " + Close[0];
       mailBody_tr = mailBody_tr + "Zigzag: " + zigzag2 + ", " + zigzag3 + ", " + zigzag4 + "\n";
+      lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
       lengthPoints23 = MathAbs( zigzag2 - zigzag3 ) / Point();
+      lengthPercent_rr = (lengthPoints23 / lengthPoints12) * 100;
+      mailBody_tr = mailBody_tr + "RRPoints: " + DoubleToStr( lengthPoints23, 0 ) + " / " + DoubleToStr( lengthPoints12, 0 ) + " [" + DoubleToStr( lengthPercent_rr, 1 ) + "%]\n";
       lengthPoints34 = MathAbs( zigzag3 - zigzag4 ) / Point();
-      lengthPercent = (lengthPoints23 / lengthPoints34) * 100;
-      mailBody_tr = mailBody_tr + "LengthPoints: " + DoubleToStr( lengthPoints23, 0 ) + " / " + DoubleToStr( lengthPoints34, 0 ) + " [" + DoubleToStr( lengthPercent, 1 ) + "%]\n";
+      lengthPercent_fibo = (lengthPoints23 / lengthPoints34) * 100;
+      mailBody_tr = mailBody_tr + "FiboPoints: " + DoubleToStr( lengthPoints23, 0 ) + " / " + DoubleToStr( lengthPoints34, 0 ) + " [" + DoubleToStr( lengthPercent_fibo, 1 ) + "%]\n";
       SendMail( mailSubject_tr, mailBody_tr );
     }
     // ファイル出力
