@@ -183,9 +183,10 @@ int OnCalculate(const int rates_total,
       mailBody = mailBody + "Price: " + Close[0];
       mailBody = mailBody + "Zigzag: " + zigzag2 + ", " + zigzag3 + ", " + zigzag4 + "\n";
       double lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
+      double lengthPoints13 = MathAbs( zigzag1 - zigzag3 ) / Point();
+      double lengthPercent_rr = (lengthPoints13 / lengthPoints12) * 100;
+      mailBody = mailBody + "RRPoints: " + DoubleToStr( lengthPoints13, 0 ) + " / " + DoubleToStr( lengthPoints12, 0 ) + " [" + DoubleToStr( lengthPercent_rr, 1 ) + "%]\n";
       double lengthPoints23 = MathAbs( zigzag2 - zigzag3 ) / Point();
-      double lengthPercent_rr = (lengthPoints23 / lengthPoints12) * 100;
-      mailBody = mailBody + "RRPoints: " + DoubleToStr( lengthPoints23, 0 ) + " / " + DoubleToStr( lengthPoints12, 0 ) + " [" + DoubleToStr( lengthPercent_rr, 1 ) + "%]\n";
       double lengthPoints34 = MathAbs( zigzag3 - zigzag4 ) / Point();
       double lengthPercent_fibo = (lengthPoints23 / lengthPoints34) * 100;
       mailBody = mailBody + "FiboPoints: " + DoubleToStr( lengthPoints23, 0 ) + " / " + DoubleToStr( lengthPoints34, 0 ) + " [" + DoubleToStr( lengthPercent_fibo, 1 ) + "%]\n";
