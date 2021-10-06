@@ -17,6 +17,7 @@ extern int MaxSpreadPoints = 100;
 extern int EntryMax = 99;
 extern int BarShift = 0;
 extern string Explanation2 = "/////// TIME SCOPE SETTINGS ///////";
+extern bool TakahashiMethod = false;
 extern bool PerfectOrder_M5 = false;
 extern bool TimeScope_H1 = false;
 extern bool TimeScope_H4 = false;
@@ -195,13 +196,13 @@ void OnTick() {
   }
 
   // パラメータ取得
-  /**
-  signUp = iCustom( Symbol(), PERIOD_CURRENT, "TAKAHASHI_method_Sign", false, false, false, false, 0, BarShift );
-  signDown = iCustom( Symbol(), PERIOD_CURRENT, "TAKAHASHI_method_Sign", false, false, false, false, 1, BarShift );
-  if((signUp == EMPTY_VALUE || signUp == 0) && (signDown == EMPTY_VALUE || signDown == 0)) {
+  if(TakahashiMethod) {
+    signUp = iCustom( Symbol(), PERIOD_CURRENT, "TAKAHASHI_method_Sign", false, false, false, false, 0, BarShift );
+    signDown = iCustom( Symbol(), PERIOD_CURRENT, "TAKAHASHI_method_Sign", false, false, false, false, 1, BarShift );
+  }
+  if(TakahashiMethod && (signUp == EMPTY_VALUE || signUp == 0) && (signDown == EMPTY_VALUE || signDown == 0)) {
     return;
   }
-  */
   if(PerfectOrder_M5) {
     perfectOrder_M5_up = iCustom( Symbol(), PERIOD_CURRENT, "Perfect_order_Tool_5M", 5000, 1, 0, BarShift );
     perfectOrder_M5_down = iCustom( Symbol(), PERIOD_CURRENT, "Perfect_order_Tool_5M", 5000, 1, 1, BarShift );
@@ -225,13 +226,13 @@ void OnTick() {
   kumoThicknessPips = MathAbs( kumoA - kumoB ) / (Point*10);
 
   // Buy
-  /**
-  buyFlg = false;
-  if(signUp != EMPTY_VALUE && signUp != 0) {
-    buyFlg = true;
-  }
-  */
   buyFlg = true;
+  if(buyFlg && TakahashiMethod) {
+    if(signUp == EMPTY_VALUE || signUp == 0) {
+      buyFlg = false;
+      return;
+    }
+  }
   if(buyFlg && PerfectOrder_M5) {
     if(perfectOrder_M5_up == EMPTY_VALUE || perfectOrder_M5_up == 0) {
       buyFlg = false;
@@ -314,13 +315,13 @@ void OnTick() {
   }
 
   // Sell
-  /**
-  sellFlg = false;
-  if(signDown != EMPTY_VALUE && signDown != 0) {
-    sellFlg = true;
-  }
-  */
   sellFlg = true;
+  if(sellFlg && TakahashiMethod) {
+    if(signDown == EMPTY_VALUE || signDown == 0) {
+      sellFlg = false;
+      return;
+    }
+  }
   if(sellFlg && PerfectOrder_M5) {
     if(perfectOrder_M5_down == EMPTY_VALUE || perfectOrder_M5_down == 0) {
       sellFlg = false;
