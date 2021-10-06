@@ -10,11 +10,11 @@ extern bool NarrowDownByMagic = false;
 extern int Magic = 0;
 extern bool NarrowDownByComment = false;
 extern string Comment = "";
-extern double MaxLots = 10.0;
+extern double MaxLots = 1.0;
 extern bool DeleteLimitOrder = true;
 extern bool StopAutoTrade = true;
 extern bool MailAlert = true;
-extern string ServerName = "";
+extern string ServerName = "ServerName";
 
 bool tradeOn;
 datetime lastAlert;
