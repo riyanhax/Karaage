@@ -75,11 +75,13 @@ int OnCalculate(const int rates_total,
   double maLongSma;
   int i;
   int cnt;
+  /**
   int requirement;
   string alertText;
   string mailSubject;
   string mailBody;
   string direction;
+  */
   int requirement_tr;
   string alertText_tr;
   string mailSubject_tr;
@@ -120,6 +122,7 @@ int OnCalculate(const int rates_total,
   }
 
   // 条件
+  /**
   requirement = 0;
   // Long
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag2 >= zigzag4) {
@@ -169,6 +172,7 @@ int OnCalculate(const int rates_total,
       alertText = alertText + "EMA: Dead Cross" + "\n";
     }
   }
+  */
 
   requirement_tr = 0;
   // Long_TR
@@ -223,6 +227,7 @@ int OnCalculate(const int rates_total,
   }
 
   // 条件を満たした数によってアラート
+  /**
   if(requirement_tr < AlertRequirementCount) {
     if(requirement >= AlertRequirementCount && lastAlert != Time[0] && lastAlertZigzag != zigzag2) {
       Alert(alertText);
@@ -253,12 +258,13 @@ int OnCalculate(const int rates_total,
       lastAlertZigzag = zigzag2;
     }
   }
+  */
   if(requirement_tr >= AlertRequirementCount && lastAlert_tr != Time[0] && lastAlertZigzag_tr != zigzag2) {
     Alert(alertText_tr);
     if(MailAlert) {
       mailBody_tr = mailBody_tr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
       mailBody_tr = mailBody_tr + alertText_tr; // ロング or ショート、通貨ペア、時間足
-      mailBody = mailBody + "Price: " + Close[0];
+      mailBody_tr = mailBody_tr + "Price: " + Close[0];
       mailBody_tr = mailBody_tr + "Zigzag: " + zigzag2 + ", " + zigzag3 + ", " + zigzag4 + "\n";
       lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
       lengthPoints13 = MathAbs( zigzag1 - zigzag3 ) / Point();
