@@ -67,12 +67,16 @@ int OnCalculate(const int rates_total,
   double zigzag2;
   double zigzag3;
   double zigzag4;
-  double zigzag5;
-  double zigzag6;
   double maCurrentEma;
   double maCurrentSma;
   double maLongEma;
   double maLongSma;
+  double maCurrentEma2;
+  double maCurrentSma2;
+  double maCurrentEma3;
+  double maCurrentSma3;
+  double maCurrentEma4;
+  double maCurrentSma4;
   int i;
   int cnt;
   int requirement;
@@ -97,19 +101,19 @@ int OnCalculate(const int rates_total,
       cnt = 1;
     } else if(cnt == 1 && zigzagTmp != EMPTY_VALUE && zigzagTmp != 0) {
       zigzag2 = zigzagTmp;
+      maCurrentSma2 = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, i );
+      maCurrentEma2 = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, i );
       cnt = 2;
     } else if(cnt == 2 && zigzagTmp != EMPTY_VALUE && zigzagTmp != 0) {
       zigzag3 = zigzagTmp;
+      maCurrentSma3 = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, i );
+      maCurrentEma3 = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, i );
       cnt = 3;
     } else if(cnt == 3 && zigzagTmp != EMPTY_VALUE && zigzagTmp != 0) {
       zigzag4 = zigzagTmp;
+      maCurrentSma4 = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, i );
+      maCurrentEma4 = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, i );
       cnt = 4;
-    } else if(cnt == 4 && zigzagTmp != EMPTY_VALUE && zigzagTmp != 0) {
-      zigzag5 = zigzagTmp;
-      cnt = 5;
-    } else if(cnt == 5 && zigzagTmp != EMPTY_VALUE && zigzagTmp != 0) {
-      zigzag6 = zigzagTmp;
-      cnt = 6;
       break;
     }
   }
@@ -123,8 +127,8 @@ int OnCalculate(const int rates_total,
   requirement = 0;
   // Long
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag2 >= zigzag4) {
-    if(zigzag4 < maCurrentSma && zigzag4 < maCurrentEma && zigzag3 > maCurrentSma && zigzag3 > maCurrentEma
-      && zigzag2 < maCurrentSma && zigzag2 < maCurrentEma && zigzag1 > maCurrentSma && zigzag1 < maCurrentEma) {
+    if(zigzag4 < maCurrentSma4 && zigzag4 < maCurrentEma4 && zigzag3 > maCurrentSma3 && zigzag3 > maCurrentEma3
+      && zigzag2 < maCurrentSma2 && zigzag2 < maCurrentEma2 && zigzag1 > maCurrentSma && zigzag1 > maCurrentEma) {
 
       alertText = alertText + "Long_YK " + Symbol() + " " + periodText + "\n";
       mailSubject = "[Long_YK] " + Symbol() + " " + periodText + " " + Time[0];
@@ -146,8 +150,8 @@ int OnCalculate(const int rates_total,
   }
   // Short
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag2 <= zigzag4) {
-    if(zigzag4 > maCurrentSma && zigzag4 > maCurrentEma && zigzag3 < maCurrentSma && zigzag3 < maCurrentEma
-      && zigzag2 > maCurrentSma && zigzag2 > maCurrentEma && zigzag1 < maCurrentSma && zigzag1 < maCurrentEma) {
+    if(zigzag4 > maCurrentSma4 && zigzag4 > maCurrentEma4 && zigzag3 < maCurrentSma3 && zigzag3 < maCurrentEma3
+      && zigzag2 > maCurrentSma2 && zigzag2 > maCurrentEma2 && zigzag1 < maCurrentSma && zigzag1 < maCurrentEma) {
 
       alertText = alertText + "Short_YK " + Symbol() + " " + periodText + "\n";
       mailSubject = "[Short_YK] " + Symbol() + " " + periodText + " " + Time[0];
