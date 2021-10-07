@@ -17,7 +17,7 @@ void OnTick(){
        if( OrderSelect(i, SELECT_BY_POS) == true ) {
           if( CloseSymbol == "ALL" || OrderSymbol() == CloseSymbol ) {
             if( MagicNumber == 0 || OrderMagicNumber() == MagicNumber ) {
-              if( Comment == "ALL" || OrderComment() == Comment ) {
+              if( Comment == "ALL" || StringFind( OrderComment(), Comment, 0 ) >= 0 ) {
                 if( OrderOpenTime() + ( CloseMin * 60 ) < TimeCurrent() ) {
                   if(OnlyIfProfitable) {
                     if(OrderProfit()*ProfitMargin + OrderSwap() + OrderCommission() <= 0) {
