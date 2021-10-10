@@ -10,7 +10,8 @@ input int Backstep = 1;
 input string MovingAverageSetting = "/////// MovingAverageSetting ///////";
 input ENUM_TIMEFRAMES MATimeframe = PERIOD_CURRENT;
 input int MACurrentPeriod = 20;
-input int MALongPeriod = 80;
+input int MAMiddlePeriod = 80;
+input int MALongPeriod = 320;
 input string AlertSetting = "/////// AlertSetting ///////";
 input int AlertRequirementCount = 3;
 input bool MailAlert = true;
@@ -69,6 +70,8 @@ int OnCalculate(const int rates_total,
   double zigzag4;
   double maCurrentEma;
   double maCurrentSma;
+  double maMiddleEma;
+  double maMiddleSma;
   double maLongEma;
   double maLongSma;
   double maCurrentEma2;
@@ -118,6 +121,8 @@ int OnCalculate(const int rates_total,
   // MovingAverage取得
   maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
   maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+  maMiddleSma = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+  maMiddleEma = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
   maLongSma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
   maLongEma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
 
@@ -136,13 +141,19 @@ int OnCalculate(const int rates_total,
         requirement++;
         alertText = alertText + "Short MA: Golden Cross" + "\n";
       }
-      if(maLongSma < maLongEma) {
+      if(maMiddleSma < maMiddleEma) {
         requirement++;
-        alertText = alertText + "Long MA: Golden Cross" + "\n";
+        alertText = alertText + "Middle MA: Golden Cross" + "\n";
       }
-      if(maLongEma < maCurrentEma) {
+      if(maMiddleEma < maCurrentEma) {
         requirement++;
         alertText = alertText + "EMA: Golden Cross" + "\n";
+      }
+      if(maLongSma < maLongEma) {
+        alertText = alertText + "Long MA: Golden Cross" + "\n";
+      }
+      if(maCurrentEma > maMiddleEma && maMiddleEma > maLongEma) {
+        alertText = alertText + "ALL EMA: Golden Cross" + "\n";
       }
     }
   }
@@ -159,13 +170,19 @@ int OnCalculate(const int rates_total,
         requirement++;
         alertText = alertText + "Short MA: Dead Cross" + "\n";
       }
-      if(maLongSma > maLongEma) {
+      if(maMiddleSma > maMiddleEma) {
         requirement++;
-        alertText = alertText + "Long MA: Dead Cross" + "\n";
+        alertText = alertText + "Middle MA: Dead Cross" + "\n";
       }
-      if(maLongEma > maCurrentEma) {
+      if(maMiddleEma > maCurrentEma) {
         requirement++;
         alertText = alertText + "EMA: Dead Cross" + "\n";
+      }
+      if(maLongSma > maLongEma) {
+        alertText = alertText + "Long MA: Dead Cross" + "\n";
+      }
+      if(maCurrentEma < maMiddleEma && maMiddleEma < maLongEma) {
+        alertText = alertText + "ALL EMA: Dead Cross" + "\n";
       }
     }
   }
