@@ -256,12 +256,21 @@ int OnCalculate(const int rates_total,
       mailBody = mailBody + "Zigzag: " + zigzag2 + ", " + zigzag3 + ", " + zigzag4 + "\n";
       double lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
       double lengthPoints13 = MathAbs( zigzag1 - zigzag3 ) / Point();
-      double lengthPercent_rr = (lengthPoints13 / lengthPoints12) * 100;
-      mailBody = mailBody + "RRPoints: " + DoubleToStr( lengthPoints13, 0 ) + " / " + DoubleToStr( lengthPoints12, 0 ) + " [" + DoubleToStr( lengthPercent_rr, 1 ) + "%]\n";
       double lengthPoints23 = MathAbs( zigzag2 - zigzag3 ) / Point();
       double lengthPoints34 = MathAbs( zigzag3 - zigzag4 ) / Point();
-      double lengthPercent_fibo = (lengthPoints23 / lengthPoints34) * 100;
-      mailBody = mailBody + "FiboPoints: " + DoubleToStr( lengthPoints23, 0 ) + " / " + DoubleToStr( lengthPoints34, 0 ) + " [" + DoubleToStr( lengthPercent_fibo, 1 ) + "%]\n";
+      mailBody = mailBody + "FiboPoints: " + DoubleToStr( lengthPoints23, 0 ) + " / " + DoubleToStr( lengthPoints34, 0 ) + " [" + DoubleToStr( (lengthPoints23 / lengthPoints34) * 100, 1 ) + "%]\n";
+      mailBody = mailBody + "E3Percent: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints34, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints34) * 100, 1 ) + "%]\n";
+      if(lengthPoints12 < lengthPoints23) {
+        mailBody = mailBody + "5RRPoints: " + DoubleToStr( lengthPoints13, 0 ) + " / " + DoubleToStr( lengthPoints12, 0 ) + " [" + DoubleToStr( (lengthPoints13 / lengthPoints12) * 100, 1 ) + "%]\n";
+      } else {
+        mailBody = mailBody + "5RRPoints: None\n";
+      }
+      if(lengthPoints12 < lengthPoints34) {
+        mailBody = mailBody + "3RRPoints: " + DoubleToStr( lengthPoints34 - lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints12, 0 ) + " [" + DoubleToStr((((lengthPoints34 - lengthPoints12) / lengthPoints12))*100, 1 ) + "%]\n";
+      } else {
+        mailBody = mailBody + "3RRPoints: None\n";
+      }
+      mailBody = mailBody + "MaxE3Points: " + DoubleToStr( lengthPoints34*1.618, 0 ) + " [" + DoubleToStr( lengthPoints34*1.618 - lengthPoints12, 0 ) + "]\n";
       SendMail( mailSubject, mailBody );
     }
 
@@ -285,12 +294,21 @@ int OnCalculate(const int rates_total,
       mailBody_tr = mailBody_tr + "Zigzag: " + zigzag2 + ", " + zigzag3 + ", " + zigzag4 + "\n";
       double lengthPoints12_tr = MathAbs( zigzag1 - zigzag2 ) / Point();
       double lengthPoints13_tr = MathAbs( zigzag1 - zigzag3 ) / Point();
-      double lengthPercent_rr_tr = (lengthPoints13_tr / lengthPoints12_tr) * 100;
-      mailBody_tr = mailBody_tr + "RRPoints: " + DoubleToStr( lengthPoints13_tr, 0 ) + " / " + DoubleToStr( lengthPoints12_tr, 0 ) + " [" + DoubleToStr( lengthPercent_rr_tr, 1 ) + "%]\n";
       double lengthPoints23_tr = MathAbs( zigzag2 - zigzag3 ) / Point();
       double lengthPoints34_tr = MathAbs( zigzag3 - zigzag4 ) / Point();
-      double lengthPercent_fibo_tr = (lengthPoints23_tr / lengthPoints34_tr) * 100;
-      mailBody_tr = mailBody_tr + "FiboPoints: " + DoubleToStr( lengthPoints23_tr, 0 ) + " / " + DoubleToStr( lengthPoints34_tr, 0 ) + " [" + DoubleToStr( lengthPercent_fibo_tr, 1 ) + "%]\n";
+      mailBody_tr = mailBody_tr + "FiboPoints: " + DoubleToStr( lengthPoints23_tr, 0 ) + " / " + DoubleToStr( lengthPoints34_tr, 0 ) + " [" + DoubleToStr( (lengthPoints23_tr / lengthPoints34_tr) * 100, 1 ) + "%]\n";
+      mailBody_tr = mailBody_tr + "E3Percent: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints34, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints34) * 100, 1 ) + "%]\n";
+      if(lengthPoints12 < lengthPoints23) {
+        mailBody_tr = mailBody_tr + "5RRPoints: " + DoubleToStr( lengthPoints13, 0 ) + " / " + DoubleToStr( lengthPoints12, 0 ) + " [" + DoubleToStr( (lengthPoints13 / lengthPoints12) * 100, 1 ) + "%]\n";
+      } else {
+        mailBody_tr = mailBody_tr + "5RRPoints: None\n";
+      }
+      if(lengthPoints12 < lengthPoints34) {
+        mailBody_tr = mailBody_tr + "3RRPoints: " + DoubleToStr( lengthPoints34 - lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints12, 0 ) + " [" + DoubleToStr((((lengthPoints34 - lengthPoints12) / lengthPoints12))*100, 1 ) + "%]\n";
+      } else {
+        mailBody_tr = mailBody_tr + "3RRPoints: None\n";
+      }
+      mailBody_tr = mailBody_tr + "MaxE3Points: " + DoubleToStr( lengthPoints34*1.618, 0 ) + " [" + DoubleToStr( lengthPoints34*1.618 - lengthPoints12, 0 ) + "]\n";
       SendMail( mailSubject_tr, mailBody_tr );
     }
 
