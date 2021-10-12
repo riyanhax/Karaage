@@ -211,7 +211,10 @@ int OnCalculate(const int rates_total,
       } else {
         mailBody = mailBody + "3RRPoints: None\n";
       }
-      mailBody = mailBody + "MaxE3Points: " + DoubleToStr( lengthPoints34*1.618, 0 ) + " [" + DoubleToStr( lengthPoints34*1.618 - lengthPoints12, 0 ) + "]\n";
+      //mailBody = mailBody + "MaxE3Points: " + DoubleToStr( lengthPoints34*1.618, 0 ) + " [" + DoubleToStr( lengthPoints34*1.618 - lengthPoints12, 0 ) + "]\n";
+      mailBody = mailBody + "\nShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr(Close[0] - maCurrentEma, 0) + "]\n";
+      mailBody = mailBody + "MiddleMADis: " + DoubleToStr(((Close[0] - maMiddleEma) / maMiddleEma)*100, 3) + "%[" + DoubleToStr(Close[0] - maMiddleEma, 0) + "]\n";
+      mailBody = mailBody + "LongMADis: " + DoubleToStr(((Close[0] - maLongEma) / maLongEma)*100, 3) + "%[" + DoubleToStr(Close[0] - maLongEma, 0) + "]\n";
       SendMail( mailSubject, mailBody );
     }
     // ファイル出力
