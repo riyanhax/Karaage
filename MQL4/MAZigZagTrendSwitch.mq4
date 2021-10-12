@@ -288,7 +288,7 @@ int OnCalculate(const int rates_total,
       mailBody = mailBody + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
       mailBody = mailBody + alertText; // ロング or ショート、通貨ペア、時間足
       mailBody = mailBody + "Price: " + Close[0];
-      mailBody = mailBody + "Zigzag: " + zigzag2 + ", " + zigzag3 + ", " + zigzag4 + "\n";
+      //mailBody = mailBody + "Zigzag: " + zigzag2 + ", " + zigzag3 + ", " + zigzag4 + "\n";
       double lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
       double lengthPoints13 = MathAbs( zigzag1 - zigzag3 ) / Point();
       double lengthPoints23 = MathAbs( zigzag2 - zigzag3 ) / Point();
@@ -329,7 +329,7 @@ int OnCalculate(const int rates_total,
       mailBody_tr = mailBody_tr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
       mailBody_tr = mailBody_tr + alertText_tr; // ロング or ショート、通貨ペア、時間足
       mailBody_tr = mailBody_tr + "Price: " + Close[0];
-      mailBody_tr = mailBody_tr + "Zigzag: " + zigzag2 + ", " + zigzag3 + ", " + zigzag4 + "\n";
+      //mailBody_tr = mailBody_tr + "Zigzag: " + zigzag2 + ", " + zigzag3 + ", " + zigzag4 + "\n";
       double lengthPoints12_tr = MathAbs( zigzag1 - zigzag2 ) / Point();
       double lengthPoints13_tr = MathAbs( zigzag1 - zigzag3 ) / Point();
       double lengthPoints23_tr = MathAbs( zigzag2 - zigzag3 ) / Point();
