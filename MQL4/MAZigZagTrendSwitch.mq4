@@ -306,9 +306,10 @@ int OnCalculate(const int rates_total,
         mailBody = mailBody + "3RRPoints: None\n";
       }
       //mailBody = mailBody + "MaxE3Points: " + DoubleToStr( lengthPoints34*1.618, 0 ) + " [" + DoubleToStr( lengthPoints34*1.618 - lengthPoints12, 0 ) + "]\n";
-      mailBody = mailBody + "\nShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr(Close[0] - maCurrentEma, 0) + "]\n";
-      mailBody = mailBody + "MiddleMADis: " + DoubleToStr(((Close[0] - maMiddleEma) / maMiddleEma)*100, 3) + "%[" + DoubleToStr(Close[0] - maMiddleEma, 0) + "]\n";
-      mailBody = mailBody + "LongMADis: " + DoubleToStr(((Close[0] - maLongEma) / maLongEma)*100, 3) + "%[" + DoubleToStr(Close[0] - maLongEma, 0) + "]\n";
+      mailBody = mailBody + "SWPoint: " + DoubleToStr((zigzag7 - zigzag6)/Point, 0) + ", " + DoubleToStr((zigzag6 - zigzag5)/Point, 0) + ", " + DoubleToStr((zigzag5 - zigzag4)/Point, 0) + "\n";
+      mailBody = mailBody + "\nShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
+      mailBody = mailBody + "MiddleMADis: " + DoubleToStr(((Close[0] - maMiddleEma) / maMiddleEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maMiddleEma)/Point, 0) + "]\n";
+      mailBody = mailBody + "LongMADis: " + DoubleToStr(((Close[0] - maLongEma) / maLongEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maLongEma)/Point, 0) + "]\n";
       SendMail( mailSubject, mailBody );
     }
 
@@ -347,9 +348,11 @@ int OnCalculate(const int rates_total,
         mailBody_tr = mailBody_tr + "3RRPoints: None\n";
       }
       //mailBody_tr = mailBody_tr + "MaxE3Points: " + DoubleToStr( lengthPoints34*1.618, 0 ) + " [" + DoubleToStr( lengthPoints34*1.618 - lengthPoints12, 0 ) + "]\n";
-      mailBody_tr = mailBody_tr + "\nShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr(Close[0] - maCurrentEma, 0) + "]\n";
-      mailBody_tr = mailBody_tr + "MiddleMADis: " + DoubleToStr(((Close[0] - maMiddleEma) / maMiddleEma)*100, 3) + "%[" + DoubleToStr(Close[0] - maMiddleEma, 0) + "]\n";
-      mailBody_tr = mailBody_tr + "LongMADis: " + DoubleToStr(((Close[0] - maLongEma) / maLongEma)*100, 3) + "%[" + DoubleToStr(Close[0] - maLongEma, 0) + "]\n";
+
+      mailBody = mailBody + "SWPoint: " + DoubleToStr((zigzag9 - zigzag8)/Point, 0) + ", " + DoubleToStr((zigzag8 - zigzag7)/Point, 0) + ", " + DoubleToStr((zigzag7 - zigzag6)/Point, 0) + "\n";
+      mailBody_tr = mailBody_tr + "\nShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
+      mailBody_tr = mailBody_tr + "MiddleMADis: " + DoubleToStr(((Close[0] - maMiddleEma) / maMiddleEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maMiddleEma)/Point, 0) + "]\n";
+      mailBody_tr = mailBody_tr + "LongMADis: " + DoubleToStr(((Close[0] - maLongEma) / maLongEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maLongEma)/Point, 0) + "]\n";
       SendMail( mailSubject_tr, mailBody_tr );
     }
 
