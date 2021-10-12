@@ -139,21 +139,21 @@ int OnCalculate(const int rates_total,
 
       if(maCurrentSma < maCurrentEma) {
         requirement++;
-        alertText = alertText + "Short MA: Golden Cross" + "\n";
+        alertText = alertText + "①Short MA: Golden Cross" + "\n";
       }
       if(maMiddleSma < maMiddleEma) {
         requirement++;
-        alertText = alertText + "Middle MA: Golden Cross" + "\n";
+        alertText = alertText + "②Middle MA: Golden Cross" + "\n";
       }
       if(maMiddleEma < maCurrentEma) {
         requirement++;
-        alertText = alertText + "EMA: Golden Cross" + "\n";
+        alertText = alertText + "③EMA: Golden Cross" + "\n";
       }
       if(maLongSma < maLongEma) {
-        alertText = alertText + "Long MA: Golden Cross" + "\n";
+        alertText = alertText + "④Long MA: Golden Cross" + "\n";
       }
       if(maCurrentEma > maMiddleEma && maMiddleEma > maLongEma) {
-        alertText = alertText + "ALL EMA: Golden Cross" + "\n";
+        alertText = alertText + "⑤ALL EMA: Golden Cross" + "\n";
       }
     }
   }
@@ -168,21 +168,21 @@ int OnCalculate(const int rates_total,
 
       if(maCurrentSma > maCurrentEma) {
         requirement++;
-        alertText = alertText + "Short MA: Dead Cross" + "\n";
+        alertText = alertText + "①Short MA: Dead Cross" + "\n";
       }
       if(maMiddleSma > maMiddleEma) {
         requirement++;
-        alertText = alertText + "Middle MA: Dead Cross" + "\n";
+        alertText = alertText + "②Middle MA: Dead Cross" + "\n";
       }
       if(maMiddleEma > maCurrentEma) {
         requirement++;
-        alertText = alertText + "EMA: Dead Cross" + "\n";
+        alertText = alertText + "③EMA: Dead Cross" + "\n";
       }
       if(maLongSma > maLongEma) {
-        alertText = alertText + "Long MA: Dead Cross" + "\n";
+        alertText = alertText + "④Long MA: Dead Cross" + "\n";
       }
       if(maCurrentEma < maMiddleEma && maMiddleEma < maLongEma) {
-        alertText = alertText + "ALL EMA: Dead Cross" + "\n";
+        alertText = alertText + "⑤ALL EMA: Dead Cross" + "\n";
       }
     }
   }
@@ -193,7 +193,7 @@ int OnCalculate(const int rates_total,
     if(MailAlert) {
       mailBody = mailBody + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
       mailBody = mailBody + alertText; // ロング or ショート、通貨ペア、時間足
-      mailBody = mailBody + "Price: " + Close[0];
+      mailBody = mailBody + "Price: " + Close[0] + "\n";
       //mailBody = mailBody + "Zigzag: " + zigzag2 + ", " + zigzag3 + ", " + zigzag4 + "\n";
       lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
       lengthPoints13 = MathAbs( zigzag1 - zigzag3 ) / Point();
