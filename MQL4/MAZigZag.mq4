@@ -348,7 +348,7 @@ int OnCalculate(const int rates_total,
     }
   }
   */
-  if(requirement_tr >= AlertRequirementCount && lastAlert_tr != Time[0] && lastAlertZigzag_tr != zigzag2) {
+  if(StringLen(alertText_tr) > 0 && requirement_tr >= AlertRequirementCount && lastAlert_tr != Time[0] && lastAlertZigzag_tr != zigzag2) {
     Alert(alertText_tr);
     if(MailAlert) {
       mailBody_tr = mailBody_tr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
@@ -388,7 +388,7 @@ int OnCalculate(const int rates_total,
     lastAlert_tr = Time[0];
     lastAlertZigzag_tr = zigzag2;
   }
-  if(requirement_trnc > 0 && lastAlert_trnc != Time[0] && lastAlertZigzag_trnc != zigzag2) {
+  if(StringLen(alertText_trnc) > 0 && requirement_trnc > 0 && lastAlert_trnc != Time[0] && lastAlertZigzag_trnc != zigzag2) {
     Alert(alertText_trnc);
     if(MailAlert) {
       mailBody_trnc = mailBody_trnc + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
