@@ -585,7 +585,7 @@ int OnCalculate(const int rates_total,
     lastAlert_tr = Time[0];
     lastAlertZigzag_tr = zigzag2;
   }
-  if(requirement_nc_mwhs >= AlertRequirementCount && lastAlert_nc_mwhs != Time[0] && lastAlertZigzag_nc_mwhs != zigzag2) {
+  if(requirement_nc_mwhs > 0 && lastAlert_nc_mwhs != Time[0] && lastAlertZigzag_nc_mwhs != zigzag2) {
     Alert(alertText_nc_mwhs);
     if(MailAlert) {
       mailBody_nc_mwhs = mailBody_nc_mwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
@@ -614,7 +614,7 @@ int OnCalculate(const int rates_total,
     lastAlert_nc_mwhs = Time[0];
     lastAlertZigzag_nc_mwhs = zigzag2;
   }
-  if(requirement_nc_mwhstr >= AlertRequirementCount && lastAlert_nc_mwhstr != Time[0] && lastAlertZigzag_nc_mwhstr != zigzag2) {
+  if(requirement_nc_mwhstr > 0 && lastAlert_nc_mwhstr != Time[0] && lastAlertZigzag_nc_mwhstr != zigzag2) {
     Alert(alertText_nc_mwhstr);
     if(MailAlert) {
       mailBody_nc_mwhstr = mailBody_nc_mwhstr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
@@ -643,7 +643,7 @@ int OnCalculate(const int rates_total,
     lastAlert_nc_mwhstr = Time[0];
     lastAlertZigzag_nc_mwhstr = zigzag2;
   }
-  if(requirement_nc_hstr >= AlertRequirementCount && lastAlert_nc_hstr != Time[0] && lastAlertZigzag_nc_hstr != zigzag2) {
+  if(requirement_nc_hstr > 0 && lastAlert_nc_hstr != Time[0] && lastAlertZigzag_nc_hstr != zigzag2) {
     Alert(alertText_nc_hstr);
     if(MailAlert) {
       mailBody_nc_hstr = mailBody_nc_hstr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間

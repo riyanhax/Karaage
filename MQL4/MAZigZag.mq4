@@ -388,7 +388,7 @@ int OnCalculate(const int rates_total,
     lastAlert_tr = Time[0];
     lastAlertZigzag_tr = zigzag2;
   }
-  if(requirement_trnc >= AlertRequirementCount && lastAlert_trnc != Time[0] && lastAlertZigzag_trnc != zigzag2) {
+  if(requirement_trnc > 0 && lastAlert_trnc != Time[0] && lastAlertZigzag_trnc != zigzag2) {
     Alert(alertText_trnc);
     if(MailAlert) {
       mailBody_trnc = mailBody_trnc + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
