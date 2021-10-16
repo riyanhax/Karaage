@@ -205,7 +205,7 @@ int OnCalculate(const int rates_total,
       lengthPoints58 = MathAbs( zigzag5 - zigzag8 ) / Point();
       mailBody_el = mailBody_el + "FiboPoints: " + DoubleToStr( lengthPoints25, 0 ) + " / " + DoubleToStr( lengthPoints58, 0 ) + " [" + DoubleToStr( (lengthPoints25 / lengthPoints58) * 100, 1 ) + "%]\n";
       mailBody_el = mailBody_el + "E3Percent: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints58, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints58) * 100, 1 ) + "%]\n";
-      if(lengthPoints12 < lengthPoints15) {
+      if(lengthPoints12 < lengthPoints25) {
         mailBody_el = mailBody_el + "5RRPoints: " + DoubleToStr( lengthPoints15, 0 ) + " / " + DoubleToStr( lengthPoints12, 0 ) + " [" + DoubleToStr( (lengthPoints15 / lengthPoints12) * 100, 1 ) + "%]\n";
       } else {
         mailBody_el = mailBody_el + "5RRPoints: None\n";
