@@ -100,8 +100,12 @@ int OnCalculate(const int rates_total,
   int handle;
   double lengthPoints12;
   double lengthPoints13;
+  double lengthPoints14;
   double lengthPoints23;
   double lengthPoints34;
+  double lengthPoints36;
+  double lengthPoints45;
+  double lengthPoints56;
 
   // ZigZag取得
   cnt = 0;
@@ -348,31 +352,50 @@ int OnCalculate(const int rates_total,
     }
   }
   */
+  // ST_TR
   if(StringLen(alertText_tr) > 0 && requirement_tr >= AlertRequirementCount && lastAlert_tr != Time[0] && lastAlertZigzag_tr != zigzag2) {
     Alert(alertText_tr);
     if(MailAlert) {
       mailBody_tr = mailBody_tr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
       mailBody_tr = mailBody_tr + alertText_tr; // ロング or ショート、通貨ペア、時間足
       mailBody_tr = mailBody_tr + "Price: " + Close[0] + "\n";
-      //mailBody_tr = mailBody_tr + "Zigzag: " + zigzag2 + ", " + zigzag3 + ", " + zigzag4 + "\n";
       lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
       lengthPoints13 = MathAbs( zigzag1 - zigzag3 ) / Point();
+      lengthPoints14 = MathAbs( zigzag1 - zigzag4 ) / Point();
       lengthPoints23 = MathAbs( zigzag2 - zigzag3 ) / Point();
       lengthPoints34 = MathAbs( zigzag3 - zigzag4 ) / Point();
-      mailBody_tr = mailBody_tr + "FiboPoints: " + DoubleToStr( lengthPoints23, 0 ) + " / " + DoubleToStr( lengthPoints34, 0 ) + " [" + DoubleToStr( (lengthPoints23 / lengthPoints34) * 100, 1 ) + "%]\n";
-      mailBody_tr = mailBody_tr + "E3Percent: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints34, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints34) * 100, 1 ) + "%]\n";
+      lengthPoints36 = MathAbs( zigzag3 - zigzag6 ) / Point();
+      lengthPoints45 = MathAbs( zigzag4 - zigzag5 ) / Point();
+      lengthPoints56 = MathAbs( zigzag5 - zigzag6 ) / Point();
+      mailBody_tr = mailBody_tr + "3-1´FiboPts: " + DoubleToStr( lengthPoints45, 0 ) + " / " + DoubleToStr( lengthPoints56, 0 ) + " [" + DoubleToStr( (lengthPoints45 / lengthPoints56) * 100, 1 ) + "%]\n";
+      mailBody_tr = mailBody_tr + "3-3 FiboPts: " + DoubleToStr( lengthPoints23, 0 ) + " / " + DoubleToStr( lengthPoints34, 0 ) + " [" + DoubleToStr( (lengthPoints23 / lengthPoints34) * 100, 1 ) + "%]\n";
+      mailBody_tr = mailBody_tr + "3-3´FiboPts: " + DoubleToStr( lengthPoints23, 0 ) + " / " + DoubleToStr( lengthPoints36, 0 ) + " [" + DoubleToStr( (lengthPoints23 / lengthPoints36) * 100, 1 ) + "%]\n";
+      // mailBody_tr = mailBody_tr + "E3Percent: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints34, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints34) * 100, 1 ) + "%]\n";
+
+      mailBody_tr = mailBody_tr + "\n";
       if(lengthPoints12 < lengthPoints23) {
-        mailBody_tr = mailBody_tr + "5RRPoints: " + DoubleToStr( lengthPoints13, 0 ) + " / " + DoubleToStr( lengthPoints12, 0 ) + " [" + DoubleToStr( (lengthPoints13 / lengthPoints12) * 100, 1 ) + "%]\n";
+        mailBody_tr = mailBody_tr + "5RRPts: " + DoubleToStr( lengthPoints13, 0 ) + " / " + DoubleToStr( lengthPoints12, 0 ) + " [" + DoubleToStr( (lengthPoints13 / lengthPoints12) * 100, 1 ) + "%]\n";
       } else {
-        mailBody_tr = mailBody_tr + "5RRPoints: None\n";
+        mailBody_tr = mailBody_tr + "5RRPts: None\n";
+      }
+      if(lengthPoints14 < lengthPoints56) {
+        mailBody_tr = mailBody_tr + "3-1´RRPts: " + DoubleToStr( lengthPoints56 - lengthPoints14, 0 ) + " / " + DoubleToStr( lengthPoints14, 0 ) + " [" + DoubleToStr((((lengthPoints56 - lengthPoints14) / lengthPoints14))*100, 1 ) + "%]\n";
+      } else {
+        mailBody_tr = mailBody_tr + "3-1´RRPts: None\n";
       }
       if(lengthPoints12 < lengthPoints34) {
-        mailBody_tr = mailBody_tr + "3RRPoints: " + DoubleToStr( lengthPoints34 - lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints12, 0 ) + " [" + DoubleToStr((((lengthPoints34 - lengthPoints12) / lengthPoints12))*100, 1 ) + "%]\n";
+        mailBody_tr = mailBody_tr + "3-3 RRPts: " + DoubleToStr( lengthPoints34 - lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints12, 0 ) + " [" + DoubleToStr((((lengthPoints34 - lengthPoints12) / lengthPoints12))*100, 1 ) + "%]\n";
       } else {
-        mailBody_tr = mailBody_tr + "3RRPoints: None\n";
+        mailBody_tr = mailBody_tr + "3-3 RRPts: None\n";
       }
-      //mailBody_tr = mailBody_tr + "MaxE3Points: " + DoubleToStr( lengthPoints34*1.618, 0 ) + " [" + DoubleToStr( lengthPoints34*1.618 - lengthPoints12, 0 ) + "]\n";
-      mailBody_tr = mailBody_tr + "\nShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
+      if(lengthPoints12 < lengthPoints36) {
+        mailBody_tr = mailBody_tr + "3-3´RRPts: " + DoubleToStr( lengthPoints36 - lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints12, 0 ) + " [" + DoubleToStr((((lengthPoints36 - lengthPoints12) / lengthPoints12))*100, 1 ) + "%]\n";
+      } else {
+        mailBody_tr = mailBody_tr + "3-3´RRPts: None\n";
+      }
+
+      mailBody_tr = mailBody_tr + "\n";
+      mailBody_tr = mailBody_tr + "ShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
       mailBody_tr = mailBody_tr + "MiddleMADis: " + DoubleToStr(((Close[0] - maMiddleEma) / maMiddleEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maMiddleEma)/Point, 0) + "]\n";
       mailBody_tr = mailBody_tr + "LongMADis: " + DoubleToStr(((Close[0] - maLongEma) / maLongEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maLongEma)/Point, 0) + "]\n";
       SendMail( mailSubject_tr, mailBody_tr );
@@ -388,6 +411,8 @@ int OnCalculate(const int rates_total,
     lastAlert_tr = Time[0];
     lastAlertZigzag_tr = zigzag2;
   }
+
+  // ST_TR_NC
   if(StringLen(alertText_trnc) > 0 && requirement_trnc > 0 && lastAlert_trnc != Time[0] && lastAlertZigzag_trnc != zigzag2) {
     Alert(alertText_trnc);
     if(MailAlert) {
@@ -401,6 +426,8 @@ int OnCalculate(const int rates_total,
       mailBody_trnc = mailBody_trnc + "FiboPoints: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints23, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints23) * 100, 1 ) + "%]\n";
       mailBody_trnc = mailBody_trnc + "NCRRPoints: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints13, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints13) * 100, 1 ) + "%]\n";
       mailBody_trnc = mailBody_trnc + "3RRPoints: " + DoubleToStr( lengthPoints23 - lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints13, 0 ) + " [" + DoubleToStr((((lengthPoints23 - lengthPoints12) / lengthPoints13))*100, 1 ) + "%]\n";
+
+      mailBody_trnc = mailBody_trnc + "\n";
       mailBody_trnc = mailBody_trnc + "\nShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
       mailBody_trnc = mailBody_trnc + "MiddleMADis: " + DoubleToStr(((Close[0] - maMiddleEma) / maMiddleEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maMiddleEma)/Point, 0) + "]\n";
       mailBody_trnc = mailBody_trnc + "LongMADis: " + DoubleToStr(((Close[0] - maLongEma) / maLongEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maLongEma)/Point, 0) + "]\n";
