@@ -511,6 +511,7 @@ int OnCalculate(const int rates_total,
       double lengthPoints13 = MathAbs( zigzag1 - zigzag3 ) / Point();
       double lengthPoints14 = MathAbs( zigzag1 - zigzag4 ) / Point();
       double lengthPoints23 = MathAbs( zigzag2 - zigzag3 ) / Point();
+      double lengthPoints25 = MathAbs( zigzag2 - zigzag5 ) / Point();
       double lengthPoints34 = MathAbs( zigzag3 - zigzag4 ) / Point();
       double lengthPoints36 = MathAbs( zigzag3 - zigzag6 ) / Point();
       double lengthPoints45 = MathAbs( zigzag4 - zigzag5 ) / Point();
@@ -632,10 +633,11 @@ int OnCalculate(const int rates_total,
       lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
       lengthPoints13 = MathAbs( zigzag1 - zigzag3 ) / Point();
       lengthPoints23 = MathAbs( zigzag2 - zigzag3 ) / Point();
+      lengthPoints25 = MathAbs( zigzag2 - zigzag5 ) / Point();
       lengthPoints34 = MathAbs( zigzag3 - zigzag4 ) / Point();
       mailBody_nc_mwhs = mailBody_nc_mwhs + "FiboPoints: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints23, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints23) * 100, 1 ) + "%]\n";
       mailBody_nc_mwhs = mailBody_nc_mwhs + "NCRRPoints: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints13, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints13) * 100, 1 ) + "%]\n";
-      mailBody_nc_mwhs = mailBody_nc_mwhs + "3RRPoints: " + DoubleToStr( lengthPoints23 - lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints13, 0 ) + " [" + DoubleToStr((((lengthPoints23 - lengthPoints12) / lengthPoints13))*100, 1 ) + "%]\n";
+      mailBody_nc_mwhs = mailBody_nc_mwhs + "3RRPoints: " + DoubleToStr( lengthPoints25, 0 ) + " / " + DoubleToStr( lengthPoints13, 0 ) + " [" + DoubleToStr(((lengthPoints25 / lengthPoints13))*100, 1 ) + "%]\n";
       mailBody_nc_mwhs = mailBody_nc_mwhs + "\nShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
       mailBody_nc_mwhs = mailBody_nc_mwhs + "MiddleMADis: " + DoubleToStr(((Close[0] - maMiddleEma) / maMiddleEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maMiddleEma)/Point, 0) + "]\n";
       mailBody_nc_mwhs = mailBody_nc_mwhs + "LongMADis: " + DoubleToStr(((Close[0] - maLongEma) / maLongEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maLongEma)/Point, 0) + "]\n";
@@ -661,10 +663,11 @@ int OnCalculate(const int rates_total,
       lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
       lengthPoints13 = MathAbs( zigzag1 - zigzag3 ) / Point();
       lengthPoints23 = MathAbs( zigzag2 - zigzag3 ) / Point();
+      lengthPoints25 = MathAbs( zigzag2 - zigzag5 ) / Point();
       lengthPoints34 = MathAbs( zigzag3 - zigzag4 ) / Point();
       mailBody_nc_mwhstr = mailBody_nc_mwhstr + "FiboPoints: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints23, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints23) * 100, 1 ) + "%]\n";
       mailBody_nc_mwhstr = mailBody_nc_mwhstr + "NCRRPoints: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints13, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints13) * 100, 1 ) + "%]\n";
-      mailBody_nc_mwhstr = mailBody_nc_mwhstr + "3RRPoints: " + DoubleToStr( lengthPoints23 - lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints13, 0 ) + " [" + DoubleToStr((((lengthPoints23 - lengthPoints12) / lengthPoints13))*100, 1 ) + "%]\n";
+      mailBody_nc_mwhstr = mailBody_nc_mwhstr + "3RRPoints: " + DoubleToStr( lengthPoints25, 0 ) + " / " + DoubleToStr( lengthPoints13, 0 ) + " [" + DoubleToStr(((lengthPoints25 / lengthPoints13))*100, 1 ) + "%]\n";
       mailBody_nc_mwhstr = mailBody_nc_mwhstr + "\nShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
       mailBody_nc_mwhstr = mailBody_nc_mwhstr + "MiddleMADis: " + DoubleToStr(((Close[0] - maMiddleEma) / maMiddleEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maMiddleEma)/Point, 0) + "]\n";
       mailBody_nc_mwhstr = mailBody_nc_mwhstr + "LongMADis: " + DoubleToStr(((Close[0] - maLongEma) / maLongEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maLongEma)/Point, 0) + "]\n";
@@ -691,10 +694,11 @@ int OnCalculate(const int rates_total,
       lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
       lengthPoints13 = MathAbs( zigzag1 - zigzag3 ) / Point();
       lengthPoints23 = MathAbs( zigzag2 - zigzag3 ) / Point();
+      lengthPoints25 = MathAbs( zigzag2 - zigzag5 ) / Point();
       lengthPoints34 = MathAbs( zigzag3 - zigzag4 ) / Point();
       mailBody_nc_hstr = mailBody_nc_hstr + "FiboPoints: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints23, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints23) * 100, 1 ) + "%]\n";
       mailBody_nc_hstr = mailBody_nc_hstr + "NCRRPoints: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints13, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints13) * 100, 1 ) + "%]\n";
-      mailBody_nc_hstr = mailBody_nc_hstr + "3RRPoints: " + DoubleToStr( lengthPoints23 - lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints13, 0 ) + " [" + DoubleToStr((((lengthPoints23 - lengthPoints12) / lengthPoints13))*100, 1 ) + "%]\n";
+      mailBody_nc_hstr = mailBody_nc_hstr + "3RRPoints: " + DoubleToStr( lengthPoints25, 0 ) + " / " + DoubleToStr( lengthPoints13, 0 ) + " [" + DoubleToStr(((lengthPoints25 / lengthPoints13))*100, 1 ) + "%]\n";
       mailBody_nc_hstr = mailBody_nc_hstr + "\nShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
       mailBody_nc_hstr = mailBody_nc_hstr + "MiddleMADis: " + DoubleToStr(((Close[0] - maMiddleEma) / maMiddleEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maMiddleEma)/Point, 0) + "]\n";
       mailBody_nc_hstr = mailBody_nc_hstr + "LongMADis: " + DoubleToStr(((Close[0] - maLongEma) / maLongEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maLongEma)/Point, 0) + "]\n";
