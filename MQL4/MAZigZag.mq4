@@ -257,7 +257,7 @@ int OnCalculate(const int rates_total,
   requirement_trnc = 0;
   // Long_TR_NC
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5
-     && zigzag2 >= zigzag4 && zigzag3 >= zigzag5
+     && zigzag2 >= zigzag4 && zigzag3 >= zigzag5 && zigzag1 > zigzag3
      && Open[1] < zigzag4 && Close[1] >= zigzag4) {
     alertText_trnc = alertText_trnc + "Long_ST_TR_NC " + Symbol() + " " + periodText + "\n";
     mailSubject_trnc = "[Long_ST_TR_NC] " + Symbol() + " " + periodText + " " + Time[0];
@@ -289,7 +289,7 @@ int OnCalculate(const int rates_total,
   }
   // Short_TR_NC
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5
-     && zigzag2 <= zigzag4 && zigzag3 <= zigzag5
+     && zigzag2 <= zigzag4 && zigzag3 <= zigzag5 && zigzag1 < zigzag3
      && Open[1] > zigzag4 && Close[1] <= zigzag4) {
     alertText_trnc = alertText_trnc + "Short_ST_TR_NC " + Symbol() + " " + periodText + "\n";
     mailSubject_trnc = "[Short_ST_TR_NC] " + Symbol() + " " + periodText + " " + Time[0];
