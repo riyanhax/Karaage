@@ -196,8 +196,8 @@ int OnCalculate(const int rates_total,
   if(StringLen(alertText_el) > 0 && requirement_el >= AlertRequirementCount && lastAlert_el != Time[0] && lastAlertZigzag_el != zigzag2) {
     Alert(alertText_el);
     if(MailAlert) {
-      mailBody_el = mailBody_el + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
       mailBody_el = mailBody_el + alertText_el; // ロング or ショート、通貨ペア、時間足
+      mailBody_el = mailBody_el + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
       mailBody_el = mailBody_el + "Price: " + Close[0] + "\n";
       lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
       lengthPoints15 = MathAbs( zigzag1 - zigzag5 ) / Point();
