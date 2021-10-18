@@ -157,6 +157,7 @@ int OnCalculate(const int rates_total,
       && zigzag5 <= zigzag7 && zigzag3 >= zigzag5 && zigzag2 >= zigzag4) {
     if(zigzag4 <= zigzag6) {
       alertText = alertText + "Long_MW_HS " + Symbol() + " " + periodText + "\n";
+      alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
       mailSubject = "[Long_MW_HS] " + Symbol() + " " + periodText + " " + Time[0];
       direction = "long_mw_hs";
     } else if(zigzag4 > zigzag6 && zigzag7 > zigzag8 && zigzag8 < zigzag9
@@ -197,6 +198,7 @@ int OnCalculate(const int rates_total,
       && zigzag5 >= zigzag7 && zigzag3 <= zigzag5 && zigzag2 <= zigzag4) {
     if(zigzag4 >= zigzag6) {
       alertText = alertText + "Short_MW_HS " + Symbol() + " " + periodText + "\n";
+      alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
       mailSubject = "[Short_MW_HS] " + Symbol() + " " + periodText + " " + Time[0];
       direction = "short_mw_hs";
     } else if(zigzag4 < zigzag6 && zigzag7 < zigzag8 && zigzag8 > zigzag9
@@ -239,6 +241,7 @@ int OnCalculate(const int rates_total,
       && zigzag5 >= zigzag7 && zigzag3 >= zigzag5 && zigzag2 >= zigzag4 && zigzag4 >= zigzag6 && zigzag6 <= zigzag8
       && zigzag7 <= zigzag9) {
     alertText_tr = alertText_tr + "Long_MW_HS_TR " + Symbol() + " " + periodText + "\n";
+    alertText_tr = alertText_tr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
     mailSubject_tr = "[Long_MW_HS_TR] " + Symbol() + " " + periodText + " " + Time[0];
     direction_tr = "long_mw_hs_tr";
     // MovingAverage取得
@@ -273,6 +276,7 @@ int OnCalculate(const int rates_total,
       && zigzag5 <= zigzag7 && zigzag3 <= zigzag5 && zigzag2 <= zigzag4 && zigzag4 <= zigzag6 && zigzag6 >= zigzag8
       && zigzag7 >= zigzag9) {
     alertText_tr = alertText_tr + "Short_MW_HS_TR " + Symbol() + " " + periodText + "\n";
+    alertText_tr = alertText_tr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
     mailSubject_tr = "[Short_MW_HS_TR] " + Symbol() + " " + periodText + " " + Time[0];
     direction_tr = "short_mw_hs_tr";
     // MovingAverage取得
@@ -305,8 +309,9 @@ int OnCalculate(const int rates_total,
   // Long
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag5 < zigzag6
       && zigzag2 >= zigzag4 && zigzag3 <= zigzag5 && zigzag4 <= zigzag6 && zigzag1 > zigzag3
-      && Open[1] < zigzag4 && Close[1] >= zigzag4) {
+      && iOpen(Symbol(), ZigzagTimeframe, 1) < zigzag4 && iClose(Symbol(), ZigzagTimeframe, 1) >= zigzag4) {
     alertText_nc_mwhs = alertText_nc_mwhs + "Long_MW_HS_NC " + Symbol() + " " + periodText + "\n";
+    alertText_nc_mwhs = alertText_nc_mwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
     mailSubject_nc_mwhs = "[Long_MW_HS_NC] " + Symbol() + " " + periodText + " " + Time[0];
     direction_nc_mwhs = "long_mw_hs_nc";
     // MovingAverage取得
@@ -336,8 +341,9 @@ int OnCalculate(const int rates_total,
   // Short
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag5 > zigzag6
       && zigzag2 <= zigzag4 && zigzag3 >= zigzag5 && zigzag4 >= zigzag6 && zigzag1 < zigzag3
-      && Open[1] > zigzag4 && Close[1] <= zigzag4) {
+      && iOpen(Symbol(), ZigzagTimeframe, 1) > zigzag4 && iClose(Symbol(), ZigzagTimeframe, 1) <= zigzag4) {
     alertText_nc_mwhs = alertText_nc_mwhs + "Short_MW_HS_NC " + Symbol() + " " + periodText + "\n";
+    alertText_nc_mwhs = alertText_nc_mwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
     mailSubject_nc_mwhs = "[Short_MW_HS_NC] " + Symbol() + " " + periodText + " " + Time[0];
     direction_nc_mwhs = "short_mw_hs_nc";
     // MovingAverage取得
@@ -370,8 +376,9 @@ int OnCalculate(const int rates_total,
       && zigzag5 < zigzag6 && zigzag6 > zigzag7 && zigzag7 < zigzag8
       && zigzag2 >= zigzag4 && zigzag3 >= zigzag5 && zigzag4 >= zigzag6 && zigzag1 > zigzag3
       && zigzag5 <= zigzag7 && zigzag6 <= zigzag8
-      && Open[1] < zigzag4 && Close[1] >= zigzag4) {
+      && iOpen(Symbol(), ZigzagTimeframe, 1) < zigzag4 && iClose(Symbol(), ZigzagTimeframe, 1) >= zigzag4) {
     alertText_nc_mwhstr = alertText_nc_mwhstr + "Long_MW_HS_TR_NC " + Symbol() + " " + periodText + "\n";
+    alertText_nc_mwhstr = alertText_nc_mwhstr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
     mailSubject_nc_mwhstr = "[Long_MW_HS_TR_NC] " + Symbol() + " " + periodText + " " + Time[0];
     direction_nc_mwhstr = "long_mw_hs_tr_nc";
     // MovingAverage取得
@@ -403,8 +410,9 @@ int OnCalculate(const int rates_total,
       && zigzag5 > zigzag6 && zigzag6 < zigzag7 && zigzag7 > zigzag8
       && zigzag2 <= zigzag4 && zigzag3 <= zigzag5 && zigzag4 <= zigzag6 && zigzag1 < zigzag3
       && zigzag5 >= zigzag7 && zigzag6 >= zigzag8
-      && Open[1] > zigzag4 && Close[1] <= zigzag4) {
+      && iOpen(Symbol(), ZigzagTimeframe, 1) > zigzag4 && iClose(Symbol(), ZigzagTimeframe, 1) <= zigzag4) {
     alertText_nc_mwhstr = alertText_nc_mwhstr + "Short_MW_HS_TR_NC " + Symbol() + " " + periodText + "\n";
+    alertText_nc_mwhstr = alertText_nc_mwhstr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
     mailSubject_nc_mwhstr = "[Short_MW_HS_TR_NC] " + Symbol() + " " + periodText + " " + Time[0];
     direction_nc_mwhstr = "short_mw_hs_tr_nc";
     // MovingAverage取得
@@ -437,8 +445,9 @@ int OnCalculate(const int rates_total,
       && zigzag5 < zigzag6 && zigzag6 > zigzag7 && zigzag7 < zigzag8
       && zigzag2 >= zigzag4 && zigzag3 >= zigzag5 && zigzag4 <= zigzag6 && zigzag1 > zigzag3
       && zigzag5 <= zigzag7 && zigzag6 <= zigzag8 && zigzag2 >= zigzag6
-      && Open[1] < zigzag4 && Close[1] >= zigzag4) {
+      && iOpen(Symbol(), ZigzagTimeframe, 1) < zigzag4 && iClose(Symbol(), ZigzagTimeframe, 1) >= zigzag4) {
     alertText_nc_hstr = alertText_nc_hstr + "Long_HS_TR_NC " + Symbol() + " " + periodText + "\n";
+    alertText_nc_hstr = alertText_nc_hstr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
     mailSubject_nc_hstr = "[Long_HS_TR_NC] " + Symbol() + " " + periodText + " " + Time[0];
     direction_nc_hstr = "long_hs_tr_nc";
     // MovingAverage取得
@@ -470,8 +479,9 @@ int OnCalculate(const int rates_total,
       && zigzag5 > zigzag6 && zigzag6 < zigzag7 && zigzag7 > zigzag8
       && zigzag2 <= zigzag4 && zigzag3 <= zigzag5 && zigzag4 >= zigzag6 && zigzag1 < zigzag3
       && zigzag5 >= zigzag7 && zigzag6 >= zigzag8 && zigzag2 <= zigzag6
-      && Open[1] > zigzag4 && Close[1] <= zigzag4) {
+      && iOpen(Symbol(), ZigzagTimeframe, 1) > zigzag4 && iClose(Symbol(), ZigzagTimeframe, 1) <= zigzag4) {
     alertText_nc_hstr = alertText_nc_hstr + "Short_HS_TR_NC " + Symbol() + " " + periodText + "\n";
+    alertText_nc_hstr = alertText_nc_hstr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
     mailSubject_nc_hstr = "[Short_HS_TR_NC] " + Symbol() + " " + periodText + " " + Time[0];
     direction_nc_hstr = "short_hs_tr_nc";
     // MovingAverage取得
@@ -505,7 +515,6 @@ int OnCalculate(const int rates_total,
     Alert(alertText);
     if(MailAlert) {
       mailBody = mailBody + alertText; // ロング or ショート、通貨ペア、時間足
-      mailBody = mailBody + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
       mailBody = mailBody + "Price: " + Close[0] + "\n";
       double lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
       double lengthPoints13 = MathAbs( zigzag1 - zigzag3 ) / Point();
@@ -567,7 +576,6 @@ int OnCalculate(const int rates_total,
     Alert(alertText_tr);
     if(MailAlert) {
       mailBody_tr = mailBody_tr + alertText_tr; // ロング or ショート、通貨ペア、時間足
-      mailBody_tr = mailBody_tr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
       mailBody_tr = mailBody_tr + "Price: " + Close[0] + "\n";
       double lengthPoints12_tr = MathAbs( zigzag1 - zigzag2 ) / Point();
       double lengthPoints13_tr = MathAbs( zigzag1 - zigzag3 ) / Point();
@@ -628,7 +636,6 @@ int OnCalculate(const int rates_total,
     Alert(alertText_nc_mwhs);
     if(MailAlert) {
       mailBody_nc_mwhs = mailBody_nc_mwhs + alertText_nc_mwhs; // ロング or ショート、通貨ペア、時間足
-      mailBody_nc_mwhs = mailBody_nc_mwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
       mailBody_nc_mwhs = mailBody_nc_mwhs + "Price: " + Close[0] + "\n";
       lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
       lengthPoints13 = MathAbs( zigzag1 - zigzag3 ) / Point();
@@ -658,7 +665,6 @@ int OnCalculate(const int rates_total,
     Alert(alertText_nc_mwhstr);
     if(MailAlert) {
       mailBody_nc_mwhstr = mailBody_nc_mwhstr + alertText_nc_mwhstr; // ロング or ショート、通貨ペア、時間足
-      mailBody_nc_mwhstr = mailBody_nc_mwhstr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
       mailBody_nc_mwhstr = mailBody_nc_mwhstr + "Price: " + Close[0] + "\n";
       lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
       lengthPoints13 = MathAbs( zigzag1 - zigzag3 ) / Point();
@@ -689,7 +695,6 @@ int OnCalculate(const int rates_total,
     Alert(alertText_nc_hstr);
     if(MailAlert) {
       mailBody_nc_hstr = mailBody_nc_hstr + alertText_nc_hstr; // ロング or ショート、通貨ペア、時間足
-      mailBody_nc_hstr = mailBody_nc_hstr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
       mailBody_nc_hstr = mailBody_nc_hstr + "Price: " + Close[0] + "\n";
       lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
       lengthPoints13 = MathAbs( zigzag1 - zigzag3 ) / Point();
