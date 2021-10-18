@@ -134,6 +134,7 @@ int OnCalculate(const int rates_total,
       && zigzag2 < maCurrentSma2 && zigzag2 < maCurrentEma2 && zigzag1 > maCurrentSma && zigzag1 > maCurrentEma) {
 
       alertText = alertText + "Long_YK " + Symbol() + " " + periodText + "\n";
+      alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
       mailSubject = "[Long_YK] " + Symbol() + " " + periodText + " " + Time[0];
       direction = "long_yk";
 
@@ -163,6 +164,7 @@ int OnCalculate(const int rates_total,
       && zigzag2 > maCurrentSma2 && zigzag2 > maCurrentEma2 && zigzag1 < maCurrentSma && zigzag1 < maCurrentEma) {
 
       alertText = alertText + "Short_YK " + Symbol() + " " + periodText + "\n";
+      alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
       mailSubject = "[Short_YK] " + Symbol() + " " + periodText + " " + Time[0];
       direction = "short_yk";
 
@@ -192,7 +194,6 @@ int OnCalculate(const int rates_total,
     Alert(alertText);
     if(MailAlert) {
       mailBody = mailBody + alertText; // ロング or ショート、通貨ペア、時間足
-      mailBody = mailBody + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
       mailBody = mailBody + "Price: " + Close[0] + "\n";
       //mailBody = mailBody + "Zigzag: " + zigzag2 + ", " + zigzag3 + ", " + zigzag4 + "\n";
       lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();

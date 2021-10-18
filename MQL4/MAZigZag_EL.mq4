@@ -128,6 +128,7 @@ int OnCalculate(const int rates_total,
       && zigzag3 <= zigzag5 && zigzag4 >= zigzag6 && zigzag5 >= zigzag7 && zigzag6 >= zigzag8
       && zigzag2 >= zigzag6) {
     alertText_el = alertText_el + "Long_EL " + Symbol() + " " + periodText + "\n";
+    alertText_el = alertText_el + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
     mailSubject_el = "[Long_EL] " + Symbol() + " " + periodText + " " + Time[0];
     direction_el = "long_el";
     // MovingAverage取得
@@ -163,6 +164,7 @@ int OnCalculate(const int rates_total,
       && zigzag3 >= zigzag5 && zigzag4 <= zigzag6 && zigzag5 <= zigzag7 && zigzag6 <= zigzag8
       && zigzag2 <= zigzag6) {
     alertText_el = alertText_el + "Short_EL " + Symbol() + " " + periodText + "\n";
+    alertText_el = alertText_el + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
     mailSubject_el = "[Short_EL] " + Symbol() + " " + periodText + " " + Time[0];
     direction_el = "short_el";
     // MovingAverage取得
@@ -197,7 +199,6 @@ int OnCalculate(const int rates_total,
     Alert(alertText_el);
     if(MailAlert) {
       mailBody_el = mailBody_el + alertText_el; // ロング or ショート、通貨ペア、時間足
-      mailBody_el = mailBody_el + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
       mailBody_el = mailBody_el + "Price: " + Close[0] + "\n";
       lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
       lengthPoints15 = MathAbs( zigzag1 - zigzag5 ) / Point();
