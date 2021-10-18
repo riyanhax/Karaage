@@ -19,6 +19,8 @@ input bool FileOutput = true;
 
 datetime lastAlert = 0;
 double lastAlertZigzag;
+datetime lastAlert_mwhs = 0;
+double lastAlertZigzag_mwhs;
 datetime lastAlert_tr = 0;
 double lastAlertZigzag_tr;
 datetime lastAlert_nc_hstr = 0;
@@ -93,6 +95,11 @@ int OnCalculate(const int rates_total,
   string mailSubject;
   string mailBody;
   string direction;
+  int requirement_mwhs;
+  string alertText_mwhs;
+  string mailSubject_mwhs;
+  string mailBody_mwhs;
+  string direction_mwhs;
   int requirement_tr;
   string alertText_tr;
   string mailSubject_tr;
@@ -154,19 +161,15 @@ int OnCalculate(const int rates_total,
   requirement = 0;
   // Long 切り替わり
   if(zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag5 > zigzag6 && zigzag6 < zigzag7
-      && zigzag5 <= zigzag7 && zigzag3 >= zigzag5 && zigzag2 >= zigzag4) {
-    if(zigzag4 <= zigzag6) {
-      alertText = alertText + "Long_MW_HS " + Symbol() + " " + periodText + "\n";
-      alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-      mailSubject = "[Long_MW_HS] " + Symbol() + " " + periodText + " " + Time[0];
-      direction = "long_mw_hs";
-    } else if(zigzag4 > zigzag6 && zigzag7 > zigzag8 && zigzag8 < zigzag9
+      && zigzag5 <= zigzag7 && zigzag3 >= zigzag5 && zigzag2 >= zigzag4
+      && zigzag4 > zigzag6 && zigzag7 > zigzag8 && zigzag8 < zigzag9
       && zigzag7 <= zigzag9 && zigzag6 <= zigzag8
       && zigzag3 > zigzag7 && zigzag5 < zigzag7) {
-      alertText = alertText + "Long_HS_TR " + Symbol() + " " + periodText + "\n";
-      mailSubject = "[Long_HS_TR] " + Symbol() + " " + periodText + " " + Time[0];
-      direction = "long_hs_tr";
-    }
+    alertText = alertText + "Long_HS_TR " + Symbol() + " " + periodText + "\n";
+    alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+    mailSubject = "[Long_HS_TR] " + Symbol() + " " + periodText + " " + Time[0];
+    direction = "long_hs_tr";
+
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
@@ -195,19 +198,15 @@ int OnCalculate(const int rates_total,
   }
   // Short 切り替わり
   if(zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag5 < zigzag6 && zigzag6 > zigzag7
-      && zigzag5 >= zigzag7 && zigzag3 <= zigzag5 && zigzag2 <= zigzag4) {
-    if(zigzag4 >= zigzag6) {
-      alertText = alertText + "Short_MW_HS " + Symbol() + " " + periodText + "\n";
-      alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-      mailSubject = "[Short_MW_HS] " + Symbol() + " " + periodText + " " + Time[0];
-      direction = "short_mw_hs";
-    } else if(zigzag4 < zigzag6 && zigzag7 < zigzag8 && zigzag8 > zigzag9
+      && zigzag5 >= zigzag7 && zigzag3 <= zigzag5 && zigzag2 <= zigzag4
+      && zigzag4 < zigzag6 && zigzag7 < zigzag8 && zigzag8 > zigzag9
       && zigzag7 >= zigzag9 && zigzag6 >= zigzag8
       && zigzag3 < zigzag7 && zigzag5 > zigzag7) {
-      alertText = alertText + "Short_HS_TR " + Symbol() + " " + periodText + "\n";
-      mailSubject = "[Short_HS_TR] " + Symbol() + " " + periodText + " " + Time[0];
-      direction = "short_hs_tr";
-    }
+    alertText = alertText + "Short_HS_TR " + Symbol() + " " + periodText + "\n";
+    alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+    mailSubject = "[Short_HS_TR] " + Symbol() + " " + periodText + " " + Time[0];
+    direction = "short_hs_tr";
+
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
@@ -234,6 +233,79 @@ int OnCalculate(const int rates_total,
       alertText = alertText + "⑤ALL EMA: Dead Cross" + "\n";
     }
   }
+
+  requirement_mwhs = 0;
+  // Long 切り替わり
+  if(zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag5 > zigzag6 && zigzag6 < zigzag7
+      && zigzag5 <= zigzag7 && zigzag3 >= zigzag5 && zigzag2 >= zigzag4
+      && zigzag4 <= zigzag6) {
+    alertText_mwhs = alertText_mwhs + "Long_MW_HS " + Symbol() + " " + periodText + "\n";
+    alertText_mwhs = alertText_mwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+    mailSubject_mwhs = "[Long_MW_HS] " + Symbol() + " " + periodText + " " + Time[0];
+    direction_mwhs = "long_mw_hs";
+
+    // MovingAverage取得
+    maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+    maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+    maMiddleSma = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+    maMiddleEma = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+    maLongSma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+    maLongEma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+    if(maCurrentSma < maCurrentEma) {
+      requirement_mwhs++;
+      alertText_mwhs = alertText_mwhs + "①Short MA: Golden Cross" + "\n";
+    }
+    if(maMiddleSma < maMiddleEma) {
+      requirement_mwhs++;
+      alertText_mwhs = alertText_mwhs + "②Middle MA: Golden Cross" + "\n";
+    }
+    if(maMiddleEma < maCurrentEma) {
+      requirement_mwhs++;
+      alertText_mwhs = alertText_mwhs + "③EMA: Golden Cross" + "\n";
+    }
+    if(maLongSma < maLongEma) {
+      alertText_mwhs = alertText_mwhs + "④Long MA: Golden Cross" + "\n";
+    }
+    if(maCurrentEma > maMiddleEma && maMiddleEma > maLongEma) {
+      alertText_mwhs = alertText_mwhs + "⑤ALL EMA: Golden Cross" + "\n";
+    }
+  }
+  // Short 切り替わり
+  if(zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag5 < zigzag6 && zigzag6 > zigzag7
+      && zigzag5 >= zigzag7 && zigzag3 <= zigzag5 && zigzag2 <= zigzag4
+      && zigzag4 >= zigzag6) {
+    alertText_mwhs = alertText_mwhs + "Short_MW_HS " + Symbol() + " " + periodText + "\n";
+    alertText_mwhs = alertText_mwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+    mailSubject_mwhs = "[Short_MW_HS] " + Symbol() + " " + periodText + " " + Time[0];
+    direction_mwhs = "short_mw_hs";
+
+    // MovingAverage取得
+    maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+    maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+    maMiddleSma = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+    maMiddleEma = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+    maLongSma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+    maLongEma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+    if(maCurrentSma > maCurrentEma) {
+      requirement_mwhs++;
+      alertText_mwhs = alertText_mwhs + "①Short MA: Dead Cross" + "\n";
+    }
+    if(maMiddleSma > maMiddleEma) {
+      requirement_mwhs++;
+      alertText_mwhs = alertText_mwhs + "②Middle MA: Dead Cross" + "\n";
+    }
+    if(maMiddleEma > maCurrentEma) {
+      requirement_mwhs++;
+      alertText_mwhs = alertText_mwhs + "③EMA: Dead Cross" + "\n";
+    }
+    if(maLongSma > maLongEma) {
+      alertText_mwhs = alertText_mwhs + "④Long MA: Dead Cross" + "\n";
+    }
+    if(maCurrentEma < maMiddleEma && maMiddleEma < maLongEma) {
+      alertText_mwhs = alertText_mwhs + "⑤ALL EMA: Dead Cross" + "\n";
+    }
+  }
+
   requirement_tr = 0;
   // Long 切り替わり
   if(zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag5 > zigzag6 && zigzag6 < zigzag7
@@ -510,7 +582,7 @@ int OnCalculate(const int rates_total,
   }
 
   // 条件を満たした数によってアラート
-  // MW_HS HS_TR
+  // HS_TR
   if(StringLen(alertText) > 0 && requirement >= AlertRequirementCount && lastAlert != Time[0] && lastAlertZigzag != zigzag2) {
     Alert(alertText);
     if(MailAlert) {
@@ -570,6 +642,49 @@ int OnCalculate(const int rates_total,
 
     lastAlert = Time[0];
     lastAlertZigzag = zigzag2;
+  }
+  // MW_HS
+  if(StringLen(alertText_mwhs) > 0 && requirement_mwhs >= AlertRequirementCount && lastAlert_mwhs != Time[0] && lastAlertZigzag_mwhs != zigzag2) {
+    Alert(alertText_mwhs);
+    if(MailAlert) {
+      mailBody_mwhs = mailBody_mwhs + alertText_mwhs; // ロング or ショート、通貨ペア、時間足
+      mailBody_mwhs = mailBody_mwhs + "Price: " + Close[0] + "\n";
+
+      double lengthPoints12_mwhs = MathAbs( zigzag1 - zigzag2 ) / Point();
+      double lengthPoints13_mwhs = MathAbs( zigzag1 - zigzag3 ) / Point();
+      double lengthPoints23_mwhs = MathAbs( zigzag2 - zigzag3 ) / Point();
+      double lengthPoints34_mwhs = MathAbs( zigzag3 - zigzag4 ) / Point();
+      mailBody_mwhs = mailBody_mwhs + "FiboPoints: " + DoubleToStr( lengthPoints23_mwhs, 0 ) + " / " + DoubleToStr( lengthPoints34_mwhs, 0 ) + " [" + DoubleToStr( (lengthPoints23_mwhs / lengthPoints34_mwhs) * 100, 1 ) + "%]\n";
+      mailBody_mwhs = mailBody_mwhs + "E3Percent: " + DoubleToStr( lengthPoints12_mwhs, 0 ) + " / " + DoubleToStr( lengthPoints34_mwhs, 0 ) + " [" + DoubleToStr( (lengthPoints12_mwhs / lengthPoints34_mwhs) * 100, 1 ) + "%]\n";
+      if(lengthPoints12_mwhs < lengthPoints23_mwhs) {
+        mailBody_mwhs = mailBody_mwhs + "5RRPoints: " + DoubleToStr( lengthPoints13_mwhs, 0 ) + " / " + DoubleToStr( lengthPoints12_mwhs, 0 ) + " [" + DoubleToStr( (lengthPoints13_mwhs / lengthPoints12_mwhs) * 100, 1 ) + "%]\n";
+      } else {
+        mailBody_mwhs = mailBody_mwhs + "5RRPoints: None\n";
+      }
+      if(lengthPoints12_mwhs < lengthPoints34_mwhs) {
+        mailBody_mwhs = mailBody_mwhs + "3RRPoints: " + DoubleToStr( lengthPoints34_mwhs - lengthPoints12_mwhs, 0 ) + " / " + DoubleToStr( lengthPoints12_mwhs, 0 ) + " [" + DoubleToStr((((lengthPoints34_mwhs - lengthPoints12_mwhs) / lengthPoints12_mwhs))*100, 1 ) + "%]\n";
+      } else {
+        mailBody_mwhs = mailBody_mwhs + "3RRPoints: None\n";
+      }
+      mailBody_mwhs = mailBody_mwhs + "SWPoint: " + DoubleToStr((zigzag7 - zigzag6)/Point, 0) + ", " + DoubleToStr((zigzag6 - zigzag5)/Point, 0) + ", " + DoubleToStr((zigzag5 - zigzag4)/Point, 0) + "\n";
+
+      mailBody_mwhs = mailBody_mwhs + "\n";
+      mailBody_mwhs = mailBody_mwhs + "ShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
+      mailBody_mwhs = mailBody_mwhs + "MiddleMADis: " + DoubleToStr(((Close[0] - maMiddleEma) / maMiddleEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maMiddleEma)/Point, 0) + "]\n";
+      mailBody_mwhs = mailBody_mwhs + "LongMADis: " + DoubleToStr(((Close[0] - maLongEma) / maLongEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maLongEma)/Point, 0) + "]\n";
+      SendMail( mailSubject_mwhs, mailBody_mwhs );
+    }
+
+    // ファイル出力
+    if(FileOutput) {
+      handle = FileOpen("MAZigzagTrendSwitch_"+Symbol()+".csv", FILE_CSV|FILE_READ|FILE_WRITE,",");
+      FileSeek(handle, 0, SEEK_END);
+      FileWrite(handle, Symbol(), periodText, direction, TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ), Time[0]);
+      FileClose(handle);
+    }
+
+    lastAlert_mwhs = Time[0];
+    lastAlertZigzag_mwhs = zigzag2;
   }
   // MW_HS_TR
   if(StringLen(alertText_tr) > 0 && requirement_tr >= AlertRequirementCount && lastAlert_tr != Time[0] && lastAlertZigzag_tr != zigzag2) {
