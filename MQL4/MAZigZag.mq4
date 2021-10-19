@@ -273,14 +273,16 @@ int OnCalculate(const int rates_total,
     maLongSma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maLongEma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
 
-    requirement_trnc++;
     if(maCurrentSma < maCurrentEma) {
+      requirement_trnc++;
       alertText_trnc = alertText_trnc + "①Short MA: Golden Cross" + "\n";
     }
     if(maMiddleSma < maMiddleEma) {
+      requirement_trnc++;
       alertText_trnc = alertText_trnc + "②Middle MA: Golden Cross" + "\n";
     }
     if(maMiddleEma < maCurrentEma) {
+      requirement_trnc++;
       alertText_trnc = alertText_trnc + "③EMA: Golden Cross" + "\n";
     }
     if(maLongSma < maLongEma) {
@@ -306,14 +308,16 @@ int OnCalculate(const int rates_total,
     maLongSma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maLongEma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
 
-    requirement_trnc++;
     if(maCurrentSma > maCurrentEma) {
+      requirement_trnc++;
       alertText_trnc = alertText_trnc + "①Short MA: Dead Cross" + "\n";
     }
     if(maMiddleSma > maMiddleEma) {
+      requirement_trnc++;
       alertText_trnc = alertText_trnc + "②Middle MA: Dead Cross" + "\n";
     }
     if(maMiddleEma > maCurrentEma) {
+      requirement_trnc++;
       alertText_trnc = alertText_trnc + "③EMA: Dead Cross" + "\n";
     }
     if(maLongSma > maLongEma) {
@@ -417,7 +421,7 @@ int OnCalculate(const int rates_total,
   }
 
   // ST_TR_NC
-  if(StringLen(alertText_trnc) > 0 && requirement_trnc > 0 && lastAlert_trnc != Time[0] && lastAlertZigzag_trnc != zigzag2) {
+  if(StringLen(alertText_trnc) > 0 && requirement_trnc >= AlertRequirementCount && lastAlert_trnc != Time[0] && lastAlertZigzag_trnc != zigzag2) {
     Alert(alertText_trnc);
     if(MailAlert) {
       mailBody_trnc = mailBody_trnc + alertText_trnc; // ロング or ショート、通貨ペア、時間足
