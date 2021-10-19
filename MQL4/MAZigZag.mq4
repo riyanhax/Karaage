@@ -100,6 +100,8 @@ int OnCalculate(const int rates_total,
   int handle;
   double lengthPoints12;
   double lengthPoints13;
+  double lengthPoints1c2;
+  double lengthPoints1c3;
   double lengthPoints14;
   double lengthPoints23;
   double lengthPoints25;
@@ -428,12 +430,14 @@ int OnCalculate(const int rates_total,
       mailBody_trnc = mailBody_trnc + "Price: " + Close[0] + "\n";
       lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
       lengthPoints13 = MathAbs( zigzag1 - zigzag3 ) / Point();
+      lengthPoints1c2 = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ) / Point();
+      lengthPoints1c3 = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ) / Point();
       lengthPoints23 = MathAbs( zigzag2 - zigzag3 ) / Point();
       lengthPoints25 = MathAbs( zigzag2 - zigzag5 ) / Point();
       lengthPoints34 = MathAbs( zigzag3 - zigzag4 ) / Point();
       mailBody_trnc = mailBody_trnc + "FiboPoints: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints23, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints23) * 100, 1 ) + "%]\n";
-      mailBody_trnc = mailBody_trnc + "NCRRPoints: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints13, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints13) * 100, 1 ) + "%]\n";
-      mailBody_trnc = mailBody_trnc + "3RRPoints: " + DoubleToStr( lengthPoints25, 0 ) + " / " + DoubleToStr( lengthPoints13, 0 ) + " [" + DoubleToStr(((lengthPoints25 / lengthPoints13))*100, 1 ) + "%]\n";
+      mailBody_trnc = mailBody_trnc + "NCRRPoints: " + DoubleToStr( lengthPoints1c2, 0 ) + " / " + DoubleToStr( lengthPoints1c3, 0 ) + " [" + DoubleToStr( (lengthPoints1c2 / lengthPoints1c3) * 100, 1 ) + "%]\n";
+      mailBody_trnc = mailBody_trnc + "3RRPoints: " + DoubleToStr( lengthPoints25, 0 ) + " / " + DoubleToStr( lengthPoints1c3, 0 ) + " [" + DoubleToStr(((lengthPoints25 / lengthPoints1c3))*100, 1 ) + "%]\n";
 
       mailBody_trnc = mailBody_trnc + "\n";
       mailBody_trnc = mailBody_trnc + "\nShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
