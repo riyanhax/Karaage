@@ -77,6 +77,12 @@ int OnCalculate(const int rates_total,
   double zigzag7;
   double zigzag8;
   double zigzag9;
+  double macd1;
+  double macd2;
+  double macd3;
+  double macd4;
+  double rsi1;
+  double rsi2;
   double maCurrentEma;
   double maCurrentSma;
   double maMiddleEma;
@@ -113,6 +119,7 @@ int OnCalculate(const int rates_total,
   double lengthPoints34;
   double lengthPoints1c2;
   double lengthPoints1c3;
+  string macdRsi;
 
   // ZigZag取得
   cnt = 0;
@@ -120,15 +127,21 @@ int OnCalculate(const int rates_total,
     zigzagTmp = iCustom(Symbol(), ZigzagTimeframe, "ZigZag", Depth, Deviation, Backstep, 0, i);
     if(cnt == 0 && zigzagTmp != EMPTY_VALUE && zigzagTmp != 0) {
       zigzag1 = zigzagTmp;
+      macd1 = iMACD( Symbol(), ZigzagTimeframe, 12, 26, 9, PRICE_CLOSE, MODE_MAIN, i );
+      rsi1 = iRSI( Symbol(), ZigzagTimeframe, 20, PRICE_CLOSE, i );
       cnt = 1;
     } else if(cnt == 1 && zigzagTmp != EMPTY_VALUE && zigzagTmp != 0) {
       zigzag2 = zigzagTmp;
+      macd2 = iMACD( Symbol(), ZigzagTimeframe, 12, 26, 9, PRICE_CLOSE, MODE_MAIN, i );
+      rsi2 = iRSI( Symbol(), ZigzagTimeframe, 20, PRICE_CLOSE, i );
       cnt = 2;
     } else if(cnt == 2 && zigzagTmp != EMPTY_VALUE && zigzagTmp != 0) {
       zigzag3 = zigzagTmp;
+      macd3 = iMACD( Symbol(), ZigzagTimeframe, 12, 26, 9, PRICE_CLOSE, MODE_MAIN, i );
       cnt = 3;
     } else if(cnt == 3 && zigzagTmp != EMPTY_VALUE && zigzagTmp != 0) {
       zigzag4 = zigzagTmp;
+      macd4 = iMACD( Symbol(), ZigzagTimeframe, 12, 26, 9, PRICE_CLOSE, MODE_MAIN, i );
       cnt = 4;
     } else if(cnt == 4 && zigzagTmp != EMPTY_VALUE && zigzagTmp != 0) {
       zigzag5 = zigzagTmp;
@@ -150,6 +163,7 @@ int OnCalculate(const int rates_total,
   }
 
   // 条件
+  // MW_HS_NC
   requirement_nc_mwhs = 0;
   // Long
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag5 < zigzag6
@@ -221,6 +235,7 @@ int OnCalculate(const int rates_total,
       alertText_nc_mwhs = alertText_nc_mwhs + "⑤ALL EMA: Dead Cross" + "\n";
     }
   }
+  // MW_HS_TR_NC
   requirement_nc_mwhstr = 0;
   // Long
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5
@@ -296,6 +311,7 @@ int OnCalculate(const int rates_total,
       alertText_nc_mwhstr = alertText_nc_mwhstr + "⑤ALL EMA: Dead Cross" + "\n";
     }
   }
+  // HS_TR_NC
   requirement_nc_hstr = 0;
   // Long
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5
@@ -371,6 +387,7 @@ int OnCalculate(const int rates_total,
       alertText_nc_hstr = alertText_nc_hstr + "⑤ALL EMA: Dead Cross" + "\n";
     }
   }
+  // ST_TR_NC
   requirement_trnc = 0;
   // Long_TR_NC
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5
@@ -406,6 +423,18 @@ int OnCalculate(const int rates_total,
     if(maCurrentEma > maMiddleEma && maMiddleEma > maLongEma) {
       alertText_trnc = alertText_trnc + "⑤ALL EMA: Golden Cross" + "\n";
     }
+
+    if(macd2 - macd4 > 0) {
+      macdRsi = macdRsi + "Div: Long [" + DoubleToStr(((macd2 - macd4) / macd4)*100, 3) + "%]";
+    } else {
+      macdRsi = macdRsi + "Div: Short [" + DoubleToStr(((macd2 - macd4) / macd4)*100, 3) + "%]";
+    }
+    if(macd1 - macd3 > 0) {
+      macdRsi = macdRsi + "Rev: --- [" + DoubleToStr(((macd1 - macd3) / macd3)*100, 3) + "%]";
+    } else {
+      macdRsi = macdRsi + "Rev: Long [" + DoubleToStr(((macd1 - macd3) / macd3)*100, 3) + "%]";
+    }
+    macdRsi = macdRsi + "RSI: " + DoubleToStr( rsi1, 2 ) + ", " + DoubleToStr( rsi2, 2 );
   }
   // Short_TR_NC
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5
@@ -441,6 +470,18 @@ int OnCalculate(const int rates_total,
     if(maCurrentEma < maMiddleEma && maMiddleEma < maLongEma) {
       alertText_trnc = alertText_trnc + "⑤ALL EMA: Dead Cross" + "\n";
     }
+
+    if(macd2 - macd4 > 0) {
+      macdRsi = macdRsi + "Div: Short [" + DoubleToStr(((macd2 - macd4) / macd4)*100, 3) + "%]";
+    } else {
+      macdRsi = macdRsi + "Div: Long [" + DoubleToStr(((macd2 - macd4) / macd4)*100, 3) + "%]";
+    }
+    if(macd1 - macd3 > 0) {
+      macdRsi = macdRsi + "Rev: Long [" + DoubleToStr(((macd1 - macd3) / macd3)*100, 3) + "%]";
+    } else {
+      macdRsi = macdRsi + "Rev: --- [" + DoubleToStr(((macd1 - macd3) / macd3)*100, 3) + "%]";
+    }
+    macdRsi = macdRsi + "RSI: " + DoubleToStr( rsi1, 2 ) + ", " + DoubleToStr( rsi2, 2 );
   }
 
 
@@ -557,6 +598,9 @@ int OnCalculate(const int rates_total,
       mailBody_trnc = mailBody_trnc + "FiboPoints: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints23, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints23) * 100, 1 ) + "%]\n";
       mailBody_trnc = mailBody_trnc + "NCRRPoints: " + DoubleToStr( lengthPoints1c2, 0 ) + " / " + DoubleToStr( lengthPoints1c3, 0 ) + " [" + DoubleToStr( (lengthPoints1c2 / lengthPoints1c3) * 100, 1 ) + "%]\n";
       mailBody_trnc = mailBody_trnc + "3RRPoints: " + DoubleToStr( lengthPoints25, 0 ) + " / " + DoubleToStr( lengthPoints1c3, 0 ) + " [" + DoubleToStr(((lengthPoints25 / lengthPoints1c3))*100, 1 ) + "%]\n";
+
+      mailBody_trnc = mailBody_trnc + "\n";
+      mailBody_trnc = mailBody_trnc + macdRsi;
 
       mailBody_trnc = mailBody_trnc + "\n";
       mailBody_trnc = mailBody_trnc + "\nShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
