@@ -207,6 +207,7 @@ int OnCalculate(const int rates_total,
     } else {
       macdRsi = macdRsi + "DivA: Long";
     }
+    macdRsi = macdRsi + "\n";
     if(macd5 > macd7) {
       macdRsi = macdRsi + "DivB: Long";
     } else {
@@ -254,6 +255,7 @@ int OnCalculate(const int rates_total,
     } else {
       macdRsi = macdRsi + "DivA: Long";
     }
+    macdRsi = macdRsi + "\n";
     if(macd5 < macd7) {
       macdRsi = macdRsi + "DivB: Long";
     } else {
@@ -388,6 +390,7 @@ int OnCalculate(const int rates_total,
     } else {
       macdRsi = macdRsi + "DivA: Long";
     }
+    macdRsi = macdRsi + "\n";
     if(macd5 > macd7) {
       macdRsi = macdRsi + "DivB: Long";
     } else {
@@ -435,6 +438,7 @@ int OnCalculate(const int rates_total,
     } else {
       macdRsi = macdRsi + "DivA: Long";
     }
+    macdRsi = macdRsi + "\n";
     if(macd5 < macd7) {
       macdRsi = macdRsi + "DivB: Long";
     } else {
@@ -485,6 +489,7 @@ int OnCalculate(const int rates_total,
     } else {
       macdRsi = macdRsi + "DivA: Long";
     }
+    macdRsi = macdRsi + "\n";
     if(macd5 > macd7) {
       macdRsi = macdRsi + "DivB: Long";
     } else {
@@ -534,6 +539,7 @@ int OnCalculate(const int rates_total,
     } else {
       macdRsi = macdRsi + "DivA: Long";
     }
+    macdRsi = macdRsi + "\n";
     if(macd5 < macd7) {
       macdRsi = macdRsi + "DivB: Long";
     } else {
@@ -567,7 +573,7 @@ int OnCalculate(const int rates_total,
       mailBody_el = mailBody_el + macdRsi + "\n";
 
       mailBody_el = mailBody_el + "\n";
-      mailBody_el = mailBody_el + "\nShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
+      mailBody_el = mailBody_el + "ShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
       mailBody_el = mailBody_el + "MiddleMADis: " + DoubleToStr(((Close[0] - maMiddleEma) / maMiddleEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maMiddleEma)/Point, 0) + "]\n";
       mailBody_el = mailBody_el + "LongMADis: " + DoubleToStr(((Close[0] - maLongEma) / maLongEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maLongEma)/Point, 0) + "]\n";
       SendMail( mailSubject_el, mailBody_el );

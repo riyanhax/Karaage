@@ -295,6 +295,7 @@ int OnCalculate(const int rates_total,
     } else {
       macdRsi = macdRsi + "DivA: Short";
     }
+    macdRsi = macdRsi + "\n";
     if(macd7 > macd5) {
       macdRsi = macdRsi + "DivB: Short";
     } else {
@@ -343,6 +344,7 @@ int OnCalculate(const int rates_total,
     } else {
       macdRsi = macdRsi + "DivA: Short";
     }
+    macdRsi = macdRsi + "\n";
     if(macd7 < macd5) {
       macdRsi = macdRsi + "DivB: Short";
     } else {
@@ -393,6 +395,7 @@ int OnCalculate(const int rates_total,
     } else {
       macdRsi = macdRsi + "DivA: Short";
     }
+    macdRsi = macdRsi + "\n";
     if(macd7 > macd5) {
       macdRsi = macdRsi + "DivB: Short";
     } else {
@@ -441,6 +444,7 @@ int OnCalculate(const int rates_total,
     } else {
       macdRsi = macdRsi + "DivA: Short";
     }
+    macdRsi = macdRsi + "\n";
     if(macd7 < macd5) {
       macdRsi = macdRsi + "DivB: Short";
     } else {
@@ -557,7 +561,7 @@ int OnCalculate(const int rates_total,
       mailBody_nc_mwhs = mailBody_nc_mwhs + macdRsi + "\n";
 
       mailBody_nc_mwhs = mailBody_nc_mwhs + "\n";
-      mailBody_nc_mwhs = mailBody_nc_mwhs + "\nShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
+      mailBody_nc_mwhs = mailBody_nc_mwhs + "ShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
       mailBody_nc_mwhs = mailBody_nc_mwhs + "MiddleMADis: " + DoubleToStr(((Close[0] - maMiddleEma) / maMiddleEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maMiddleEma)/Point, 0) + "]\n";
       mailBody_nc_mwhs = mailBody_nc_mwhs + "LongMADis: " + DoubleToStr(((Close[0] - maLongEma) / maLongEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maLongEma)/Point, 0) + "]\n";
       SendMail( mailSubject_nc_mwhs, mailBody_nc_mwhs );
@@ -594,7 +598,7 @@ int OnCalculate(const int rates_total,
       mailBody_nc_mwhstr = mailBody_nc_mwhstr + macdRsi + "\n";
 
       mailBody_nc_mwhstr = mailBody_nc_mwhstr + "\n";
-      mailBody_nc_mwhstr = mailBody_nc_mwhstr + "\nShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
+      mailBody_nc_mwhstr = mailBody_nc_mwhstr + "ShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
       mailBody_nc_mwhstr = mailBody_nc_mwhstr + "MiddleMADis: " + DoubleToStr(((Close[0] - maMiddleEma) / maMiddleEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maMiddleEma)/Point, 0) + "]\n";
       mailBody_nc_mwhstr = mailBody_nc_mwhstr + "LongMADis: " + DoubleToStr(((Close[0] - maLongEma) / maLongEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maLongEma)/Point, 0) + "]\n";
       SendMail( mailSubject_nc_mwhstr, mailBody_nc_mwhstr );
@@ -631,7 +635,7 @@ int OnCalculate(const int rates_total,
       mailBody_nc_hstr = mailBody_nc_hstr + macdRsi + "\n";
 
       mailBody_nc_hstr = mailBody_nc_hstr + "\n";
-      mailBody_nc_hstr = mailBody_nc_hstr + "\nShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
+      mailBody_nc_hstr = mailBody_nc_hstr + "ShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
       mailBody_nc_hstr = mailBody_nc_hstr + "MiddleMADis: " + DoubleToStr(((Close[0] - maMiddleEma) / maMiddleEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maMiddleEma)/Point, 0) + "]\n";
       mailBody_nc_hstr = mailBody_nc_hstr + "LongMADis: " + DoubleToStr(((Close[0] - maLongEma) / maLongEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maLongEma)/Point, 0) + "]\n";
       SendMail( mailSubject_nc_hstr, mailBody_nc_hstr );
@@ -668,7 +672,7 @@ int OnCalculate(const int rates_total,
       mailBody_trnc = mailBody_trnc + macdRsi + "\n";
 
       mailBody_trnc = mailBody_trnc + "\n";
-      mailBody_trnc = mailBody_trnc + "\nShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
+      mailBody_trnc = mailBody_trnc + "ShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
       mailBody_trnc = mailBody_trnc + "MiddleMADis: " + DoubleToStr(((Close[0] - maMiddleEma) / maMiddleEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maMiddleEma)/Point, 0) + "]\n";
       mailBody_trnc = mailBody_trnc + "LongMADis: " + DoubleToStr(((Close[0] - maLongEma) / maLongEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maLongEma)/Point, 0) + "]\n";
       SendMail( mailSubject_trnc, mailBody_trnc );
