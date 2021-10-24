@@ -149,36 +149,31 @@ int OnCalculate(const int rates_total,
     maLongSma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maLongEma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
 
-    if(maCurrentSma < maCurrentEma) {
-      requirement_tr++;
-      alertText_tr = alertText_tr + "①Short MA: Golden Cross" + "\n";
-    }
-    if(maMiddleSma < maMiddleEma) {
-      requirement_tr++;
-      alertText_tr = alertText_tr + "②Middle MA: Golden Cross" + "\n";
+    if(maCurrentEma > maMiddleEma && maMiddleEma > maLongEma) {
+      alertText_tr = alertText_tr + "①ALL EMA: Golden Cross" + "\n";
     }
     if(maMiddleEma < maCurrentEma) {
       requirement_tr++;
-      alertText_tr = alertText_tr + "③EMA: Golden Cross" + "\n";
+      alertText_tr = alertText_tr + "②EMA: Golden Cross" + "\n";
+    }
+    if(maCurrentSma < maCurrentEma) {
+      requirement_tr++;
+      alertText_tr = alertText_tr + "③Short MA: Golden Cross" + "\n";
+    }
+    if(maMiddleSma < maMiddleEma) {
+      requirement_tr++;
+      alertText_tr = alertText_tr + "④Middle MA: Golden Cross" + "\n";
     }
     if(maLongSma < maLongEma) {
-      alertText_tr = alertText_tr + "④Long MA: Golden Cross" + "\n";
-    }
-    if(maCurrentEma > maMiddleEma && maMiddleEma > maLongEma) {
-      alertText_tr = alertText_tr + "⑤ALL EMA: Golden Cross" + "\n";
+      alertText_tr = alertText_tr + "⑤Long MA: Golden Cross" + "\n";
     }
 
-    if(macd3 - macd5 > 0) {
-      macdRsi = macdRsi + "Div: Long [" + DoubleToStr(((macd3 - macd5) / macd5)*100, 3) + "%]";
+    if(macd3 > macd5) {
+      macdRsi = macdRsi + "Div: Long";
     } else {
-      macdRsi = macdRsi + "Div: Short [" + DoubleToStr(((macd3 - macd5) / macd5)*100, 3) + "%]";
+      macdRsi = macdRsi + "Div: Short";
     }
-    if(macd2 - macd4 > 0) {
-      macdRsi = macdRsi + "Rev: --- [" + DoubleToStr(((macd2 - macd4) / macd4)*100, 3) + "%]";
-    } else {
-      macdRsi = macdRsi + "Rev: Long [" + DoubleToStr(((macd2 - macd4) / macd4)*100, 3) + "%]";
-    }
-    macdRsi = macdRsi + "RSI: " + DoubleToStr( rsi2, 2 ) + ", " + DoubleToStr( rsi3, 2 );
+    //macdRsi = macdRsi + "RSI: " + DoubleToStr( rsi2, 2 ) + ", " + DoubleToStr( rsi3, 2 );
 
   }
   // Short_TR
@@ -196,36 +191,31 @@ int OnCalculate(const int rates_total,
     maLongSma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maLongEma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
 
-    if(maCurrentSma > maCurrentEma) {
-      requirement_tr++;
-      alertText_tr = alertText_tr + "①Short MA: Dead Cross" + "\n";
-    }
-    if(maMiddleSma > maMiddleEma) {
-      requirement_tr++;
-      alertText_tr = alertText_tr + "②Middle MA: Dead Cross" + "\n";
+    if(maCurrentEma < maMiddleEma && maMiddleEma < maLongEma) {
+      alertText_tr = alertText_tr + "①ALL EMA: Dead Cross" + "\n";
     }
     if(maMiddleEma > maCurrentEma) {
       requirement_tr++;
-      alertText_tr = alertText_tr + "③EMA: Dead Cross" + "\n";
+      alertText_tr = alertText_tr + "②EMA: Dead Cross" + "\n";
+    }
+    if(maCurrentSma > maCurrentEma) {
+      requirement_tr++;
+      alertText_tr = alertText_tr + "③Short MA: Dead Cross" + "\n";
+    }
+    if(maMiddleSma > maMiddleEma) {
+      requirement_tr++;
+      alertText_tr = alertText_tr + "④Middle MA: Dead Cross" + "\n";
     }
     if(maLongSma > maLongEma) {
-      alertText_tr = alertText_tr + "④Long MA: Dead Cross" + "\n";
-    }
-    if(maCurrentEma < maMiddleEma && maMiddleEma < maLongEma) {
-      alertText_tr = alertText_tr + "⑤ALL EMA: Dead Cross" + "\n";
+      alertText_tr = alertText_tr + "⑤Long MA: Dead Cross" + "\n";
     }
 
-    if(macd3 - macd5 > 0) {
-      macdRsi = macdRsi + "Div: Short [" + DoubleToStr(((macd3 - macd5) / macd5)*100, 3) + "%]";
+    if(macd3 < macd5) {
+      macdRsi = macdRsi + "Div: Short";
     } else {
-      macdRsi = macdRsi + "Div: Long [" + DoubleToStr(((macd3 - macd5) / macd5)*100, 3) + "%]";
+      macdRsi = macdRsi + "Div: Long";
     }
-    if(macd2 - macd4 > 0) {
-      macdRsi = macdRsi + "Rev: Long [" + DoubleToStr(((macd2 - macd4) / macd4)*100, 3) + "%]";
-    } else {
-      macdRsi = macdRsi + "Rev: --- [" + DoubleToStr(((macd2 - macd4) / macd4)*100, 3) + "%]";
-    }
-    macdRsi = macdRsi + "RSI: " + DoubleToStr( rsi2, 2 ) + ", " + DoubleToStr( rsi3, 2 );
+    //macdRsi = macdRsi + "RSI: " + DoubleToStr( rsi2, 2 ) + ", " + DoubleToStr( rsi3, 2 );
   }
 
   // 条件を満たした数によってアラート
@@ -271,7 +261,7 @@ int OnCalculate(const int rates_total,
       }
 
       mailBody_tr = mailBody_tr + "\n";
-      mailBody_tr = mailBody_tr + macdRsi;
+      mailBody_tr = mailBody_tr + macdRsi + "\n";
 
       mailBody_tr = mailBody_tr + "\n";
       mailBody_tr = mailBody_tr + "ShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";

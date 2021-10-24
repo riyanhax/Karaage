@@ -138,23 +138,23 @@ int OnCalculate(const int rates_total,
       mailSubject = "[Long_YK] " + Symbol() + " " + periodText + " " + Time[0];
       direction = "long_yk";
 
-      if(maCurrentSma < maCurrentEma) {
-        requirement++;
-        alertText = alertText + "①Short MA: Golden Cross" + "\n";
-      }
-      if(maMiddleSma < maMiddleEma) {
-        requirement++;
-        alertText = alertText + "②Middle MA: Golden Cross" + "\n";
+      if(maCurrentEma > maMiddleEma && maMiddleEma > maLongEma) {
+        alertText = alertText + "①ALL EMA: Golden Cross" + "\n";
       }
       if(maMiddleEma < maCurrentEma) {
         requirement++;
-        alertText = alertText + "③EMA: Golden Cross" + "\n";
+        alertText = alertText + "②EMA: Golden Cross" + "\n";
+      }
+      if(maCurrentSma < maCurrentEma) {
+        requirement++;
+        alertText = alertText + "③Short MA: Golden Cross" + "\n";
+      }
+      if(maMiddleSma < maMiddleEma) {
+        requirement++;
+        alertText = alertText + "④Middle MA: Golden Cross" + "\n";
       }
       if(maLongSma < maLongEma) {
-        alertText = alertText + "④Long MA: Golden Cross" + "\n";
-      }
-      if(maCurrentEma > maMiddleEma && maMiddleEma > maLongEma) {
-        alertText = alertText + "⑤ALL EMA: Golden Cross" + "\n";
+        alertText = alertText + "⑤Long MA: Golden Cross" + "\n";
       }
     }
   }
@@ -168,23 +168,23 @@ int OnCalculate(const int rates_total,
       mailSubject = "[Short_YK] " + Symbol() + " " + periodText + " " + Time[0];
       direction = "short_yk";
 
-      if(maCurrentSma > maCurrentEma) {
-        requirement++;
-        alertText = alertText + "①Short MA: Dead Cross" + "\n";
-      }
-      if(maMiddleSma > maMiddleEma) {
-        requirement++;
-        alertText = alertText + "②Middle MA: Dead Cross" + "\n";
+      if(maCurrentEma < maMiddleEma && maMiddleEma < maLongEma) {
+        alertText = alertText + "①ALL EMA: Dead Cross" + "\n";
       }
       if(maMiddleEma > maCurrentEma) {
         requirement++;
-        alertText = alertText + "③EMA: Dead Cross" + "\n";
+        alertText = alertText + "②EMA: Dead Cross" + "\n";
+      }
+      if(maCurrentSma > maCurrentEma) {
+        requirement++;
+        alertText = alertText + "③Short MA: Dead Cross" + "\n";
+      }
+      if(maMiddleSma > maMiddleEma) {
+        requirement++;
+        alertText = alertText + "④Middle MA: Dead Cross" + "\n";
       }
       if(maLongSma > maLongEma) {
-        alertText = alertText + "④Long MA: Dead Cross" + "\n";
-      }
-      if(maCurrentEma < maMiddleEma && maMiddleEma < maLongEma) {
-        alertText = alertText + "⑤ALL EMA: Dead Cross" + "\n";
+        alertText = alertText + "⑤Long MA: Dead Cross" + "\n";
       }
     }
   }
