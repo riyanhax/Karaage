@@ -98,21 +98,25 @@ int OnCalculate(const int rates_total,
   string mailSubject_nc_mwhs;
   string mailBody_nc_mwhs;
   string direction_nc_mwhs;
+  string macdRsi_nc_mwhs;
   int requirement_nc_mwhstr;
   string alertText_nc_mwhstr;
   string mailSubject_nc_mwhstr;
   string mailBody_nc_mwhstr;
   string direction_nc_mwhstr;
+  string macdRsi_nc_mwhstr;
   int requirement_nc_hstr;
   string alertText_nc_hstr;
   string mailSubject_nc_hstr;
   string mailBody_nc_hstr;
   string direction_nc_hstr;
+  string macdRsi_nc_hstr;
   int requirement_trnc;
   string alertText_trnc;
   string mailSubject_trnc;
   string mailBody_trnc;
   string direction_trnc;
+  string macdRsi_trnc;
   int handle;
   double lengthPoints12;
   double lengthPoints13;
@@ -121,7 +125,6 @@ int OnCalculate(const int rates_total,
   double lengthPoints34;
   double lengthPoints1c2;
   double lengthPoints1c3;
-  string macdRsi;
 
   // ZigZag取得
   cnt = 0;
@@ -205,9 +208,9 @@ int OnCalculate(const int rates_total,
     }
 
     if(macd3 < macd5) {
-      macdRsi = macdRsi + "Div: Short";
+      macdRsi_nc_mwhs = macdRsi_nc_mwhs + "DivSW: Short";
     } else {
-      macdRsi = macdRsi + "Div: Long";
+      macdRsi_nc_mwhs = macdRsi_nc_mwhs + "DivSW: Long";
     }
   }
   // Short
@@ -246,9 +249,9 @@ int OnCalculate(const int rates_total,
     }
 
     if(macd3 > macd5) {
-      macdRsi = macdRsi + "Div: Short";
+      macdRsi_nc_mwhs = macdRsi_nc_mwhs + "DivSW: Short";
     } else {
-      macdRsi = macdRsi + "Div: Long";
+      macdRsi_nc_mwhs = macdRsi_nc_mwhs + "DivSW: Long";
     }
   }
   // MW_HS_TR_NC
@@ -291,15 +294,15 @@ int OnCalculate(const int rates_total,
     }
 
     if(macd2 > macd4) {
-      macdRsi = macdRsi + "DivA: Long";
+      macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "Div: Long";
     } else {
-      macdRsi = macdRsi + "DivA: Short";
+      macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "Div: Short";
     }
-    macdRsi = macdRsi + "\n";
+    macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "\n";
     if(macd7 > macd5) {
-      macdRsi = macdRsi + "DivB: Short";
+      macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "DivSW: Short";
     } else {
-      macdRsi = macdRsi + "DivB: Long";
+      macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "DivSW: Long";
     }
   }
   // Short
@@ -340,15 +343,15 @@ int OnCalculate(const int rates_total,
     }
 
     if(macd2 < macd4) {
-      macdRsi = macdRsi + "DivA: Long";
+      macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "Div: Long";
     } else {
-      macdRsi = macdRsi + "DivA: Short";
+      macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "Div: Short";
     }
-    macdRsi = macdRsi + "\n";
+    macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "\n";
     if(macd7 < macd5) {
-      macdRsi = macdRsi + "DivB: Short";
+      macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "DivSW: Short";
     } else {
-      macdRsi = macdRsi + "DivB: Long";
+      macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "DivSW: Long";
     }
   }
   // HS_TR_NC
@@ -391,15 +394,15 @@ int OnCalculate(const int rates_total,
     }
 
     if(macd2 > macd4) {
-      macdRsi = macdRsi + "DivA: Long";
+      macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "Div: Long";
     } else {
-      macdRsi = macdRsi + "DivA: Short";
+      macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "Div: Short";
     }
-    macdRsi = macdRsi + "\n";
+    macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "\n";
     if(macd7 > macd5) {
-      macdRsi = macdRsi + "DivB: Short";
+      macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "DivSW: Short";
     } else {
-      macdRsi = macdRsi + "DivB: Long";
+      macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "DivSW: Long";
     }
   }
   // Short
@@ -440,15 +443,15 @@ int OnCalculate(const int rates_total,
     }
 
     if(macd2 < macd4) {
-      macdRsi = macdRsi + "DivA: Long";
+      macdRsi_nc_hstr = macdRsi_nc_hstr + "Div: Long";
     } else {
-      macdRsi = macdRsi + "DivA: Short";
+      macdRsi_nc_hstr = macdRsi_nc_hstr + "Div: Short";
     }
-    macdRsi = macdRsi + "\n";
+    macdRsi_nc_hstr = macdRsi_nc_hstr + "\n";
     if(macd7 < macd5) {
-      macdRsi = macdRsi + "DivB: Short";
+      macdRsi_nc_hstr = macdRsi_nc_hstr + "DivSW: Short";
     } else {
-      macdRsi = macdRsi + "DivB: Long";
+      macdRsi_nc_hstr = macdRsi_nc_hstr + "DivSW: Long";
     }
   }
   // ST_TR_NC
@@ -489,9 +492,9 @@ int OnCalculate(const int rates_total,
     }
 
     if(macd2 > macd4) {
-      macdRsi = macdRsi + "Div: Long";
+      macdRsi_trnc = macdRsi_trnc + "Div: Long";
     } else {
-      macdRsi = macdRsi + "Div: Short";
+      macdRsi_trnc = macdRsi_trnc + "Div: Short";
     }
     //macdRsi = macdRsi + "RSI: " + DoubleToStr( rsi1, 2 ) + ", " + DoubleToStr( rsi2, 2 );
   }
@@ -531,9 +534,9 @@ int OnCalculate(const int rates_total,
     }
 
     if(macd2  < macd4) {
-      macdRsi = macdRsi + "Div: Short";
+      macdRsi_trnc = macdRsi_trnc + "Div: Short";
     } else {
-      macdRsi = macdRsi + "Div: Long";
+      macdRsi_trnc = macdRsi_trnc + "Div: Long";
     }
     //macdRsi = macdRsi + "RSI: " + DoubleToStr( rsi1, 2 ) + ", " + DoubleToStr( rsi2, 2 );
   }
@@ -554,11 +557,13 @@ int OnCalculate(const int rates_total,
       lengthPoints1c2 = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ) / Point();
       lengthPoints1c3 = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ) / Point();
       mailBody_nc_mwhs = mailBody_nc_mwhs + "FiboPoints: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints23, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints23) * 100, 1 ) + "%]\n";
+
+      mailBody_nc_mwhs = mailBody_nc_mwhs + "\n";
       mailBody_nc_mwhs = mailBody_nc_mwhs + "NCRRPoints: " + DoubleToStr( lengthPoints1c2, 0 ) + " / " + DoubleToStr( lengthPoints1c3, 0 ) + " [" + DoubleToStr( (lengthPoints1c2 / lengthPoints1c3) * 100, 1 ) + "%]\n";
       mailBody_nc_mwhs = mailBody_nc_mwhs + "3RRPoints: " + DoubleToStr( lengthPoints25, 0 ) + " / " + DoubleToStr( lengthPoints1c3, 0 ) + " [" + DoubleToStr(((lengthPoints25 / lengthPoints1c3))*100, 1 ) + "%]\n";
 
       mailBody_nc_mwhs = mailBody_nc_mwhs + "\n";
-      mailBody_nc_mwhs = mailBody_nc_mwhs + macdRsi + "\n";
+      mailBody_nc_mwhs = mailBody_nc_mwhs + macdRsi_nc_mwhs + "\n";
 
       mailBody_nc_mwhs = mailBody_nc_mwhs + "\n";
       mailBody_nc_mwhs = mailBody_nc_mwhs + "ShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
@@ -591,11 +596,13 @@ int OnCalculate(const int rates_total,
       lengthPoints1c2 = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ) / Point();
       lengthPoints1c3 = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ) / Point();
       mailBody_nc_mwhstr = mailBody_nc_mwhstr + "FiboPoints: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints23, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints23) * 100, 1 ) + "%]\n";
+
+      mailBody_nc_mwhstr = mailBody_nc_mwhstr + "\n";
       mailBody_nc_mwhstr = mailBody_nc_mwhstr + "NCRRPoints: " + DoubleToStr( lengthPoints1c2, 0 ) + " / " + DoubleToStr( lengthPoints1c3, 0 ) + " [" + DoubleToStr( (lengthPoints1c2 / lengthPoints1c3) * 100, 1 ) + "%]\n";
       mailBody_nc_mwhstr = mailBody_nc_mwhstr + "3RRPoints: " + DoubleToStr( lengthPoints25, 0 ) + " / " + DoubleToStr( lengthPoints1c3, 0 ) + " [" + DoubleToStr(((lengthPoints25 / lengthPoints1c3))*100, 1 ) + "%]\n";
 
       mailBody_nc_mwhstr = mailBody_nc_mwhstr + "\n";
-      mailBody_nc_mwhstr = mailBody_nc_mwhstr + macdRsi + "\n";
+      mailBody_nc_mwhstr = mailBody_nc_mwhstr + macdRsi_nc_mwhstr + "\n";
 
       mailBody_nc_mwhstr = mailBody_nc_mwhstr + "\n";
       mailBody_nc_mwhstr = mailBody_nc_mwhstr + "ShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
@@ -628,11 +635,13 @@ int OnCalculate(const int rates_total,
       lengthPoints1c2 = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ) / Point();
       lengthPoints1c3 = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ) / Point();
       mailBody_nc_hstr = mailBody_nc_hstr + "FiboPoints: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints23, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints23) * 100, 1 ) + "%]\n";
+
+      mailBody_nc_hstr = mailBody_nc_hstr + "\n";
       mailBody_nc_hstr = mailBody_nc_hstr + "NCRRPoints: " + DoubleToStr( lengthPoints1c2, 0 ) + " / " + DoubleToStr( lengthPoints1c3, 0 ) + " [" + DoubleToStr( (lengthPoints1c2 / lengthPoints1c3) * 100, 1 ) + "%]\n";
       mailBody_nc_hstr = mailBody_nc_hstr + "3RRPoints: " + DoubleToStr( lengthPoints25, 0 ) + " / " + DoubleToStr( lengthPoints1c3, 0 ) + " [" + DoubleToStr(((lengthPoints25 / lengthPoints1c3))*100, 1 ) + "%]\n";
 
       mailBody_nc_hstr = mailBody_nc_hstr + "\n";
-      mailBody_nc_hstr = mailBody_nc_hstr + macdRsi + "\n";
+      mailBody_nc_hstr = mailBody_nc_hstr + macdRsi_nc_hstr + "\n";
 
       mailBody_nc_hstr = mailBody_nc_hstr + "\n";
       mailBody_nc_hstr = mailBody_nc_hstr + "ShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
@@ -665,11 +674,13 @@ int OnCalculate(const int rates_total,
       lengthPoints25 = MathAbs( zigzag2 - zigzag5 ) / Point();
       lengthPoints34 = MathAbs( zigzag3 - zigzag4 ) / Point();
       mailBody_trnc = mailBody_trnc + "FiboPoints: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints23, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints23) * 100, 1 ) + "%]\n";
+
+      mailBody_trnc = mailBody_trnc + "\n";
       mailBody_trnc = mailBody_trnc + "NCRRPoints: " + DoubleToStr( lengthPoints1c2, 0 ) + " / " + DoubleToStr( lengthPoints1c3, 0 ) + " [" + DoubleToStr( (lengthPoints1c2 / lengthPoints1c3) * 100, 1 ) + "%]\n";
       mailBody_trnc = mailBody_trnc + "3RRPoints: " + DoubleToStr( lengthPoints25, 0 ) + " / " + DoubleToStr( lengthPoints1c3, 0 ) + " [" + DoubleToStr(((lengthPoints25 / lengthPoints1c3))*100, 1 ) + "%]\n";
 
       mailBody_trnc = mailBody_trnc + "\n";
-      mailBody_trnc = mailBody_trnc + macdRsi + "\n";
+      mailBody_trnc = mailBody_trnc + macdRsi_trnc + "\n";
 
       mailBody_trnc = mailBody_trnc + "\n";
       mailBody_trnc = mailBody_trnc + "ShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";

@@ -203,15 +203,15 @@ int OnCalculate(const int rates_total,
     }
 
     if(macd2 < macd4) {
-      macdRsi = macdRsi + "DivA: Short";
+      macdRsi = macdRsi + "DivSW: Short";
     } else {
-      macdRsi = macdRsi + "DivA: Long";
+      macdRsi = macdRsi + "DivSW: Long";
     }
     macdRsi = macdRsi + "\n";
     if(macd5 > macd7) {
-      macdRsi = macdRsi + "DivB: Long";
+      macdRsi = macdRsi + "Div: Long";
     } else {
-      macdRsi = macdRsi + "DivB: Short";
+      macdRsi = macdRsi + "Div: Short";
     }
   }
   // Short_EL
@@ -251,15 +251,15 @@ int OnCalculate(const int rates_total,
     }
 
     if(macd2 > macd4) {
-      macdRsi = macdRsi + "DivA: Short";
+      macdRsi = macdRsi + "DivSW: Short";
     } else {
-      macdRsi = macdRsi + "DivA: Long";
+      macdRsi = macdRsi + "DivSW: Long";
     }
     macdRsi = macdRsi + "\n";
     if(macd5 < macd7) {
-      macdRsi = macdRsi + "DivB: Long";
+      macdRsi = macdRsi + "Div: Long";
     } else {
-      macdRsi = macdRsi + "DivB: Short";
+      macdRsi = macdRsi + "Div: Short";
     }
   }
 
@@ -301,9 +301,9 @@ int OnCalculate(const int rates_total,
     }
 
     if(macd6 > macd4) {
-      macdRsi = macdRsi + "Div: Short";
+      macdRsi = macdRsi + "DivSW: Short";
     } else {
-      macdRsi = macdRsi + "Div: Long";
+      macdRsi = macdRsi + "DivSW: Long";
     }
   }
   // Short_EL_MW_HS
@@ -343,9 +343,9 @@ int OnCalculate(const int rates_total,
     }
 
     if(macd6 < macd4) {
-      macdRsi = macdRsi + "Div: Short";
+      macdRsi = macdRsi + "DivSW: Short";
     } else {
-      macdRsi = macdRsi + "Div: Long";
+      macdRsi = macdRsi + "DivSW: Long";
     }
   }
   requirement_tr = 0;
@@ -385,16 +385,16 @@ int OnCalculate(const int rates_total,
       alertText_tr = alertText_tr + "⑤Long MA: Golden Cross" + "\n";
     }
 
-    if(macd2 < macd4) {
-      macdRsi = macdRsi + "DivA: Short";
+    if(macd5 < macd3) {
+      macdRsi = macdRsi + "Div: Long";
     } else {
-      macdRsi = macdRsi + "DivA: Long";
+      macdRsi = macdRsi + "Div: Short";
     }
     macdRsi = macdRsi + "\n";
-    if(macd5 > macd7) {
-      macdRsi = macdRsi + "DivB: Long";
+    if(macd8 > macd6) {
+      macdRsi = macdRsi + "DivSW: Short";
     } else {
-      macdRsi = macdRsi + "DivB: Short";
+      macdRsi = macdRsi + "DivSW: Long";
     }
   }
   // Short 切り替わり
@@ -433,16 +433,16 @@ int OnCalculate(const int rates_total,
       alertText_tr = alertText_tr + "⑤Long MA: Dead Cross" + "\n";
     }
 
-    if(macd2 > macd4) {
-      macdRsi = macdRsi + "DivA: Short";
+    if(macd5 > macd3) {
+      macdRsi = macdRsi + "Div: Long";
     } else {
-      macdRsi = macdRsi + "DivA: Long";
+      macdRsi = macdRsi + "Div: Short";
     }
     macdRsi = macdRsi + "\n";
-    if(macd5 < macd7) {
-      macdRsi = macdRsi + "DivB: Long";
+    if(macd8 < macd6) {
+      macdRsi = macdRsi + "DivSW: Short";
     } else {
-      macdRsi = macdRsi + "DivB: Short";
+      macdRsi = macdRsi + "DivSW: Long";
     }
   }
   requirement = 0;
@@ -484,16 +484,16 @@ int OnCalculate(const int rates_total,
       alertText = alertText + "⑤Long MA: Golden Cross" + "\n";
     }
 
-    if(macd2 < macd4) {
-      macdRsi = macdRsi + "DivA: Short";
+    if(macd5 < macd3) {
+      macdRsi = macdRsi + "Div: Long";
     } else {
-      macdRsi = macdRsi + "DivA: Long";
+      macdRsi = macdRsi + "Div: Short";
     }
     macdRsi = macdRsi + "\n";
-    if(macd5 > macd7) {
-      macdRsi = macdRsi + "DivB: Long";
+    if(macd8 > macd6) {
+      macdRsi = macdRsi + "DivSW: Short";
     } else {
-      macdRsi = macdRsi + "DivB: Short";
+      macdRsi = macdRsi + "DivSW: Long";
     }
   }
   // Short 切り替わり
@@ -534,16 +534,16 @@ int OnCalculate(const int rates_total,
       alertText = alertText + "⑤Long MA: Dead Cross" + "\n";
     }
 
-    if(macd2 > macd4) {
-      macdRsi = macdRsi + "DivA: Short";
+    if(macd5 > macd3) {
+      macdRsi = macdRsi + "Div: Long";
     } else {
-      macdRsi = macdRsi + "DivA: Long";
+      macdRsi = macdRsi + "Div: Short";
     }
     macdRsi = macdRsi + "\n";
-    if(macd5 < macd7) {
-      macdRsi = macdRsi + "DivB: Long";
+    if(macd8 < macd6) {
+      macdRsi = macdRsi + "DivSW: Short";
     } else {
-      macdRsi = macdRsi + "DivB: Short";
+      macdRsi = macdRsi + "DivSW: Long";
     }
   }
 
@@ -558,6 +558,8 @@ int OnCalculate(const int rates_total,
       lengthPoints58 = MathAbs( zigzag5 - zigzag8 ) / Point();
       mailBody_el = mailBody_el + "FiboPoints: " + DoubleToStr( lengthPoints25, 0 ) + " / " + DoubleToStr( lengthPoints58, 0 ) + " [" + DoubleToStr( (lengthPoints25 / lengthPoints58) * 100, 1 ) + "%]\n";
       mailBody_el = mailBody_el + "E3Percent: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints58, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints58) * 100, 1 ) + "%]\n";
+
+      mailBody_el = mailBody_el + "\n";
       if(lengthPoints12 < lengthPoints25) {
         mailBody_el = mailBody_el + "5RRPoints: " + DoubleToStr( lengthPoints15, 0 ) + " / " + DoubleToStr( lengthPoints12, 0 ) + " [" + DoubleToStr( (lengthPoints15 / lengthPoints12) * 100, 1 ) + "%]\n";
       } else {
@@ -605,6 +607,8 @@ int OnCalculate(const int rates_total,
       double lengthPoints78_mwhs = MathAbs( zigzag7 - zigzag8 ) / Point();
       mailBody_mwhs = mailBody_mwhs + "FiboPoints: " + DoubleToStr( lengthPoints47_mwhs, 0 ) + " / " + DoubleToStr( lengthPoints78_mwhs, 0 ) + " [" + DoubleToStr( (lengthPoints47_mwhs / lengthPoints78_mwhs) * 100, 1 ) + "%]\n";
       mailBody_mwhs = mailBody_mwhs + "E3Percent: " + DoubleToStr( lengthPoints14_mwhs, 0 ) + " / " + DoubleToStr( lengthPoints78_mwhs, 0 ) + " [" + DoubleToStr( (lengthPoints14_mwhs / lengthPoints78_mwhs) * 100, 1 ) + "%]\n";
+
+      mailBody_mwhs = mailBody_mwhs + "\n";
       if(lengthPoints14_mwhs < lengthPoints47_mwhs) {
         mailBody_mwhs = mailBody_mwhs + "5RRPoints: " + DoubleToStr( lengthPoints17_mwhs, 0 ) + " / " + DoubleToStr( lengthPoints14_mwhs, 0 ) + " [" + DoubleToStr( (lengthPoints17_mwhs / lengthPoints14_mwhs) * 100, 1 ) + "%]\n";
       } else {
@@ -657,6 +661,8 @@ int OnCalculate(const int rates_total,
       double lengthPoints910_tr = MathAbs( zigzag9 - zigzag10 ) / Point();
       mailBody_tr = mailBody_tr + "FiboPoints: " + DoubleToStr( lengthPoints69_tr, 0 ) + " / " + DoubleToStr( lengthPoints910_tr, 0 ) + " [" + DoubleToStr( (lengthPoints69_tr / lengthPoints910_tr) * 100, 1 ) + "%]\n";
       mailBody_tr = mailBody_tr + "E3Percent: " + DoubleToStr( lengthPoints16_tr, 0 ) + " / " + DoubleToStr( lengthPoints910_tr, 0 ) + " [" + DoubleToStr( (lengthPoints16_tr / lengthPoints910_tr) * 100, 1 ) + "%]\n";
+
+      mailBody_tr = mailBody_tr + "\n";
       if(lengthPoints14_tr < lengthPoints69_tr) {
         mailBody_tr = mailBody_tr + "5RRPoints: " + DoubleToStr( lengthPoints19_tr, 0 ) + " / " + DoubleToStr( lengthPoints14_tr, 0 ) + " [" + DoubleToStr( (lengthPoints19_tr / lengthPoints14_tr) * 100, 1 ) + "%]\n";
       } else {
@@ -708,6 +714,8 @@ int OnCalculate(const int rates_total,
       double lengthPoints910 = MathAbs( zigzag9 - zigzag10 ) / Point();
       mailBody = mailBody + "FiboPoints: " + DoubleToStr( lengthPoints69, 0 ) + " / " + DoubleToStr( lengthPoints910, 0 ) + " [" + DoubleToStr( (lengthPoints69 / lengthPoints910) * 100, 1 ) + "%]\n";
       mailBody = mailBody + "E3Percent: " + DoubleToStr( lengthPoints16, 0 ) + " / " + DoubleToStr( lengthPoints910, 0 ) + " [" + DoubleToStr( (lengthPoints16 / lengthPoints910) * 100, 1 ) + "%]\n";
+
+      mailBody = mailBody + "\n";
       if(lengthPoints14 < lengthPoints69) {
         mailBody = mailBody + "5RRPoints: " + DoubleToStr( lengthPoints19, 0 ) + " / " + DoubleToStr( lengthPoints14, 0 ) + " [" + DoubleToStr( (lengthPoints19 / lengthPoints14) * 100, 1 ) + "%]\n";
       } else {
