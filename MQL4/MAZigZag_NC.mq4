@@ -1035,7 +1035,7 @@ int OnCalculate(const int rates_total,
       if(lengthPoints67 > lengthPoints23) {
         mailBody_nc_elmwhs = mailBody_nc_elmwhs + "ELRRPts: " + DoubleToStr( lengthPoints67 - lengthPoints23, 0 ) + " / " + DoubleToStr( lengthPoints1c3, 0 ) + " [" + DoubleToStr((((lengthPoints67 - lengthPoints23) / lengthPoints1c3))*100, 1 ) + "%]\n";
       } else {
-        mailBody_nc_elmwhs = mailBody_nc_elmwhs + "ELRRPts: None";
+        mailBody_nc_elmwhs = mailBody_nc_elmwhs + "ELRRPts: None\n";
       }
 
       mailBody_nc_elmwhs = mailBody_nc_elmwhs + "\n";
@@ -1082,7 +1082,7 @@ int OnCalculate(const int rates_total,
       if(lengthPoints89 > lengthPoints25) {
         mailBody_nc_elmwhs = mailBody_nc_elmwhs + "ELRRPts: " + DoubleToStr( lengthPoints89 - lengthPoints25, 0 ) + " / " + DoubleToStr( lengthPoints1c3, 0 ) + " [" + DoubleToStr((((lengthPoints89 - lengthPoints25) / lengthPoints1c3))*100, 1 ) + "%]\n";
       } else {
-        mailBody_nc_elmwhs = mailBody_nc_elmwhs + "ELRRPts: None";
+        mailBody_nc_elmwhs = mailBody_nc_elmwhs + "ELRRPts: None\n";
       }
 
       mailBody_nc_elmwhstr = mailBody_nc_elmwhstr + "\n";
@@ -1129,7 +1129,7 @@ int OnCalculate(const int rates_total,
       if(lengthPoints89 > lengthPoints25) {
         mailBody_nc_elmwhs = mailBody_nc_elmwhs + "ELRRPts: " + DoubleToStr( lengthPoints89 - lengthPoints25, 0 ) + " / " + DoubleToStr( lengthPoints1c3, 0 ) + " [" + DoubleToStr((((lengthPoints89 - lengthPoints25) / lengthPoints1c3))*100, 1 ) + "%]\n";
       } else {
-        mailBody_nc_elmwhs = mailBody_nc_elmwhs + "ELRRPts: None";
+        mailBody_nc_elmwhs = mailBody_nc_elmwhs + "ELRRPts: None\n";
       }
 
       mailBody_nc_elhstr = mailBody_nc_elhstr + "\n";
