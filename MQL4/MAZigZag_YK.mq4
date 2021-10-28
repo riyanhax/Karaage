@@ -67,19 +67,20 @@ int OnCalculate(const int rates_total,
   double zigzag1;
   double zigzag2;
   double zigzag3;
-  double zigzag4;
   double maCurrentEma;
   double maCurrentSma;
-  double maMiddleEma;
-  double maMiddleSma;
-  double maLongEma;
-  double maLongSma;
   double maCurrentEma2;
   double maCurrentSma2;
   double maCurrentEma3;
   double maCurrentSma3;
-  double maCurrentEma4;
-  double maCurrentSma4;
+  double maMiddleEma;
+  double maMiddleSma;
+  double maMiddleEma2;
+  double maMiddleSma2;
+  double maMiddleEma3;
+  double maMiddleSma3;
+  double maLongEma;
+  double maLongSma;
   int i;
   int cnt;
   int requirement;
@@ -89,9 +90,9 @@ int OnCalculate(const int rates_total,
   string direction;
   int handle;
   double lengthPoints12;
-  double lengthPoints13;
   double lengthPoints23;
-  double lengthPoints34;
+  double lengthPointsC1;
+  double lengthPointsC2;
 
   // ZigZag取得
   cnt = 0;
@@ -104,17 +105,16 @@ int OnCalculate(const int rates_total,
       zigzag2 = zigzagTmp;
       maCurrentSma2 = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, i );
       maCurrentEma2 = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, i );
+      maMiddleSma2 = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+      maMiddleEma2 = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
       cnt = 2;
     } else if(cnt == 2 && zigzagTmp != EMPTY_VALUE && zigzagTmp != 0) {
       zigzag3 = zigzagTmp;
       maCurrentSma3 = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, i );
       maCurrentEma3 = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, i );
+      maMiddleSma3 = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+      maMiddleEma3 = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
       cnt = 3;
-    } else if(cnt == 3 && zigzagTmp != EMPTY_VALUE && zigzagTmp != 0) {
-      zigzag4 = zigzagTmp;
-      maCurrentSma4 = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, i );
-      maCurrentEma4 = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, i );
-      cnt = 4;
       break;
     }
   }
@@ -127,22 +127,31 @@ int OnCalculate(const int rates_total,
   maLongEma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
 
   // 条件
+  // YK
   requirement = 0;
   // Long
-  if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag2 >= zigzag4) {
-    if(zigzag4 < maCurrentSma4 && zigzag4 < maCurrentEma4 && zigzag3 > maCurrentSma3 && zigzag3 > maCurrentEma3
-      && zigzag2 < maCurrentSma2 && zigzag2 < maCurrentEma2 && zigzag1 > maCurrentSma && zigzag1 > maCurrentEma) {
+  if(zigzag1 < zigzag2 && zigzag2 > zigzag3) {
+    if(zigzag3 < maCurrentSma3 && zigzag3 < maCurrentEma3 && zigzag2 > maCurrentSma2 && zigzag2 > maCurrentEma2
+      && zigzag1 < maCurrentSma && zigzag1 < maCurrentEma
+      && iClose( Symbol(), MACurrentPeriod, 0 ) > maCurrentSma && iClose( Symbol(), MACurrentPeriod, 0 ) > maCurrentEma) {
 
-      alertText = alertText + "Long_YK " + Symbol() + " " + periodText + "\n";
-      alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-      mailSubject = "[Long_YK] " + Symbol() + " " + periodText + " " + Time[0];
-      direction = "long_yk";
+      if(zigzag3 < maMiddleSma3 && zigzag3 < maMiddleEma3 && zigzag2 > maMiddleSma2 && zigzag2 > maMiddleEma2
+        && zigzag1 < maMiddleSma && zigzag1 < maMiddleEma) {
+        alertText = alertText + "Long_YK_M " + Symbol() + " " + periodText + "\n";
+        alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+        mailSubject = "[Long_YK_M] " + Symbol() + " " + periodText + " " + Time[0];
+        direction = "long_yk_m";
+      } else {
+        alertText = alertText + "Long_YK_S " + Symbol() + " " + periodText + "\n";
+        alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+        mailSubject = "[Long_YK_S] " + Symbol() + " " + periodText + " " + Time[0];
+        direction = "long_yk_s";
+      }
 
       if(maCurrentEma > maMiddleEma && maMiddleEma > maLongEma) {
         alertText = alertText + "①ALL EMA: Golden Cross" + "\n";
       }
       if(maMiddleEma < maCurrentEma) {
-        requirement++;
         alertText = alertText + "②EMA: Golden Cross" + "\n";
       }
       if(maCurrentSma < maCurrentEma) {
@@ -150,7 +159,6 @@ int OnCalculate(const int rates_total,
         alertText = alertText + "③Short MA: Golden Cross" + "\n";
       }
       if(maMiddleSma < maMiddleEma) {
-        requirement++;
         alertText = alertText + "④Middle MA: Golden Cross" + "\n";
       }
       if(maLongSma < maLongEma) {
@@ -159,20 +167,28 @@ int OnCalculate(const int rates_total,
     }
   }
   // Short
-  if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag2 <= zigzag4) {
-    if(zigzag4 > maCurrentSma4 && zigzag4 > maCurrentEma4 && zigzag3 < maCurrentSma3 && zigzag3 < maCurrentEma3
-      && zigzag2 > maCurrentSma2 && zigzag2 > maCurrentEma2 && zigzag1 < maCurrentSma && zigzag1 < maCurrentEma) {
+  if(zigzag1 > zigzag2 && zigzag2 < zigzag3) {
+    if(zigzag3 > maCurrentSma3 && zigzag3 > maCurrentEma3 && zigzag2 < maCurrentSma2 && zigzag2 < maCurrentEma2
+      && zigzag1 > maCurrentSma && zigzag1 > maCurrentEma
+      && iClose( Symbol(), MACurrentPeriod, 0 ) < maCurrentSma && iClose( Symbol(), MACurrentPeriod, 0 ) < maCurrentEma) {
 
-      alertText = alertText + "Short_YK " + Symbol() + " " + periodText + "\n";
-      alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-      mailSubject = "[Short_YK] " + Symbol() + " " + periodText + " " + Time[0];
-      direction = "short_yk";
+      if(zigzag3 > maMiddleSma3 && zigzag3 > maMiddleEma3 && zigzag2 < maMiddleSma2 && zigzag2 < maMiddleEma2
+        && zigzag1 > maMiddleSma && zigzag1 > maMiddleEma) {
+        alertText = alertText + "Short_YK_M " + Symbol() + " " + periodText + "\n";
+        alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+        mailSubject = "[Short_YK_M] " + Symbol() + " " + periodText + " " + Time[0];
+        direction = "short_yk_m";
+      } else {
+        alertText = alertText + "Short_YK_S " + Symbol() + " " + periodText + "\n";
+        alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+        mailSubject = "[Short_YK_S] " + Symbol() + " " + periodText + " " + Time[0];
+        direction = "short_yk_s";
+      }
 
       if(maCurrentEma < maMiddleEma && maMiddleEma < maLongEma) {
         alertText = alertText + "①ALL EMA: Dead Cross" + "\n";
       }
       if(maMiddleEma > maCurrentEma) {
-        requirement++;
         alertText = alertText + "②EMA: Dead Cross" + "\n";
       }
       if(maCurrentSma > maCurrentEma) {
@@ -180,7 +196,6 @@ int OnCalculate(const int rates_total,
         alertText = alertText + "③Short MA: Dead Cross" + "\n";
       }
       if(maMiddleSma > maMiddleEma) {
-        requirement++;
         alertText = alertText + "④Middle MA: Dead Cross" + "\n";
       }
       if(maLongSma > maLongEma) {
@@ -190,29 +205,29 @@ int OnCalculate(const int rates_total,
   }
 
   // 条件を満たした数によってアラート
-  if(requirement >= AlertRequirementCount && lastAlert != Time[0] && lastAlertZigzag != zigzag2) {
+  if(StringLen( alertText ) > 0 && requirement >= AlertRequirementCount && lastAlert != Time[0] && lastAlertZigzag != zigzag2) {
     Alert(alertText);
     if(MailAlert) {
       mailBody = mailBody + alertText; // ロング or ショート、通貨ペア、時間足
       mailBody = mailBody + "Price: " + Close[0] + "\n";
       //mailBody = mailBody + "Zigzag: " + zigzag2 + ", " + zigzag3 + ", " + zigzag4 + "\n";
       lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
-      lengthPoints13 = MathAbs( zigzag1 - zigzag3 ) / Point();
       lengthPoints23 = MathAbs( zigzag2 - zigzag3 ) / Point();
-      lengthPoints34 = MathAbs( zigzag3 - zigzag4 ) / Point();
-      mailBody = mailBody + "FiboPoints: " + DoubleToStr( lengthPoints23, 0 ) + " / " + DoubleToStr( lengthPoints34, 0 ) + " [" + DoubleToStr( (lengthPoints23 / lengthPoints34) * 100, 1 ) + "%]\n";
-      mailBody = mailBody + "E3Percent: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints34, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints34) * 100, 1 ) + "%]\n";
+      lengthPointsC1 = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag1 ) / Point();
+      lengthPointsC2 = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ) / Point();
+      mailBody = mailBody + "FiboPts: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints23, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints23) * 100, 1 ) + "%]\n";
+      mailBody = mailBody + "E3Percent: " + DoubleToStr( lengthPointsC1, 0 ) + " / " + DoubleToStr( lengthPoints23, 0 ) + " [" + DoubleToStr( (lengthPointsC1 / lengthPoints23) * 100, 1 ) + "%]\n";
 
       mailBody = mailBody + "\n";
-      if(lengthPoints12 < lengthPoints23) {
-        mailBody = mailBody + "5RRPoints: " + DoubleToStr( lengthPoints13, 0 ) + " / " + DoubleToStr( lengthPoints12, 0 ) + " [" + DoubleToStr( (lengthPoints13 / lengthPoints12) * 100, 1 ) + "%]\n";
+      if(lengthPointsC1 < lengthPoints12) {
+        mailBody = mailBody + "5RRPts: " + DoubleToStr( lengthPointsC2, 0 ) + " / " + DoubleToStr( lengthPointsC1, 0 ) + " [" + DoubleToStr( (lengthPointsC2 / lengthPointsC1) * 100, 1 ) + "%]\n";
       } else {
-        mailBody = mailBody + "5RRPoints: None\n";
+        mailBody = mailBody + "5RRPts: None\n";
       }
-      if(lengthPoints12 < lengthPoints34) {
-        mailBody = mailBody + "3RRPoints: " + DoubleToStr( lengthPoints34 - lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints12, 0 ) + " [" + DoubleToStr((((lengthPoints34 - lengthPoints12) / lengthPoints12))*100, 1 ) + "%]\n";
+      if(lengthPointsC1 < lengthPoints23) {
+        mailBody = mailBody + "3RRPts: " + DoubleToStr( lengthPoints23 - lengthPointsC1, 0 ) + " / " + DoubleToStr( lengthPointsC1, 0 ) + " [" + DoubleToStr((((lengthPoints23 - lengthPointsC1) / lengthPointsC1))*100, 1 ) + "%]\n";
       } else {
-        mailBody = mailBody + "3RRPoints: None\n";
+        mailBody = mailBody + "3RRPts: None\n";
       }
 
       mailBody = mailBody + "\n";
