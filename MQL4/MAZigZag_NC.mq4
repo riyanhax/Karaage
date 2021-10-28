@@ -248,7 +248,7 @@ int OnCalculate(const int rates_total,
       alertText_nc_mwhs = alertText_nc_mwhs + "⑤Long MA: Dead Cross" + "\n";
     }
 
-    if(macd3 > macd5) {
+    if(macd3 < macd5) {
       macdRsi_nc_mwhs = macdRsi_nc_mwhs + "DivSW: Short";
     } else {
       macdRsi_nc_mwhs = macdRsi_nc_mwhs + "DivSW: Long";
@@ -342,13 +342,13 @@ int OnCalculate(const int rates_total,
       alertText_nc_mwhstr = alertText_nc_mwhstr + "⑤Long MA: Dead Cross" + "\n";
     }
 
-    if(macd2 < macd4) {
+    if(macd2 > macd4) {
       macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "Div: Long";
     } else {
       macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "Div: Short";
     }
     macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "\n";
-    if(macd7 < macd5) {
+    if(macd7 > macd5) {
       macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "DivSW: Short";
     } else {
       macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "DivSW: Long";
@@ -442,16 +442,16 @@ int OnCalculate(const int rates_total,
       alertText_nc_hstr = alertText_nc_hstr + "⑤Long MA: Dead Cross" + "\n";
     }
 
-    if(macd2 < macd4) {
-      macdRsi_nc_hstr = macdRsi_nc_hstr + "Div: Long";
+    if(macd2 > macd4) {
+      macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "Div: Long";
     } else {
-      macdRsi_nc_hstr = macdRsi_nc_hstr + "Div: Short";
+      macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "Div: Short";
     }
-    macdRsi_nc_hstr = macdRsi_nc_hstr + "\n";
-    if(macd7 < macd5) {
-      macdRsi_nc_hstr = macdRsi_nc_hstr + "DivSW: Short";
+    macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "\n";
+    if(macd7 > macd5) {
+      macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "DivSW: Short";
     } else {
-      macdRsi_nc_hstr = macdRsi_nc_hstr + "DivSW: Long";
+      macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "DivSW: Long";
     }
   }
   // ST_TR_NC
@@ -533,10 +533,10 @@ int OnCalculate(const int rates_total,
       alertText_trnc = alertText_trnc + "⑤Long MA: Dead Cross" + "\n";
     }
 
-    if(macd2  < macd4) {
-      macdRsi_trnc = macdRsi_trnc + "Div: Short";
-    } else {
+    if(macd2 > macd4) {
       macdRsi_trnc = macdRsi_trnc + "Div: Long";
+    } else {
+      macdRsi_trnc = macdRsi_trnc + "Div: Short";
     }
     //macdRsi = macdRsi + "RSI: " + DoubleToStr( rsi1, 2 ) + ", " + DoubleToStr( rsi2, 2 );
   }

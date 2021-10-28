@@ -250,13 +250,13 @@ int OnCalculate(const int rates_total,
       alertText_el = alertText_el + "⑤Long MA: Dead Cross" + "\n";
     }
 
-    if(macd2 > macd4) {
+    if(macd2 < macd4) {
       macdRsi = macdRsi + "DivSW: Short";
     } else {
       macdRsi = macdRsi + "DivSW: Long";
     }
     macdRsi = macdRsi + "\n";
-    if(macd5 < macd7) {
+    if(macd5 > macd7) {
       macdRsi = macdRsi + "Div: Long";
     } else {
       macdRsi = macdRsi + "Div: Short";
@@ -342,7 +342,7 @@ int OnCalculate(const int rates_total,
       alertText_mwhs = alertText_mwhs + "⑤Long MA: Dead Cross" + "\n";
     }
 
-    if(macd6 < macd4) {
+    if(macd6 > macd4) {
       macdRsi = macdRsi + "DivSW: Short";
     } else {
       macdRsi = macdRsi + "DivSW: Long";
@@ -433,13 +433,13 @@ int OnCalculate(const int rates_total,
       alertText_tr = alertText_tr + "⑤Long MA: Dead Cross" + "\n";
     }
 
-    if(macd5 > macd3) {
+    if(macd5 < macd3) {
       macdRsi = macdRsi + "Div: Long";
     } else {
       macdRsi = macdRsi + "Div: Short";
     }
     macdRsi = macdRsi + "\n";
-    if(macd8 < macd6) {
+    if(macd8 > macd6) {
       macdRsi = macdRsi + "DivSW: Short";
     } else {
       macdRsi = macdRsi + "DivSW: Long";
@@ -534,13 +534,13 @@ int OnCalculate(const int rates_total,
       alertText = alertText + "⑤Long MA: Dead Cross" + "\n";
     }
 
-    if(macd5 > macd3) {
+    if(macd5 < macd3) {
       macdRsi = macdRsi + "Div: Long";
     } else {
       macdRsi = macdRsi + "Div: Short";
     }
     macdRsi = macdRsi + "\n";
-    if(macd8 < macd6) {
+    if(macd8 > macd6) {
       macdRsi = macdRsi + "DivSW: Short";
     } else {
       macdRsi = macdRsi + "DivSW: Long";

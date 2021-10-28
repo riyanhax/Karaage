@@ -210,10 +210,10 @@ int OnCalculate(const int rates_total,
       alertText_tr = alertText_tr + "⑤Long MA: Dead Cross" + "\n";
     }
 
-    if(macd3 < macd5) {
-      macdRsi = macdRsi + "Div: Short";
-    } else {
+    if(macd3 > macd5) {
       macdRsi = macdRsi + "Div: Long";
+    } else {
+      macdRsi = macdRsi + "Div: Short";
     }
     //macdRsi = macdRsi + "RSI: " + DoubleToStr( rsi2, 2 ) + ", " + DoubleToStr( rsi3, 2 );
   }
