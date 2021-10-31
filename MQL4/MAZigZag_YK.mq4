@@ -402,10 +402,10 @@ int OnCalculate(const int rates_total,
     lastAlertZigzag_yk = zigzag2;
   }
   // YK_s
-  if(requirement_yks >= AlertRequirementCount && lastAlert_yks != Time[0] && lastAlertZigzag_yks != zigzag2) {
+  if(StringLen( alertText_yks ) > 0 && lastAlert_yks != Time[0] && lastAlertZigzag_yks != zigzag2) {
     Alert(alertText_yks);
     if(MailAlert) {
-      mailBody_yks = mailBody_yks + alertText_yk; // ロング or ショート、通貨ペア、時間足
+      mailBody_yks = mailBody_yks + alertText_yks; // ロング or ショート、通貨ペア、時間足
       mailBody_yks = mailBody_yks + "Price: " + Close[0] + "\n";
       lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
       lengthPoints13 = MathAbs( zigzag1 - zigzag3 ) / Point();
