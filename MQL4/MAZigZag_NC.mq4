@@ -1027,7 +1027,7 @@ int OnCalculate(const int rates_total,
       lengthPoints1c2 = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ) / Point();
       lengthPoints1c3 = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ) / Point();
       mailBody_nc_elmwhs = mailBody_nc_elmwhs + "NCFiboPts: " + DoubleToStr( lengthPoints12, 0 ) + " / " + DoubleToStr( lengthPoints23, 0 ) + " [" + DoubleToStr( (lengthPoints12 / lengthPoints23) * 100, 1 ) + "%]\n";
-      mailBody_nc_elmwhs = mailBody_nc_elmwhs + "ELFiboPts: " + DoubleToStr( lengthPoints36, 0 ) + " / " + DoubleToStr( lengthPoints36, 0 ) + " [" + DoubleToStr( (lengthPoints36 / lengthPoints36) * 100, 1 ) + "%]\n";
+      mailBody_nc_elmwhs = mailBody_nc_elmwhs + "ELFiboPts: " + DoubleToStr( lengthPoints36, 0 ) + " / " + DoubleToStr( lengthPoints67, 0 ) + " [" + DoubleToStr( (lengthPoints36 / lengthPoints67) * 100, 1 ) + "%]\n";
 
       mailBody_nc_elmwhs = mailBody_nc_elmwhs + "\n";
       mailBody_nc_elmwhs = mailBody_nc_elmwhs + "NCRRPts: " + DoubleToStr( lengthPoints1c2, 0 ) + " / " + DoubleToStr( lengthPoints1c3, 0 ) + " [" + DoubleToStr( (lengthPoints1c2 / lengthPoints1c3) * 100, 1 ) + "%]\n";
