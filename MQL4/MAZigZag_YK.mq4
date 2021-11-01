@@ -21,8 +21,8 @@ datetime lastAlert_yk = 0;
 double lastAlertZigzag_yk;
 datetime lastAlert_yks = 0;
 double lastAlertZigzag_yks;
-//datetime lastAlert = 0;
-//double lastAlertZigzag;
+datetime lastAlert = 0;
+double lastAlertZigzag;
 int period;
 string periodText;
 
@@ -106,13 +106,11 @@ int OnCalculate(const int rates_total,
   string mailSubject_yks;
   string mailBody_yks;
   string direction_yks;
-  /*
   int requirement;
   string alertText;
   string mailSubject;
   string mailBody;
   string direction;
-  */
   int handle;
   double lengthPoints12;
   double lengthPoints13;
@@ -120,6 +118,8 @@ int OnCalculate(const int rates_total,
   double lengthPoints34;
   double lengthPoints1C2;
   double lengthPoints1C3;
+  double lengthPointsC1;
+  double lengthPointsC2;
 
   // ZigZag取得
   cnt = 0;
@@ -330,13 +330,12 @@ int OnCalculate(const int rates_total,
     }
   }
   // YK_S、YK_M
-  /*
   requirement = 0;
   // Long
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3) {
     if(zigzag3 < maCurrentSma3 && zigzag3 < maCurrentEma3 && zigzag2 > maCurrentSma2 && zigzag2 > maCurrentEma2
       && zigzag1 < maCurrentSma && zigzag1 < maCurrentEma
-      && iClose( Symbol(), MACurrentPeriod, 1 ) > maCurrentSma && iClose( Symbol(), MACurrentPeriod, 1 ) > maCurrentEma) {
+      && iOpen( Symbol(), MACurrentPeriod, 1 ) < maCurrentEma && iClose( Symbol(), MACurrentPeriod, 1 ) > maCurrentEma) {
 
       if(zigzag3 < maMiddleSma3 && zigzag3 < maMiddleEma3 && zigzag2 > maMiddleSma2 && zigzag2 > maMiddleEma2
         && zigzag1 < maMiddleSma && zigzag1 < maMiddleEma) {
@@ -373,7 +372,7 @@ int OnCalculate(const int rates_total,
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3) {
     if(zigzag3 > maCurrentSma3 && zigzag3 > maCurrentEma3 && zigzag2 < maCurrentSma2 && zigzag2 < maCurrentEma2
       && zigzag1 > maCurrentSma && zigzag1 > maCurrentEma
-      && iClose( Symbol(), MACurrentPeriod, 1 ) < maCurrentSma && iClose( Symbol(), MACurrentPeriod, 1 ) < maCurrentEma) {
+      && iOpen( Symbol(), MACurrentPeriod, 1 ) > maCurrentEma && iClose( Symbol(), MACurrentPeriod, 1 ) < maCurrentEma) {
 
       if(zigzag3 > maMiddleSma3 && zigzag3 > maMiddleEma3 && zigzag2 < maMiddleSma2 && zigzag2 < maMiddleEma2
         && zigzag1 > maMiddleSma && zigzag1 > maMiddleEma) {
@@ -406,7 +405,6 @@ int OnCalculate(const int rates_total,
       }
     }
   }
-  */
 
   // 条件を満たした数によってアラート
   // YK
@@ -498,13 +496,11 @@ int OnCalculate(const int rates_total,
     lastAlertZigzag_yks = zigzag2;
   }
   // YK_S、YK_M
-  /*
-  if(StringLen( alertText ) > 0 && requirement >= AlertRequirementCount && lastAlert != Time[0] && lastAlertZigzag != zigzag2) {
+  if(StringLen( alertText ) > 0 && lastAlert != Time[0] && lastAlertZigzag != zigzag2) {
     Alert(alertText);
     if(MailAlert) {
       mailBody = mailBody + alertText; // ロング or ショート、通貨ペア、時間足
       mailBody = mailBody + "Price: " + Close[0] + "\n";
-      //mailBody = mailBody + "Zigzag: " + zigzag2 + ", " + zigzag3 + ", " + zigzag4 + "\n";
       lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
       lengthPoints23 = MathAbs( zigzag2 - zigzag3 ) / Point();
       lengthPointsC1 = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag1 ) / Point();
@@ -525,7 +521,6 @@ int OnCalculate(const int rates_total,
       }
 
       mailBody = mailBody + "\n";
-      //mailBody = mailBody + "MaxE3Points: " + DoubleToStr( lengthPoints34*1.618, 0 ) + " [" + DoubleToStr( lengthPoints34*1.618 - lengthPoints12, 0 ) + "]\n";
       mailBody = mailBody + "ShortMADis: " + DoubleToStr(((Close[0] - maCurrentEma) / maCurrentEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maCurrentEma)/Point, 0) + "]\n";
       mailBody = mailBody + "MiddleMADis: " + DoubleToStr(((Close[0] - maMiddleEma) / maMiddleEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maMiddleEma)/Point, 0) + "]\n";
       mailBody = mailBody + "LongMADis: " + DoubleToStr(((Close[0] - maLongEma) / maLongEma)*100, 3) + "%[" + DoubleToStr((Close[0] - maLongEma)/Point, 0) + "]\n";
@@ -542,7 +537,6 @@ int OnCalculate(const int rates_total,
     lastAlert = Time[0];
     lastAlertZigzag = zigzag2;
   }
-  */
 
   return(0);
 }
