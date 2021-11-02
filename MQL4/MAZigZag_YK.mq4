@@ -340,10 +340,18 @@ int OnCalculate(const int rates_total,
 
       if(zigzag3 < maMiddleSma3 && zigzag3 < maMiddleEma3 && zigzag2 > maMiddleSma2 && zigzag2 > maMiddleEma2
         && zigzag1 < maMiddleSma && zigzag1 < maMiddleEma) {
-        alertText = alertText + "Long_YK_M " + Symbol() + " " + periodText + "\n";
-        alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-        mailSubject = "[Long_YK_M] " + Symbol() + " " + periodText + " " + Time[0];
-        direction = "long_yk_m";
+        if(zigzag3 < maLongSma3 && zigzag3 < maLongEma3 && zigzag2 > maLongSma2 && zigzag2 > maLongEma2
+          && zigzag1 < maLongSma && zigzag1 < maLongEma) {
+          alertText = alertText + "Long_YK_L " + Symbol() + " " + periodText + "\n";
+          alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+          mailSubject = "[Long_YK_L] " + Symbol() + " " + periodText + " " + Time[0];
+          direction = "long_yk_l";
+        } else {
+          alertText = alertText + "Long_YK_M " + Symbol() + " " + periodText + "\n";
+          alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+          mailSubject = "[Long_YK_M] " + Symbol() + " " + periodText + " " + Time[0];
+          direction = "long_yk_m";
+        }
       } else {
         alertText = alertText + "Long_YK_S " + Symbol() + " " + periodText + "\n";
         alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
@@ -378,10 +386,18 @@ int OnCalculate(const int rates_total,
 
       if(zigzag3 > maMiddleSma3 && zigzag3 > maMiddleEma3 && zigzag2 < maMiddleSma2 && zigzag2 < maMiddleEma2
         && zigzag1 > maMiddleSma && zigzag1 > maMiddleEma) {
-        alertText = alertText + "Short_YK_M " + Symbol() + " " + periodText + "\n";
-        alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-        mailSubject = "[Short_YK_M] " + Symbol() + " " + periodText + " " + Time[0];
-        direction = "short_yk_m";
+        if(zigzag3 > maLongSma3 && zigzag3 > maLongEma3 && zigzag2 < maLongSma2 && zigzag2 < maLongEma2
+          && zigzag1 > maLongSma && zigzag1 > maLongEma) {
+          alertText = alertText + "Short_YK_L " + Symbol() + " " + periodText + "\n";
+          alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+          mailSubject = "[Short_YK_L] " + Symbol() + " " + periodText + " " + Time[0];
+          direction = "short_yk_l";
+        } else {
+          alertText = alertText + "Short_YK_M " + Symbol() + " " + periodText + "\n";
+          alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+          mailSubject = "[Short_YK_M] " + Symbol() + " " + periodText + " " + Time[0];
+          direction = "short_yk_m";
+        }
       } else {
         alertText = alertText + "Short_YK_S " + Symbol() + " " + periodText + "\n";
         alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
