@@ -17,8 +17,10 @@ input int AlertRequirementCount = 3;
 input bool MailAlert = true;
 input bool FileOutput = true;
 
+/*
 datetime lastAlert_yk = 0;
 double lastAlertZigzag_yk;
+*/
 datetime lastAlert_yks = 0;
 double lastAlertZigzag_yks;
 datetime lastAlert = 0;
@@ -96,11 +98,13 @@ int OnCalculate(const int rates_total,
   double maLongSma4;
   int i;
   int cnt;
+  /*
   int requirement_yk;
   string alertText_yk;
   string mailSubject_yk;
   string mailBody_yk;
   string direction_yk;
+  */
   int requirement_yks;
   string alertText_yks;
   string mailSubject_yks;
@@ -168,6 +172,7 @@ int OnCalculate(const int rates_total,
 
   // 条件
   // YK
+  /*
   requirement_yk = 0;
   // Long
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag2 >= zigzag4) {
@@ -229,12 +234,14 @@ int OnCalculate(const int rates_total,
       }
     }
   }
-  // YK_s
+  */
+  // YK_s、YK_m、YK_l
   requirement_yks = 0;
   // Long
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag2 >= zigzag4) {
     if(zigzag4 < maCurrentSma4 && zigzag4 < maCurrentEma4 && zigzag3 > maCurrentSma3 && zigzag3 > maCurrentEma3
       && zigzag2 < maCurrentSma2 && zigzag2 < maCurrentEma2 && zigzag1 > maCurrentEma
+      && iClose( Symbol(), MATimeframe, 1 ) > iOpen( Symbol(), MATimeframe, 1 ) // 陽線
       && iClose( Symbol(), MATimeframe, 1 ) > maCurrentEma && iClose( Symbol(), MATimeframe, 1 ) > maCurrentSma) {
 
       if(zigzag4 < maMiddleSma4 && zigzag4 < maMiddleEma4 && zigzag3 > maMiddleSma3 && zigzag3 > maMiddleEma3
@@ -284,6 +291,7 @@ int OnCalculate(const int rates_total,
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag2 <= zigzag4) {
     if(zigzag4 > maCurrentSma4 && zigzag4 > maCurrentEma4 && zigzag3 < maCurrentSma3 && zigzag3 < maCurrentEma3
       && zigzag2 > maCurrentSma2 && zigzag2 > maCurrentEma2 && zigzag1 < maCurrentEma
+      && iClose( Symbol(), MATimeframe, 1 ) < iOpen( Symbol(), MATimeframe, 1 ) // 陰線
       && iClose( Symbol(), MATimeframe, 1 ) < maCurrentEma && iClose( Symbol(), MATimeframe, 1 ) < maCurrentSma) {
 
       if(zigzag4 > maMiddleSma4 && zigzag4 > maMiddleEma4 && zigzag3 < maMiddleSma3 && zigzag3 < maMiddleEma3
@@ -329,13 +337,14 @@ int OnCalculate(const int rates_total,
       }
     }
   }
-  // YK_S、YK_M
+  // YK_S、YK_M、YK_L
   requirement = 0;
   // Long
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3
     && zigzag1 >= zigzag3) {
     if(zigzag3 < maCurrentSma3 && zigzag3 < maCurrentEma3 && zigzag2 > maCurrentSma2 && zigzag2 > maCurrentEma2
       && zigzag1 < maCurrentSma && zigzag1 < maCurrentEma
+      && iClose( Symbol(), MATimeframe, 1 ) > iOpen( Symbol(), MATimeframe, 1 ) // 陽線
       && iClose( Symbol(), MATimeframe, 1 ) > maCurrentSma && iClose( Symbol(), MATimeframe, 1 ) > maCurrentEma) {
 
       if(zigzag3 < maMiddleSma3 && zigzag3 < maMiddleEma3 && zigzag2 > maMiddleSma2 && zigzag2 > maMiddleEma2
@@ -382,6 +391,7 @@ int OnCalculate(const int rates_total,
     && zigzag1 <= zigzag3) {
     if(zigzag3 > maCurrentSma3 && zigzag3 > maCurrentEma3 && zigzag2 < maCurrentSma2 && zigzag2 < maCurrentEma2
       && zigzag1 > maCurrentSma && zigzag1 > maCurrentEma
+      && iClose( Symbol(), MATimeframe, 1 ) < iOpen( Symbol(), MATimeframe, 1 ) // 陰線
       && iClose( Symbol(), MATimeframe, 1 ) < maCurrentSma && iClose( Symbol(), MATimeframe, 1 ) < maCurrentEma) {
 
       if(zigzag3 > maMiddleSma3 && zigzag3 > maMiddleEma3 && zigzag2 < maMiddleSma2 && zigzag2 < maMiddleEma2
@@ -426,6 +436,7 @@ int OnCalculate(const int rates_total,
 
   // 条件を満たした数によってアラート
   // YK
+  /*
   if(requirement_yk >= AlertRequirementCount && lastAlert_yk != Time[0] && lastAlertZigzag_yk != zigzag2) {
     Alert(alertText_yk);
     if(MailAlert) {
@@ -469,6 +480,7 @@ int OnCalculate(const int rates_total,
     lastAlert_yk = Time[0];
     lastAlertZigzag_yk = zigzag2;
   }
+  */
   // YK_s
   if(StringLen( alertText_yks ) > 0 && lastAlert_yks != Time[0] && lastAlertZigzag_yks != zigzag2) {
     Alert(alertText_yks);
