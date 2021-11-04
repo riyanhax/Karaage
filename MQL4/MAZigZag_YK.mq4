@@ -240,9 +240,10 @@ int OnCalculate(const int rates_total,
   // Long
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag2 >= zigzag4) {
     if(zigzag4 < maCurrentSma4 && zigzag4 < maCurrentEma4 && zigzag3 > maCurrentSma3 && zigzag3 > maCurrentEma3
-      && zigzag2 < maCurrentSma2 && zigzag2 < maCurrentEma2 && zigzag1 > maCurrentEma
+      && zigzag2 < maCurrentSma2 && zigzag2 < maCurrentEma2 && zigzag1 > maCurrentEma && zigzag1 > maCurrentSma
       && iClose( Symbol(), MATimeframe, 1 ) > iOpen( Symbol(), MATimeframe, 1 ) // 陽線
-      && iClose( Symbol(), MATimeframe, 1 ) > maCurrentEma && iClose( Symbol(), MATimeframe, 1 ) > maCurrentSma) {
+      && iClose( Symbol(), MATimeframe, 1 ) > maCurrentEma && iClose( Symbol(), MATimeframe, 1 ) > maCurrentSma
+      && zigzag1 != iHigh( Symbol(), MATimeframe, 0 ) ) {
 
       if(zigzag4 < maMiddleSma4 && zigzag4 < maMiddleEma4 && zigzag3 > maMiddleSma3 && zigzag3 > maMiddleEma3
         && zigzag2 < maMiddleSma2 && zigzag2 < maMiddleEma2 && zigzag1 > maMiddleSma && zigzag1 > maMiddleEma) {
@@ -290,9 +291,10 @@ int OnCalculate(const int rates_total,
   // Short
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag2 <= zigzag4) {
     if(zigzag4 > maCurrentSma4 && zigzag4 > maCurrentEma4 && zigzag3 < maCurrentSma3 && zigzag3 < maCurrentEma3
-      && zigzag2 > maCurrentSma2 && zigzag2 > maCurrentEma2 && zigzag1 < maCurrentEma
+      && zigzag2 > maCurrentSma2 && zigzag2 > maCurrentEma2 && zigzag1 < maCurrentEma && zigzag1 < maCurrentSma
       && iClose( Symbol(), MATimeframe, 1 ) < iOpen( Symbol(), MATimeframe, 1 ) // 陰線
-      && iClose( Symbol(), MATimeframe, 1 ) < maCurrentEma && iClose( Symbol(), MATimeframe, 1 ) < maCurrentSma) {
+      && iClose( Symbol(), MATimeframe, 1 ) < maCurrentEma && iClose( Symbol(), MATimeframe, 1 ) < maCurrentSma
+      && zigzag1 != iLow( Symbol(), MATimeframe, 0 ) ) {
 
       if(zigzag4 > maMiddleSma4 && zigzag4 > maMiddleEma4 && zigzag3 < maMiddleSma3 && zigzag3 < maMiddleEma3
         && zigzag2 > maMiddleSma2 && zigzag2 > maMiddleEma2 && zigzag1 < maMiddleSma && zigzag1 < maMiddleEma) {
@@ -345,7 +347,8 @@ int OnCalculate(const int rates_total,
     if(zigzag3 < maCurrentSma3 && zigzag3 < maCurrentEma3 && zigzag2 > maCurrentSma2 && zigzag2 > maCurrentEma2
       && zigzag1 < maCurrentSma && zigzag1 < maCurrentEma
       && iClose( Symbol(), MATimeframe, 1 ) > iOpen( Symbol(), MATimeframe, 1 ) // 陽線
-      && iClose( Symbol(), MATimeframe, 1 ) > maCurrentSma && iClose( Symbol(), MATimeframe, 1 ) > maCurrentEma) {
+      && iClose( Symbol(), MATimeframe, 1 ) > maCurrentSma && iClose( Symbol(), MATimeframe, 1 ) > maCurrentEma
+      && zigzag1 != iLow( Symbol(), MATimeframe, 0 ) ) {
 
       if(zigzag3 < maMiddleSma3 && zigzag3 < maMiddleEma3 && zigzag2 > maMiddleSma2 && zigzag2 > maMiddleEma2
         && zigzag1 < maMiddleSma && zigzag1 < maMiddleEma) {
@@ -392,7 +395,8 @@ int OnCalculate(const int rates_total,
     if(zigzag3 > maCurrentSma3 && zigzag3 > maCurrentEma3 && zigzag2 < maCurrentSma2 && zigzag2 < maCurrentEma2
       && zigzag1 > maCurrentSma && zigzag1 > maCurrentEma
       && iClose( Symbol(), MATimeframe, 1 ) < iOpen( Symbol(), MATimeframe, 1 ) // 陰線
-      && iClose( Symbol(), MATimeframe, 1 ) < maCurrentSma && iClose( Symbol(), MATimeframe, 1 ) < maCurrentEma) {
+      && iClose( Symbol(), MATimeframe, 1 ) < maCurrentSma && iClose( Symbol(), MATimeframe, 1 ) < maCurrentEma
+      && zigzag1 != iHigh( Symbol(), MATimeframe, 0 ) ) {
 
       if(zigzag3 > maMiddleSma3 && zigzag3 > maMiddleEma3 && zigzag2 < maMiddleSma2 && zigzag2 < maMiddleEma2
         && zigzag1 > maMiddleSma && zigzag1 > maMiddleEma) {
