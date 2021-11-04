@@ -301,22 +301,22 @@ int OnCalculate(const int rates_total,
 
         if(zigzag4 > maLongSma4 && zigzag4 > maLongEma4 && zigzag3 < maLongSma3 && zigzag3 < maLongEma3
           && zigzag2 > maLongSma2 && zigzag2 > maLongEma2 && zigzag1 < maLongSma && zigzag1 < maLongEma) {
-          alertText_yks = alertText_yks + "Long_YK_l " + Symbol() + " " + periodText + "\n";
+          alertText_yks = alertText_yks + "Short_YK_l " + Symbol() + " " + periodText + "\n";
           alertText_yks = alertText_yks + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-          mailSubject_yks = "[Long_YK_l] " + Symbol() + " " + periodText + " " + Time[0];
-          direction_yks = "long_yk_l";
+          mailSubject_yks = "[Short_YK_l] " + Symbol() + " " + periodText + " " + Time[0];
+          direction_yks = "short_yk_l";
         } else {
-          alertText_yks = alertText_yks + "Long_YK_m " + Symbol() + " " + periodText + "\n";
+          alertText_yks = alertText_yks + "Short_YK_m " + Symbol() + " " + periodText + "\n";
           alertText_yks = alertText_yks + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-          mailSubject_yks = "[Long_YK_m] " + Symbol() + " " + periodText + " " + Time[0];
-          direction_yks = "long_yk_m";
+          mailSubject_yks = "[Short_YK_m] " + Symbol() + " " + periodText + " " + Time[0];
+          direction_yks = "short_yk_m";
         }
 
       } else {
-        alertText_yks = alertText_yks + "Long_YK_s " + Symbol() + " " + periodText + "\n";
+        alertText_yks = alertText_yks + "Short_YK_s " + Symbol() + " " + periodText + "\n";
         alertText_yks = alertText_yks + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-        mailSubject_yks = "[Long_YK_s] " + Symbol() + " " + periodText + " " + Time[0];
-        direction_yks = "long_yk_s";
+        mailSubject_yks = "[Short_YK_s] " + Symbol() + " " + periodText + " " + Time[0];
+        direction_yks = "short_yk_s";
       }
 
       if(maCurrentEma < maMiddleEma && maMiddleEma < maLongEma) {
