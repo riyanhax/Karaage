@@ -136,6 +136,8 @@ void OnTick() {
   int ticket;
   double sl;
   double tp;
+  double sl2;
+  double tp2;
   double calcTpPerSl;
 
   // ZigZag取得
@@ -276,8 +278,11 @@ void OnTick() {
         sl = Ask - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ); // 1c3
         tp = Ask + MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ); // 1c2
         calcTpPerSl = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 );
+        sl2 = Ask - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ); // 1c3
+        tp2 = Ask + MathAbs( zigzag2 - zigzag5 ); // 25
         if(calcTpPerSl >= TPPerSL) {
           ticket = OrderSend( Symbol(), OP_BUY, Lots, Ask, 3, sl, tp, "", Magic, 0, Blue );
+          ticket = OrderSend( Symbol(), OP_BUY, Lots, Ask, 3, sl2, tp2, "", Magic, 0, Blue );
           if(ticket < 0) {
             if(lastError_trnc != Time[0]) {
               Print( "ERROR Buy ST_TR_NC" );
@@ -296,11 +301,14 @@ void OnTick() {
           }
         }
       } else if(StringFind( alertText_trnc, "Short_ST_TR_NC", 0 ) >= 0) {
-        sl = Bid + MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 );
-        tp = Bid - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 );
+        sl = Bid + MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ); // 1c3
+        tp = Bid - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ); // 1c2
+        sl2 = Bid + MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ); // 1c3
+        tp2 = Bid - MathAbs( zigzag2 - zigzag5 ); // 25
         calcTpPerSl = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 );
         if(calcTpPerSl >= TPPerSL) {
           ticket = OrderSend( Symbol(), OP_SELL, Lots, Bid, 3, sl, tp, "", Magic, 0, Red );
+          ticket = OrderSend( Symbol(), OP_SELL, Lots, Bid, 3, sl2, tp2, "", Magic, 0, Red );
           if(ticket < 0) {
             if(lastError_trnc != Time[0]) {
               Print( "ERROR Sell ST_TR_NC" );
