@@ -16,6 +16,8 @@ extern bool Entry = false;
 extern double Lots = 0.01;
 extern int Magic = 123;
 extern double TPPerSL = 1.0;
+extern double FiboPercentMin = 31.8;
+extern double FiboPercentMax = 68.2;
 
 datetime lastAlert_nc_hstr = 0;
 double lastAlertZigzag_nc_hstr;
@@ -140,6 +142,9 @@ void OnTick() {
   double sl2;
   double tp2;
   double calcTp2PerSl2;
+  double fiboPercent;
+  double lengthPoints12;
+  double lengthPoints23;
 
   // ZigZag取得
   cnt = 0;
@@ -275,99 +280,105 @@ void OnTick() {
   // ST_TR_NC
   if(StringLen(alertText_trnc) > 0 && requirement_trnc >= EntryRequirementCount && lastAlert_trnc != Time[0] && lastAlertZigzag_trnc != zigzag2) {
     if(Entry) {
-      if(StringFind( alertText_trnc, "Long_ST_TR_NC", 0 ) >= 0) {
-        sl = Ask - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ); // 1c3
-        tp = Ask + MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ); // 1c2
-        calcTpPerSl = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 );
-        if(calcTpPerSl >= TPPerSL) {
-          ticket = OrderSend( Symbol(), OP_BUY, Lots, Ask, 3, sl, tp, "", Magic, 0, Blue );
-          if(ticket < 0) {
-            if(lastError_trnc != Time[0]) {
-              Print( "ERROR Buy_1 ST_TR_NC" );
-              Print( GetLastError() );
-              lastError_trnc = Time[0];
+      lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
+      lengthPoints23 = MathAbs( zigzag2 - zigzag3 ) / Point();
+      fiboPercent = DoubleToStr( (lengthPoints12 / lengthPoints23) * 100, 1 );
+
+      if(fiboPercent >= FiboPercentMin && fiboPercent <= FiboPercentMax) {
+        if(StringFind( alertText_trnc, "Long_ST_TR_NC", 0 ) >= 0) {
+          sl = Ask - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ); // 1c3
+          tp = Ask + MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ); // 1c2
+          calcTpPerSl = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 );
+          if(calcTpPerSl >= TPPerSL) {
+            ticket = OrderSend( Symbol(), OP_BUY, Lots, Ask, 3, sl, tp, "", Magic, 0, Blue );
+            if(ticket < 0) {
+              if(lastError_trnc != Time[0]) {
+                Print( "ERROR Buy_1 ST_TR_NC" );
+                Print( GetLastError() );
+                lastError_trnc = Time[0];
+              }
+            } else {
+              Print( "Buy_1 ST_TR_NC [" + calcTpPerSl + "]");
+              lastAlert_trnc = Time[0];
+              lastAlertZigzag_trnc = zigzag2;
             }
           } else {
-            Print( "Buy_1 ST_TR_NC [" + calcTpPerSl + "]");
-            lastAlert_trnc = Time[0];
-            lastAlertZigzag_trnc = zigzag2;
-          }
-        } else {
-          if(lastError_trnc != Time[0]) {
-            Print("Skip Buy_1 [" + calcTpPerSl + "]");
-            lastError_trnc = Time[0];
-          }
-        }
-
-        sl2 = Ask - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ); // 1c3
-        tp2 = Ask + MathAbs( zigzag2 - zigzag5 ); // 25
-        calcTp2PerSl2 = MathAbs( zigzag2 - zigzag5 ) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 );
-        if(calcTp2PerSl2 >= TPPerSL) {
-          ticket = OrderSend( Symbol(), OP_BUY, Lots, Ask, 3, sl2, tp2, "", Magic, 0, Blue );
-          if(ticket < 0) {
             if(lastError_trnc != Time[0]) {
-              Print( "ERROR Buy\2 ST_TR_NC" );
-              Print( GetLastError() );
+              Print("Skip Buy_1 [" + calcTpPerSl + "]");
               lastError_trnc = Time[0];
             }
-          } else {
-            Print( "Buy_2 ST_TR_NC [" + calcTp2PerSl2 + "]");
-            lastAlert_trnc = Time[0];
-            lastAlertZigzag_trnc = zigzag2;
           }
-        } else {
-          if(lastError_trnc != Time[0]) {
-            Print("Skip Buy_2 [" + calcTp2PerSl2 + "]");
-            lastError_trnc = Time[0];
-          }
-        }
-      } else if(StringFind( alertText_trnc, "Short_ST_TR_NC", 0 ) >= 0) {
-        sl = Bid + MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ); // 1c3
-        tp = Bid - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ); // 1c2
-        calcTpPerSl = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 );
-        if(calcTpPerSl >= TPPerSL) {
-          ticket = OrderSend( Symbol(), OP_SELL, Lots, Bid, 3, sl, tp, "", Magic, 0, Red );
-          if(ticket < 0) {
-            if(lastError_trnc != Time[0]) {
-              Print( "ERROR Sell_1 ST_TR_NC" );
-              Print( GetLastError() );
-              lastError_trnc = Time[0];
+
+          sl2 = Ask - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ); // 1c3
+          tp2 = Ask + MathAbs( zigzag2 - zigzag5 ); // 25
+          calcTp2PerSl2 = MathAbs( zigzag2 - zigzag5 ) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 );
+          if(calcTp2PerSl2 >= TPPerSL) {
+            ticket = OrderSend( Symbol(), OP_BUY, Lots, Ask, 3, sl2, tp2, "", Magic, 0, Blue );
+            if(ticket < 0) {
+              if(lastError_trnc != Time[0]) {
+                Print( "ERROR Buy\2 ST_TR_NC" );
+                Print( GetLastError() );
+                lastError_trnc = Time[0];
+              }
+            } else {
+              Print( "Buy_2 ST_TR_NC [" + calcTp2PerSl2 + "]");
+              lastAlert_trnc = Time[0];
+              lastAlertZigzag_trnc = zigzag2;
             }
           } else {
-            Print( "Sell_1 ST_TR_NC [" + calcTpPerSl + "]");
-            lastAlert_trnc = Time[0];
-            lastAlertZigzag_trnc = zigzag2;
-          }
-        } else {
-          if(lastError_trnc != Time[0]) {
-            Print("Skip Sell_1 [" + calcTpPerSl + "]");
-            lastError_trnc = Time[0];
-          }
-
-        }
-
-        sl2 = Bid + MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ); // 1c3
-        tp2 = Bid - MathAbs( zigzag2 - zigzag5 ); // 25
-        calcTp2PerSl2 = MathAbs( zigzag2 - zigzag5 ) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 );
-        if(calcTp2PerSl2 >= TPPerSL) {
-          ticket = OrderSend( Symbol(), OP_SELL, Lots, Bid, 3, sl2, tp2, "", Magic, 0, Red );
-          if(ticket < 0) {
             if(lastError_trnc != Time[0]) {
-              Print( "ERROR Sell_2 ST_TR_NC" );
-              Print( GetLastError() );
+              Print("Skip Buy_2 [" + calcTp2PerSl2 + "]");
               lastError_trnc = Time[0];
             }
-          } else {
-            Print( "Sell_2 ST_TR_NC [" + calcTp2PerSl2 + "]");
-            lastAlert_trnc = Time[0];
-            lastAlertZigzag_trnc = zigzag2;
           }
-        } else {
-          if(lastError_trnc != Time[0]) {
-            Print("Skip Sell_2 [" + calcTp2PerSl2 + "]");
-            lastError_trnc = Time[0];
+        } else if(StringFind( alertText_trnc, "Short_ST_TR_NC", 0 ) >= 0) {
+          sl = Bid + MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ); // 1c3
+          tp = Bid - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ); // 1c2
+          calcTpPerSl = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 );
+          if(calcTpPerSl >= TPPerSL) {
+            ticket = OrderSend( Symbol(), OP_SELL, Lots, Bid, 3, sl, tp, "", Magic, 0, Red );
+            if(ticket < 0) {
+              if(lastError_trnc != Time[0]) {
+                Print( "ERROR Sell_1 ST_TR_NC" );
+                Print( GetLastError() );
+                lastError_trnc = Time[0];
+              }
+            } else {
+              Print( "Sell_1 ST_TR_NC [" + calcTpPerSl + "]");
+              lastAlert_trnc = Time[0];
+              lastAlertZigzag_trnc = zigzag2;
+            }
+          } else {
+            if(lastError_trnc != Time[0]) {
+              Print("Skip Sell_1 [" + calcTpPerSl + "]");
+              lastError_trnc = Time[0];
+            }
+
           }
 
+          sl2 = Bid + MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ); // 1c3
+          tp2 = Bid - MathAbs( zigzag2 - zigzag5 ); // 25
+          calcTp2PerSl2 = MathAbs( zigzag2 - zigzag5 ) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 );
+          if(calcTp2PerSl2 >= TPPerSL) {
+            ticket = OrderSend( Symbol(), OP_SELL, Lots, Bid, 3, sl2, tp2, "", Magic, 0, Red );
+            if(ticket < 0) {
+              if(lastError_trnc != Time[0]) {
+                Print( "ERROR Sell_2 ST_TR_NC" );
+                Print( GetLastError() );
+                lastError_trnc = Time[0];
+              }
+            } else {
+              Print( "Sell_2 ST_TR_NC [" + calcTp2PerSl2 + "]");
+              lastAlert_trnc = Time[0];
+              lastAlertZigzag_trnc = zigzag2;
+            }
+          } else {
+            if(lastError_trnc != Time[0]) {
+              Print("Skip Sell_2 [" + calcTp2PerSl2 + "]");
+              lastError_trnc = Time[0];
+            }
+
+          }
         }
       }
     }
