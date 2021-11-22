@@ -311,8 +311,7 @@ void OnTick() {
 
           sl2 = Ask - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ); // 1c3
           tp2 = Ask + MathAbs( zigzag2 - zigzag5 ); // 25
-          calcTp2PerSl2 = MathAbs( zigzag2 - zigzag5 ) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 );
-          if(calcTp2PerSl2 >= TPPerSL) {
+          if(calcTpPerSl >= TPPerSL) { // 条件はsl1、tp1と同じ
             ticket = OrderSend( Symbol(), OP_BUY, Lots, Ask, 3, sl2, tp2, "", Magic, 0, Blue );
             if(ticket < 0) {
               if(lastError_trnc != Time[0]) {
@@ -359,7 +358,7 @@ void OnTick() {
           sl2 = Bid + MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ); // 1c3
           tp2 = Bid - MathAbs( zigzag2 - zigzag5 ); // 25
           calcTp2PerSl2 = MathAbs( zigzag2 - zigzag5 ) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 );
-          if(calcTp2PerSl2 >= TPPerSL) {
+          if(calcTpPerSl >= TPPerSL) { // 条件はsl1、tp1と同じ
             ticket = OrderSend( Symbol(), OP_SELL, Lots, Bid, 3, sl2, tp2, "", Magic, 0, Red );
             if(ticket < 0) {
               if(lastError_trnc != Time[0]) {
