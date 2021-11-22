@@ -304,7 +304,7 @@ void OnTick() {
             }
           } else {
             if(lastError_trnc != Time[0]) {
-              Print("Skip Buy_1 [" + calcTpPerSl + "]");
+              Print("Skip Buy_1 ST_TR_NC [" + calcTpPerSl + "]");
               lastError_trnc = Time[0];
             }
           }
@@ -315,7 +315,7 @@ void OnTick() {
             ticket = OrderSend( Symbol(), OP_BUY, Lots, Ask, 3, sl2, tp2, "", Magic, 0, Blue );
             if(ticket < 0) {
               if(lastError_trnc != Time[0]) {
-                Print( "ERROR Buy\2 ST_TR_NC" );
+                Print( "ERROR Buy_2 ST_TR_NC" );
                 Print( GetLastError() );
                 lastError_trnc = Time[0];
               }
@@ -326,7 +326,7 @@ void OnTick() {
             }
           } else {
             if(lastError_trnc != Time[0]) {
-              Print("Skip Buy_2 [" + calcTp2PerSl2 + "]");
+              Print("Skip Buy_2 ST_TR_NC [" + calcTp2PerSl2 + "]");
               lastError_trnc = Time[0];
             }
           }
@@ -349,7 +349,7 @@ void OnTick() {
             }
           } else {
             if(lastError_trnc != Time[0]) {
-              Print("Skip Sell_1 [" + calcTpPerSl + "]");
+              Print("Skip Sell_1 ST_TR_NC [" + calcTpPerSl + "]");
               lastError_trnc = Time[0];
             }
 
@@ -357,7 +357,6 @@ void OnTick() {
 
           sl2 = Bid + MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ); // 1c3
           tp2 = Bid - MathAbs( zigzag2 - zigzag5 ); // 25
-          calcTp2PerSl2 = MathAbs( zigzag2 - zigzag5 ) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 );
           if(calcTpPerSl >= TPPerSL) { // 条件はsl1、tp1と同じ
             ticket = OrderSend( Symbol(), OP_SELL, Lots, Bid, 3, sl2, tp2, "", Magic, 0, Red );
             if(ticket < 0) {
@@ -373,7 +372,7 @@ void OnTick() {
             }
           } else {
             if(lastError_trnc != Time[0]) {
-              Print("Skip Sell_2 [" + calcTp2PerSl2 + "]");
+              Print("Skip Sell_2 ST_TR_NC [" + calcTp2PerSl2 + "]");
               lastError_trnc = Time[0];
             }
 
