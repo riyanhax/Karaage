@@ -260,15 +260,15 @@ void OnTick() {
   // YK_S、YK_M、YK_L
   if(StringLen( alertText ) > 0 && lastAlert != Time[0] && lastAlertZigzag != zigzag2) {
     if(Entry) {
+      lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
       lengthPoints23 = MathAbs( zigzag2 - zigzag3 ) / Point();
-      lengthPoints34 = MathAbs( zigzag3 - zigzag4 ) / Point();
-      fiboPercent = DoubleToStr( (lengthPoints23 / lengthPoints34) * 100, 1 );
+      fiboPercent = (lengthPoints12 / lengthPoints23) * 100;
 
       if(fiboPercent >= FiboPercentMin && fiboPercent <= FiboPercentMax) {
         if(StringFind( alertText, "Long_YK", 0 ) >= 0) {
-          sl = Ask - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ); // 1c2
-          tp = Ask + MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ); // 1c3
-          calcTpPerSl = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 );
+          sl = Ask - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag1 ); // C1
+          tp = Ask + MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ); // C2
+          calcTpPerSl = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag1 );
           if(calcTpPerSl >= TPPerSL) {
             ticket = OrderSend( Symbol(), OP_BUY, Lots, Ask, 3, sl, tp, "", Magic, 0, Blue );
             if(ticket < 0) {
@@ -289,9 +289,9 @@ void OnTick() {
             }
           }
 
-          sl2 = Ask - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ); // 1c2
-          tp2 = Ask + MathAbs(MathAbs( zigzag3 - zigzag4 ) - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 )); // 34-1c2
-          calcTp2PerSl2 = MathAbs(MathAbs( zigzag3 - zigzag4 ) - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 )) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 );
+          sl2 = Ask - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag1 ); // C1
+          tp2 = Ask + MathAbs(MathAbs( zigzag2 - zigzag3 ) - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag1 )); // 23-C1
+          calcTp2PerSl2 = MathAbs(MathAbs( zigzag2 - zigzag3 ) - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag1 )) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag1 );
           if(calcTp2PerSl2 >= TPPerSL) {
             ticket = OrderSend( Symbol(), OP_BUY, Lots, Ask, 3, sl2, tp2, "", Magic, 0, Blue );
             if(ticket < 0) {
@@ -312,9 +312,9 @@ void OnTick() {
             }
           }
         } else if(StringFind( alertText, "Short_YK", 0 ) >= 0) {
-          sl = Bid + MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ); // 1c2
-          tp = Bid - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ); // 1c3
-          calcTpPerSl = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 );
+          sl = Bid + MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag1 ); // C1
+          tp = Bid - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ); // C2
+          calcTpPerSl = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag1 );
           if(calcTpPerSl >= TPPerSL) {
             ticket = OrderSend( Symbol(), OP_SELL, Lots, Bid, 3, sl, tp, "", Magic, 0, Red );
             if(ticket < 0) {
@@ -333,12 +333,10 @@ void OnTick() {
               Print("Skip Sell_1 YK [" + calcTpPerSl + "]");
               lastError = Time[0];
             }
-
           }
-
-          sl2 = Bid + MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ); // 1c2
-          tp2 = Bid - MathAbs(MathAbs( zigzag3 - zigzag4 ) - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 )); // 34-1c2
-          calcTp2PerSl2 = MathAbs(MathAbs( zigzag3 - zigzag4 ) - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 )) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 );
+          sl2 = Bid + MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag1 ); // C1
+          tp2 = Bid - MathAbs(MathAbs( zigzag2 - zigzag3 ) - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag1 )); // 23-C1
+          calcTp2PerSl2 = MathAbs(MathAbs( zigzag2 - zigzag3 ) - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag1 )) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag1 );
           if(calcTp2PerSl2 >= TPPerSL) {
             ticket = OrderSend( Symbol(), OP_SELL, Lots, Bid, 3, sl2, tp2, "", Magic, 0, Red );
             if(ticket < 0) {
@@ -357,7 +355,6 @@ void OnTick() {
               Print("Skip Sell_2 YK [" + calcTp2PerSl2 + "]");
               lastError = Time[0];
             }
-
           }
         }
       }
