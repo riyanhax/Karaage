@@ -282,7 +282,7 @@ void OnTick() {
     if(Entry) {
       lengthPoints12 = MathAbs( zigzag1 - zigzag2 ) / Point();
       lengthPoints23 = MathAbs( zigzag2 - zigzag3 ) / Point();
-      fiboPercent = DoubleToStr( (lengthPoints12 / lengthPoints23) * 100, 1 );
+      fiboPercent = (lengthPoints12 / lengthPoints23) * 100;
 
       if(fiboPercent >= FiboPercentMin && fiboPercent <= FiboPercentMax) {
         if(StringFind( alertText_trnc, "Long_ST_TR_NC", 0 ) >= 0) {
