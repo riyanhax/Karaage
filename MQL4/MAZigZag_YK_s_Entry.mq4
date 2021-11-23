@@ -294,6 +294,7 @@ void OnTick() {
               lastError_yks = Time[0];
             }
           }
+/*
           sl2 = Ask - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ); // 1c2
           tp2 = Ask + MathAbs(MathAbs( zigzag3 - zigzag4 ) - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 )); // 34-1c2
           calcTp2PerSl2 = MathAbs(MathAbs( zigzag3 - zigzag4 ) - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 )) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 );
@@ -316,10 +317,11 @@ void OnTick() {
               lastError_yks = Time[0];
             }
           }
+*/
         } else if(StringFind( alertText_yks, "Short_YK", 0 ) >= 0) {
           sl = Bid + MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ); // 1c2
           tp = Bid - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ); // 1c3
-          calcTpPerSl = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 );
+          calcTpPerSl = MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag3 ) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 );
           if(calcTpPerSl >= TPPerSL) {
             ticket = OrderSend( Symbol(), OP_SELL, Lots, Bid, 3, sl, tp, "", Magic, 0, Red );
             if(ticket < 0) {
@@ -340,6 +342,7 @@ void OnTick() {
             }
 
           }
+          /*
           sl2 = Bid + MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 ); // 1c2
           tp2 = Bid - MathAbs(MathAbs( zigzag3 - zigzag4 ) - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 )); // 34-1c2
           calcTp2PerSl2 = MathAbs(MathAbs( zigzag3 - zigzag4 ) - MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 )) / MathAbs( iClose(Symbol(), ZigzagTimeframe, 1) - zigzag2 );
@@ -362,6 +365,7 @@ void OnTick() {
               lastError_yks = Time[0];
             }
           }
+*/
         }
       }
     }
