@@ -340,6 +340,7 @@ int OnCalculate(const int rates_total,
     }
   }
   // YK_S、YK_M、YK_L
+  /*
   requirement = 0;
   // Long
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3
@@ -437,6 +438,7 @@ int OnCalculate(const int rates_total,
       }
     }
   }
+  */
 
   // 条件を満たした数によってアラート
   // YK
@@ -530,6 +532,7 @@ int OnCalculate(const int rates_total,
     lastAlertZigzag_yks = zigzag2;
   }
   // YK_S、YK_M
+  /*
   if(StringLen( alertText ) > 0 && lastAlert != Time[0] && lastAlertZigzag != zigzag2) {
     Alert(alertText);
     if(MailAlert) {
@@ -571,6 +574,7 @@ int OnCalculate(const int rates_total,
     lastAlert = Time[0];
     lastAlertZigzag = zigzag2;
   }
+  */
 
   return(0);
 }

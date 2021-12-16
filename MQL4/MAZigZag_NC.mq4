@@ -204,10 +204,10 @@ int OnCalculate(const int rates_total,
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag5 < zigzag6
       && zigzag2 >= zigzag4 && zigzag3 <= zigzag5 && zigzag4 <= zigzag6 && zigzag1 > zigzag3
       && iOpen(Symbol(), ZigzagTimeframe, 1) < zigzag4 && iClose(Symbol(), ZigzagTimeframe, 1) >= zigzag4) {
-    alertText_nc_mwhs = alertText_nc_mwhs + "Long_MW_HS_NC " + Symbol() + " " + periodText + "\n";
+    alertText_nc_mwhs = alertText_nc_mwhs + "Long_HS_NC " + Symbol() + " " + periodText + "\n";
     alertText_nc_mwhs = alertText_nc_mwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-    mailSubject_nc_mwhs = "[Long_MW_HS_NC] " + Symbol() + " " + periodText + " " + Time[0];
-    direction_nc_mwhs = "long_mw_hs_nc";
+    mailSubject_nc_mwhs = "[Long_HS_NC] " + Symbol() + " " + periodText + " " + Time[0];
+    direction_nc_mwhs = "long_hs_nc";
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
@@ -245,10 +245,10 @@ int OnCalculate(const int rates_total,
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag5 > zigzag6
       && zigzag2 <= zigzag4 && zigzag3 >= zigzag5 && zigzag4 >= zigzag6 && zigzag1 < zigzag3
       && iOpen(Symbol(), ZigzagTimeframe, 1) > zigzag4 && iClose(Symbol(), ZigzagTimeframe, 1) <= zigzag4) {
-    alertText_nc_mwhs = alertText_nc_mwhs + "Short_MW_HS_NC " + Symbol() + " " + periodText + "\n";
+    alertText_nc_mwhs = alertText_nc_mwhs + "Short_HS_NC " + Symbol() + " " + periodText + "\n";
     alertText_nc_mwhs = alertText_nc_mwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-    mailSubject_nc_mwhs = "[Short_MW_HS_NC] " + Symbol() + " " + periodText + " " + Time[0];
-    direction_nc_mwhs = "short_mw_hs_nc";
+    mailSubject_nc_mwhs = "[Short_HS_NC] " + Symbol() + " " + periodText + " " + Time[0];
+    direction_nc_mwhs = "short_hs_nc";
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
@@ -290,10 +290,10 @@ int OnCalculate(const int rates_total,
       && zigzag2 >= zigzag4 && zigzag3 >= zigzag5 && zigzag4 >= zigzag6 && zigzag1 > zigzag3
       && zigzag5 <= zigzag7 && zigzag6 <= zigzag8
       && iOpen(Symbol(), ZigzagTimeframe, 1) < zigzag4 && iClose(Symbol(), ZigzagTimeframe, 1) >= zigzag4) {
-    alertText_nc_mwhstr = alertText_nc_mwhstr + "Long_MW_HS_TR_NC " + Symbol() + " " + periodText + "\n";
+    alertText_nc_mwhstr = alertText_nc_mwhstr + "Long_HS_TR_NC " + Symbol() + " " + periodText + "\n";
     alertText_nc_mwhstr = alertText_nc_mwhstr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-    mailSubject_nc_mwhstr = "[Long_MW_HS_TR_NC] " + Symbol() + " " + periodText + " " + Time[0];
-    direction_nc_mwhstr = "long_mw_hs_tr_nc";
+    mailSubject_nc_mwhstr = "[Long_HS_TR_NC] " + Symbol() + " " + periodText + " " + Time[0];
+    direction_nc_mwhstr = "long_hs_tr_nc";
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
@@ -339,10 +339,10 @@ int OnCalculate(const int rates_total,
       && zigzag2 <= zigzag4 && zigzag3 <= zigzag5 && zigzag4 <= zigzag6 && zigzag1 < zigzag3
       && zigzag5 >= zigzag7 && zigzag6 >= zigzag8
       && iOpen(Symbol(), ZigzagTimeframe, 1) > zigzag4 && iClose(Symbol(), ZigzagTimeframe, 1) <= zigzag4) {
-    alertText_nc_mwhstr = alertText_nc_mwhstr + "Short_MW_HS_TR_NC " + Symbol() + " " + periodText + "\n";
+    alertText_nc_mwhstr = alertText_nc_mwhstr + "Short_HS_TR_NC " + Symbol() + " " + periodText + "\n";
     alertText_nc_mwhstr = alertText_nc_mwhstr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-    mailSubject_nc_mwhstr = "[Short_MW_HS_TR_NC] " + Symbol() + " " + periodText + " " + Time[0];
-    direction_nc_mwhstr = "short_mw_hs_tr_nc";
+    mailSubject_nc_mwhstr = "[Short_HS_TR_NC] " + Symbol() + " " + periodText + " " + Time[0];
+    direction_nc_mwhstr = "short_hs_tr_nc";
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
@@ -390,9 +390,9 @@ int OnCalculate(const int rates_total,
       && zigzag2 >= zigzag4 && zigzag3 >= zigzag5 && zigzag4 <= zigzag6 && zigzag1 > zigzag3
       && zigzag5 <= zigzag7 && zigzag6 <= zigzag8 && zigzag2 >= zigzag6
       && iOpen(Symbol(), ZigzagTimeframe, 1) < zigzag4 && iClose(Symbol(), ZigzagTimeframe, 1) >= zigzag4) {
-    alertText_nc_hstr = alertText_nc_hstr + "Long_HS_TR_NC " + Symbol() + " " + periodText + "\n";
+    alertText_nc_hstr = alertText_nc_hstr + "Long_hs_TR_NC " + Symbol() + " " + periodText + "\n";
     alertText_nc_hstr = alertText_nc_hstr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-    mailSubject_nc_hstr = "[Long_HS_TR_NC] " + Symbol() + " " + periodText + " " + Time[0];
+    mailSubject_nc_hstr = "[Long_hs_TR_NC] " + Symbol() + " " + periodText + " " + Time[0];
     direction_nc_hstr = "long_hs_tr_nc";
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
@@ -439,9 +439,9 @@ int OnCalculate(const int rates_total,
       && zigzag2 <= zigzag4 && zigzag3 <= zigzag5 && zigzag4 >= zigzag6 && zigzag1 < zigzag3
       && zigzag5 >= zigzag7 && zigzag6 >= zigzag8 && zigzag2 <= zigzag6
       && iOpen(Symbol(), ZigzagTimeframe, 1) > zigzag4 && iClose(Symbol(), ZigzagTimeframe, 1) <= zigzag4) {
-    alertText_nc_hstr = alertText_nc_hstr + "Short_HS_TR_NC " + Symbol() + " " + periodText + "\n";
+    alertText_nc_hstr = alertText_nc_hstr + "Short_hs_TR_NC " + Symbol() + " " + periodText + "\n";
     alertText_nc_hstr = alertText_nc_hstr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-    mailSubject_nc_hstr = "[Short_HS_TR_NC] " + Symbol() + " " + periodText + " " + Time[0];
+    mailSubject_nc_hstr = "[Short_hs_TR_NC] " + Symbol() + " " + periodText + " " + Time[0];
     direction_nc_hstr = "short_hs_tr_nc";
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
@@ -574,10 +574,10 @@ int OnCalculate(const int rates_total,
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag5 < zigzag6 && zigzag6 > zigzag7
       && zigzag2 >= zigzag4 && zigzag3 <= zigzag5 && zigzag4 <= zigzag6 && zigzag1 > zigzag3 && zigzag3 >= zigzag7
       && iOpen(Symbol(), ZigzagTimeframe, 1) < zigzag4 && iClose(Symbol(), ZigzagTimeframe, 1) >= zigzag4) {
-    alertText_nc_elmwhs = alertText_nc_elmwhs + "Long_EL_MW_HS_NC " + Symbol() + " " + periodText + "\n";
+    alertText_nc_elmwhs = alertText_nc_elmwhs + "Long_EL_HS_NC " + Symbol() + " " + periodText + "\n";
     alertText_nc_elmwhs = alertText_nc_elmwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-    mailSubject_nc_elmwhs = "[Long_EL_MW_HS_NC] " + Symbol() + " " + periodText + " " + Time[0];
-    direction_nc_elmwhs = "long_el_mw_hs_nc";
+    mailSubject_nc_elmwhs = "[Long_EL_HS_NC] " + Symbol() + " " + periodText + " " + Time[0];
+    direction_nc_elmwhs = "long_el_hs_nc";
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
@@ -615,10 +615,10 @@ int OnCalculate(const int rates_total,
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag5 > zigzag6 && zigzag6 < zigzag7
       && zigzag2 <= zigzag4 && zigzag3 >= zigzag5 && zigzag4 >= zigzag6 && zigzag1 < zigzag3 && zigzag3 <= zigzag7
       && iOpen(Symbol(), ZigzagTimeframe, 1) > zigzag4 && iClose(Symbol(), ZigzagTimeframe, 1) <= zigzag4) {
-    alertText_nc_elmwhs = alertText_nc_elmwhs + "Short_EL_MW_HS_NC " + Symbol() + " " + periodText + "\n";
+    alertText_nc_elmwhs = alertText_nc_elmwhs + "Short_EL_HS_NC " + Symbol() + " " + periodText + "\n";
     alertText_nc_elmwhs = alertText_nc_elmwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-    mailSubject_nc_elmwhs = "[Short_EL_MW_HS_NC] " + Symbol() + " " + periodText + " " + Time[0];
-    direction_nc_elmwhs = "short_el_mw_hs_nc";
+    mailSubject_nc_elmwhs = "[Short_EL_HS_NC] " + Symbol() + " " + periodText + " " + Time[0];
+    direction_nc_elmwhs = "short_el_hs_nc";
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
@@ -660,10 +660,10 @@ int OnCalculate(const int rates_total,
       && zigzag2 >= zigzag4 && zigzag3 >= zigzag5 && zigzag4 >= zigzag6 && zigzag1 > zigzag3
       && zigzag5 <= zigzag7 && zigzag6 <= zigzag8 && zigzag5 >= zigzag9
       && iOpen(Symbol(), ZigzagTimeframe, 1) < zigzag4 && iClose(Symbol(), ZigzagTimeframe, 1) >= zigzag4) {
-    alertText_nc_elmwhstr = alertText_nc_elmwhstr + "Long_EL_MW_HS_TR_NC " + Symbol() + " " + periodText + "\n";
+    alertText_nc_elmwhstr = alertText_nc_elmwhstr + "Long_EL_HS_TR_NC " + Symbol() + " " + periodText + "\n";
     alertText_nc_elmwhstr = alertText_nc_elmwhstr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-    mailSubject_nc_elmwhstr = "[Long_EL_MW_HS_TR_NC] " + Symbol() + " " + periodText + " " + Time[0];
-    direction_nc_elmwhstr = "long_el_mw_hs_tr_nc";
+    mailSubject_nc_elmwhstr = "[Long_EL_HS_TR_NC] " + Symbol() + " " + periodText + " " + Time[0];
+    direction_nc_elmwhstr = "long_el_hs_tr_nc";
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
@@ -709,10 +709,10 @@ int OnCalculate(const int rates_total,
       && zigzag2 <= zigzag4 && zigzag3 <= zigzag5 && zigzag4 <= zigzag6 && zigzag1 < zigzag3
       && zigzag5 >= zigzag7 && zigzag6 >= zigzag8 && zigzag5 <= zigzag9
       && iOpen(Symbol(), ZigzagTimeframe, 1) > zigzag4 && iClose(Symbol(), ZigzagTimeframe, 1) <= zigzag4) {
-    alertText_nc_elmwhstr = alertText_nc_elmwhstr + "Short_EL_MW_HS_TR_NC " + Symbol() + " " + periodText + "\n";
+    alertText_nc_elmwhstr = alertText_nc_elmwhstr + "Short_EL_HS_TR_NC " + Symbol() + " " + periodText + "\n";
     alertText_nc_elmwhstr = alertText_nc_elmwhstr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-    mailSubject_nc_elmwhstr = "[Short_EL_MW_HS_TR_NC] " + Symbol() + " " + periodText + " " + Time[0];
-    direction_nc_elmwhstr = "short_el_mw_hs_tr_nc";
+    mailSubject_nc_elmwhstr = "[Short_EL_HS_TR_NC] " + Symbol() + " " + periodText + " " + Time[0];
+    direction_nc_elmwhstr = "short_el_hs_tr_nc";
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
@@ -760,9 +760,9 @@ int OnCalculate(const int rates_total,
       && zigzag2 >= zigzag4 && zigzag3 >= zigzag5 && zigzag4 <= zigzag6 && zigzag1 > zigzag3
       && zigzag5 <= zigzag7 && zigzag6 <= zigzag8 && zigzag2 >= zigzag6 && zigzag5 >= zigzag9
       && iOpen(Symbol(), ZigzagTimeframe, 1) < zigzag4 && iClose(Symbol(), ZigzagTimeframe, 1) >= zigzag4) {
-    alertText_nc_elhstr = alertText_nc_elhstr + "Long_EL_HS_TR_NC " + Symbol() + " " + periodText + "\n";
+    alertText_nc_elhstr = alertText_nc_elhstr + "Long_EL_hs_TR_NC " + Symbol() + " " + periodText + "\n";
     alertText_nc_elhstr = alertText_nc_elhstr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-    mailSubject_nc_elhstr = "[Long_EL_HS_TR_NC] " + Symbol() + " " + periodText + " " + Time[0];
+    mailSubject_nc_elhstr = "[Long_EL_hs_TR_NC] " + Symbol() + " " + periodText + " " + Time[0];
     direction_nc_elhstr = "long_el_hs_tr_nc";
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
@@ -809,9 +809,9 @@ int OnCalculate(const int rates_total,
       && zigzag2 <= zigzag4 && zigzag3 <= zigzag5 && zigzag4 >= zigzag6 && zigzag1 < zigzag3
       && zigzag5 >= zigzag7 && zigzag6 >= zigzag8 && zigzag2 <= zigzag6 && zigzag5 <= zigzag9
       && iOpen(Symbol(), ZigzagTimeframe, 1) > zigzag4 && iClose(Symbol(), ZigzagTimeframe, 1) <= zigzag4) {
-    alertText_nc_elhstr = alertText_nc_elhstr + "Short_EL_HS_TR_NC " + Symbol() + " " + periodText + "\n";
+    alertText_nc_elhstr = alertText_nc_elhstr + "Short_EL_hs_TR_NC " + Symbol() + " " + periodText + "\n";
     alertText_nc_elhstr = alertText_nc_elhstr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-    mailSubject_nc_elhstr = "[Short_EL_HS_TR_NC] " + Symbol() + " " + periodText + " " + Time[0];
+    mailSubject_nc_elhstr = "[Short_EL_hs_TR_NC] " + Symbol() + " " + periodText + " " + Time[0];
     direction_nc_elhstr = "short_el_hs_tr_nc";
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );

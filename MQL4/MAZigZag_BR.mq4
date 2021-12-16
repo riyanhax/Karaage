@@ -374,10 +374,10 @@ int OnCalculate(const int rates_total,
       && iClose( Symbol(), MATimeframe, 1 ) > iOpen( Symbol(), MATimeframe, 1 ) // 1本前が陽線
       && iOpen( Symbol(), MATimeframe, 1 ) < zigzag3 && iClose( Symbol(), MATimeframe, 1 ) >= zigzag3 // 1本前がzigzag3を跨ぐ
       ) {
-    alertText_mwhs = alertText_mwhs + "Long_BR_MW_HS " + Symbol() + " " + periodText + "\n";
+    alertText_mwhs = alertText_mwhs + "Long_BR_HS " + Symbol() + " " + periodText + "\n";
     alertText_mwhs = alertText_mwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-    mailSubject_mwhs = "[Long_BR_MW_HS] " + Symbol() + " " + periodText + " " + Time[0];
-    direction_mwhs = "long_br_mw_hs";
+    mailSubject_mwhs = "[Long_BR_HS] " + Symbol() + " " + periodText + " " + Time[0];
+    direction_mwhs = "long_br_hs";
 
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
@@ -416,10 +416,10 @@ int OnCalculate(const int rates_total,
       && iClose( Symbol(), MATimeframe, 1 ) < iOpen( Symbol(), MATimeframe, 1 ) // 1本前が陰線
       && iOpen( Symbol(), MATimeframe, 1 ) > zigzag3 && iClose( Symbol(), MATimeframe, 1 ) >= zigzag3 // 1本前がzigzag3を跨ぐ
       ) {
-    alertText_mwhs = alertText_mwhs + "Short_BR_MW_HS " + Symbol() + " " + periodText + "\n";
+    alertText_mwhs = alertText_mwhs + "Short_BR_HS " + Symbol() + " " + periodText + "\n";
     alertText_mwhs = alertText_mwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-    mailSubject_mwhs = "[Short_BR_MW_HS] " + Symbol() + " " + periodText + " " + Time[0];
-    direction_mwhs = "short_br_mw_hs";
+    mailSubject_mwhs = "[Short_BR_HS] " + Symbol() + " " + periodText + " " + Time[0];
+    direction_mwhs = "short_br_hs";
 
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
