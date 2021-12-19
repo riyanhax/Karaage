@@ -180,12 +180,6 @@ int OnCalculate(const int rates_total,
   // Long_TR
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag5 > zigzag6
     && zigzag3 > zigzag5 && zigzag2 >= zigzag5 && zigzag4 >= zigzag6 && zigzag2 >= zigzag4) {
-    alertText_tr = alertText_tr + "Long_ST_TR " + Symbol() + " " + periodText + "\n";
-    alertText_tr = alertText_tr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-    mailSubject_tr = "[Long_ST_TR] " + Symbol() + " " + periodText + " " + Time[0];
-    direction_tr = "long_st_tr";
-    sttrLongFlg = zigzag2;
-
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
@@ -193,6 +187,18 @@ int OnCalculate(const int rates_total,
     maMiddleEma = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
     maLongSma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maLongEma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+
+    if(zigzag3 >= maCurrentSma3 && zigzag3 >= maCurrentEma3
+      && zigzag2 <= maCurrentSma2 && zigzag2 <= maCurrentEma2
+      && zigzag1 >= maCurrentSma && zigzag1 >= maCurrentEma ) {
+      return(0);
+    }
+
+    alertText_tr = alertText_tr + "Long_ST_TR " + Symbol() + " " + periodText + "\n";
+    alertText_tr = alertText_tr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+    mailSubject_tr = "[Long_ST_TR] " + Symbol() + " " + periodText + " " + Time[0];
+    direction_tr = "long_st_tr";
+    sttrLongFlg = zigzag2;
 
     if(maCurrentEma > maMiddleEma && maMiddleEma > maLongEma) {
       alertText_tr = alertText_tr + "①ALL EMA: Golden Cross" + "\n";
@@ -223,11 +229,6 @@ int OnCalculate(const int rates_total,
   // Short_TR
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag5 < zigzag6
     && zigzag3 < zigzag5 && zigzag2 <= zigzag5 && zigzag4 <= zigzag6 && zigzag2 <= zigzag4) {
-    alertText_tr = alertText_tr + "Short_ST_TR " + Symbol() + " " + periodText + "\n";
-    alertText_tr = alertText_tr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-    mailSubject_tr = "[Short_ST_TR] " + Symbol() + " " + periodText + " " + Time[0];
-    direction_tr = "short_st_tr";
-    sttrShortFlg = zigzag2;
 
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
@@ -236,6 +237,19 @@ int OnCalculate(const int rates_total,
     maMiddleEma = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
     maLongSma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
     maLongEma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+
+    if(zigzag3 <= maCurrentSma3 && zigzag3 <= maCurrentEma3
+      && zigzag2 >= maCurrentSma2 && zigzag2 >= maCurrentEma2
+      && zigzag1 <= maCurrentSma && zigzag1 <= maCurrentEma ) {
+      return(0);
+    }
+
+    alertText_tr = alertText_tr + "Short_ST_TR " + Symbol() + " " + periodText + "\n";
+    alertText_tr = alertText_tr + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+    mailSubject_tr = "[Short_ST_TR] " + Symbol() + " " + periodText + " " + Time[0];
+    direction_tr = "short_st_tr";
+    sttrShortFlg = zigzag2;
+
 
     if(maCurrentEma < maMiddleEma && maMiddleEma < maLongEma) {
       alertText_tr = alertText_tr + "①ALL EMA: Dead Cross" + "\n";
@@ -265,8 +279,8 @@ int OnCalculate(const int rates_total,
 
   requirement = 0;
   // Long_ST_TR_sml
-  if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag2 >= zigzag4
-    && sttrLongFlg == zigzag2) {
+  if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag5 > zigzag6
+    && zigzag2 >= zigzag4 && zigzag3 >= zigzag5 && zigzag4 >= zigzag6) {
 
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
@@ -287,54 +301,47 @@ int OnCalculate(const int rates_total,
 
         if(zigzag4 < maLongSma4 && zigzag4 < maLongEma4 && zigzag3 > maLongSma3 && zigzag3 > maLongEma3
           && zigzag2 < maLongSma2 && zigzag2 < maLongEma2 && zigzag1 > maLongSma && zigzag1 > maLongEma) {
-          alertText = "Long_ST_TR_l " + Symbol() + " " + periodText + "\n";
+          alertText = alertText + "Long_ST_TR_l " + Symbol() + " " + periodText + "\n";
           alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
           mailSubject = "[Long_ST_TR_l] " + Symbol() + " " + periodText + " " + Time[0];
           direction = "long_st_tr_l";
         } else {
-          alertText = "Long_ST_TR_m " + Symbol() + " " + periodText + "\n";
+          alertText = alertText + "Long_ST_TR_m " + Symbol() + " " + periodText + "\n";
           alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
           mailSubject = "[Long_ST_TR_m] " + Symbol() + " " + periodText + " " + Time[0];
           direction = "long_st_tr_m";
         }
 
       } else {
-        alertText = "Long_ST_TR_s " + Symbol() + " " + periodText + "\n";
+        alertText = alertText + "Long_ST_TR_s " + Symbol() + " " + periodText + "\n";
         alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
         mailSubject = "[Long_ST_TR_s] " + Symbol() + " " + periodText + " " + Time[0];
         direction = "long_st_tr_s";
       }
-    }
 
-    if(maCurrentEma > maMiddleEma && maMiddleEma > maLongEma) {
-      alertText = alertText + "①ALL EMA: Golden Cross" + "\n";
+      if(maCurrentEma > maMiddleEma && maMiddleEma > maLongEma) {
+        alertText = alertText + "①ALL EMA: Golden Cross" + "\n";
+      }
+      if(maMiddleEma < maCurrentEma) {
+        requirement++;
+        alertText = alertText + "②EMA: Golden Cross" + "\n";
+      }
+      if(maCurrentSma < maCurrentEma) {
+        requirement++;
+        alertText = alertText + "③Short MA: Golden Cross" + "\n";
+      }
+      if(maMiddleSma < maMiddleEma) {
+        requirement++;
+        alertText = alertText + "④Middle MA: Golden Cross" + "\n";
+      }
+      if(maLongSma < maLongEma) {
+        alertText = alertText + "⑤Long MA: Golden Cross" + "\n";
+      }
     }
-    if(maMiddleEma < maCurrentEma) {
-      requirement++;
-      alertText = alertText + "②EMA: Golden Cross" + "\n";
-    }
-    if(maCurrentSma < maCurrentEma) {
-      requirement++;
-      alertText = alertText + "③Short MA: Golden Cross" + "\n";
-    }
-    if(maMiddleSma < maMiddleEma) {
-      requirement++;
-      alertText = alertText + "④Middle MA: Golden Cross" + "\n";
-    }
-    if(maLongSma < maLongEma) {
-      alertText = alertText + "⑤Long MA: Golden Cross" + "\n";
-    }
-
-    if(macd3 > macd5) {
-      macdRsi = "Div: Long";
-    } else {
-      macdRsi = "Div: Short";
-    }
-
   }
-  // Short_TR_TR_sml
-  if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag2 <= zigzag4
-    && sttrShortFlg == zigzag2) {
+  // Short_ST_TR_sml
+  if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag5 < zigzag6
+    && zigzag2 <= zigzag4 && zigzag3 <= zigzag5 && zigzag4 <= zigzag6) {
 
     // MovingAverage取得
     maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
@@ -355,48 +362,42 @@ int OnCalculate(const int rates_total,
 
         if(zigzag4 > maLongSma4 && zigzag4 > maLongEma4 && zigzag3 < maLongSma3 && zigzag3 < maLongEma3
           && zigzag2 > maLongSma2 && zigzag2 > maLongEma2 && zigzag1 < maLongSma && zigzag1 < maLongEma) {
-          alertText = "Short_ST_TR_l " + Symbol() + " " + periodText + "\n";
+          alertText = alertText + "Short_ST_TR_l " + Symbol() + " " + periodText + "\n";
           alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
           mailSubject = "[Short_ST_TR_l] " + Symbol() + " " + periodText + " " + Time[0];
           direction = "short_st_tr_l";
         } else {
-          alertText = "Short_ST_TR_m " + Symbol() + " " + periodText + "\n";
+          alertText = alertText + "Short_ST_TR_m " + Symbol() + " " + periodText + "\n";
           alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
           mailSubject = "[Short_ST_TR_m] " + Symbol() + " " + periodText + " " + Time[0];
           direction = "short_st_tr_m";
         }
 
       } else {
-        alertText = "Short_ST_TR_s " + Symbol() + " " + periodText + "\n";
+        alertText = alertText + "Short_ST_TR_s " + Symbol() + " " + periodText + "\n";
         alertText = alertText + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
         mailSubject = "[Short_ST_TR_s] " + Symbol() + " " + periodText + " " + Time[0];
         direction = "short_st_tr_s";
       }
-    }
 
-    if(maCurrentEma < maMiddleEma && maMiddleEma < maLongEma) {
-      alertText = alertText + "①ALL EMA: Dead Cross" + "\n";
-    }
-    if(maMiddleEma > maCurrentEma) {
-      requirement++;
-      alertText = alertText + "②EMA: Dead Cross" + "\n";
-    }
-    if(maCurrentSma > maCurrentEma) {
-      requirement++;
-      alertText = alertText + "③Short MA: Dead Cross" + "\n";
-    }
-    if(maMiddleSma > maMiddleEma) {
-      requirement++;
-      alertText = alertText + "④Middle MA: Dead Cross" + "\n";
-    }
-    if(maLongSma > maLongEma) {
-      alertText = alertText + "⑤Long MA: Dead Cross" + "\n";
-    }
-
-    if(macd3 > macd5) {
-      macdRsi = "Div: Long";
-    } else {
-      macdRsi = "Div: Short";
+      if(maCurrentEma < maMiddleEma && maMiddleEma < maLongEma) {
+        alertText = alertText + "①ALL EMA: Dead Cross" + "\n";
+      }
+      if(maMiddleEma > maCurrentEma) {
+        requirement++;
+        alertText = alertText + "②EMA: Dead Cross" + "\n";
+      }
+      if(maCurrentSma > maCurrentEma) {
+        requirement++;
+        alertText = alertText + "③Short MA: Dead Cross" + "\n";
+      }
+      if(maMiddleSma > maMiddleEma) {
+        requirement++;
+        alertText = alertText + "④Middle MA: Dead Cross" + "\n";
+      }
+      if(maLongSma > maLongEma) {
+        alertText = alertText + "⑤Long MA: Dead Cross" + "\n";
+      }
     }
   }
 
