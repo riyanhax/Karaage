@@ -88,8 +88,20 @@ int OnCalculate(const int rates_total,
   double maCurrentSma4;
   double maMiddleEma;
   double maMiddleSma;
+  double maMiddleEma2;
+  double maMiddleSma2;
+  double maMiddleEma3;
+  double maMiddleSma3;
+  double maMiddleEma4;
+  double maMiddleSma4;
   double maLongEma;
   double maLongSma;
+  double maLongEma2;
+  double maLongSma2;
+  double maLongEma3;
+  double maLongSma3;
+  double maLongEma4;
+  double maLongSma4;
   int i;
   int cnt;
   int requirement;
@@ -125,16 +137,28 @@ int OnCalculate(const int rates_total,
       zigzag2 = zigzagTmp;
       maCurrentSma2 = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, i );
       maCurrentEma2 = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, i );
+      maMiddleSma2 = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_SMA, PRICE_CLOSE, i );
+      maMiddleEma2 = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_EMA, PRICE_CLOSE, i );
+      maLongSma2 = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, i );
+      maLongEma2 = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, i );
       cnt = 2;
     } else if(cnt == 2 && zigzagTmp != EMPTY_VALUE && zigzagTmp != 0) {
       zigzag3 = zigzagTmp;
       maCurrentSma3 = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, i );
       maCurrentEma3 = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, i );
+      maMiddleSma3 = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_SMA, PRICE_CLOSE, i );
+      maMiddleEma3 = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_EMA, PRICE_CLOSE, i );
+      maLongSma3 = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, i );
+      maLongEma3 = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, i );
       cnt = 3;
     } else if(cnt == 3 && zigzagTmp != EMPTY_VALUE && zigzagTmp != 0) {
       zigzag4 = zigzagTmp;
       maCurrentSma4 = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, i );
       maCurrentEma4 = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, i );
+      maMiddleSma4 = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_SMA, PRICE_CLOSE, i );
+      maMiddleEma4 = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_EMA, PRICE_CLOSE, i );
+      maLongSma4 = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, i );
+      maLongEma4 = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, i );
       cnt = 4;
     } else if(cnt == 4 && zigzagTmp != EMPTY_VALUE && zigzagTmp != 0) {
       zigzag5 = zigzagTmp;
@@ -235,76 +259,124 @@ int OnCalculate(const int rates_total,
   }
 
   requirement_mwhs = 0;
-  // Long 切り替わり
-  if(zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag5 > zigzag6 && zigzag6 < zigzag7
-      && zigzag5 <= zigzag7 && zigzag3 >= zigzag5 && zigzag2 >= zigzag4
-      && zigzag4 <= zigzag6) {
-    alertText_mwhs = alertText_mwhs + "Long_HS " + Symbol() + " " + periodText + "\n";
-    alertText_mwhs = alertText_mwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-    mailSubject_mwhs = "[Long_HS] " + Symbol() + " " + periodText + " " + Time[0];
-    direction_mwhs = "long_hs";
+  // Long
+  if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag5 > zigzag6 && zigzag6 < zigzag7
+    && zigzag2 >= zigzag4 && zigzag5 <= zigzag7 && zigzag3 >= zigzag5 && zigzag4 <= zigzag6) {
+    if(zigzag4 < maCurrentSma4 && zigzag4 < maCurrentEma4 && zigzag3 > maCurrentSma3 && zigzag3 > maCurrentEma3
+      && zigzag2 < maCurrentSma2 && zigzag2 < maCurrentEma2 && zigzag1 > maCurrentEma && zigzag1 > maCurrentSma
+      && iClose( Symbol(), MATimeframe, 1 ) > iOpen( Symbol(), MATimeframe, 1 ) // 陽線
+      && iClose( Symbol(), MATimeframe, 1 ) > maCurrentEma && iClose( Symbol(), MATimeframe, 1 ) > maCurrentSma
+      && zigzag1 != iHigh( Symbol(), MATimeframe, 0 ) ) {
 
-    // MovingAverage取得
-    maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
-    maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
-    maMiddleSma = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
-    maMiddleEma = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
-    maLongSma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
-    maLongEma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+      // MovingAverage取得
+      maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+      maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+      maMiddleSma = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+      maMiddleEma = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+      maLongSma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+      maLongEma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
 
-    if(maCurrentEma > maMiddleEma && maMiddleEma > maLongEma) {
-      alertText_mwhs = alertText_mwhs + "①ALL EMA: Golden Cross" + "\n";
-    }
-    if(maMiddleEma < maCurrentEma) {
-      requirement_mwhs++;
-      alertText_mwhs = alertText_mwhs + "②EMA: Golden Cross" + "\n";
-    }
-    if(maCurrentSma < maCurrentEma) {
-      requirement_mwhs++;
-      alertText_mwhs = alertText_mwhs + "③Short MA: Golden Cross" + "\n";
-    }
-    if(maMiddleSma < maMiddleEma) {
-      requirement_mwhs++;
-      alertText_mwhs = alertText_mwhs + "④Middle MA: Golden Cross" + "\n";
-    }
-    if(maLongSma < maLongEma) {
-      alertText_mwhs = alertText_mwhs + "⑤Long MA: Golden Cross" + "\n";
+      if(zigzag4 < maMiddleSma4 && zigzag4 < maMiddleEma4 && zigzag3 > maMiddleSma3 && zigzag3 > maMiddleEma3
+        && zigzag2 < maMiddleSma2 && zigzag2 < maMiddleEma2 && zigzag1 > maMiddleSma && zigzag1 > maMiddleEma) {
+
+        if(zigzag4 < maLongSma4 && zigzag4 < maLongEma4 && zigzag3 > maLongSma3 && zigzag3 > maLongEma3
+          && zigzag2 < maLongSma2 && zigzag2 < maLongEma2 && zigzag1 > maLongSma && zigzag1 > maLongEma) {
+          alertText_mwhs = alertText_mwhs + "Long_HS_l " + Symbol() + " " + periodText + "\n";
+          alertText_mwhs = alertText_mwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+          mailSubject_mwhs = "[Long_HS_l] " + Symbol() + " " + periodText + " " + Time[0];
+          direction_mwhs = "long_hs_l";
+        } else {
+          alertText_mwhs = alertText_mwhs + "Long_HS_m " + Symbol() + " " + periodText + "\n";
+          alertText_mwhs = alertText_mwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+          mailSubject_mwhs = "[Long_HS_m] " + Symbol() + " " + periodText + " " + Time[0];
+          direction_mwhs = "long_hs_m";
+        }
+
+      } else {
+        alertText_mwhs = alertText_mwhs + "Long_HS_s " + Symbol() + " " + periodText + "\n";
+        alertText_mwhs = alertText_mwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+        mailSubject_mwhs = "[Long_HS_s] " + Symbol() + " " + periodText + " " + Time[0];
+        direction_mwhs = "long_hs_s";
+      }
+
+      if(maCurrentEma > maMiddleEma && maMiddleEma > maLongEma) {
+        alertText_mwhs = alertText_mwhs + "①ALL EMA: Golden Cross" + "\n";
+      }
+      if(maMiddleEma < maCurrentEma) {
+        requirement_mwhs++;
+        alertText_mwhs = alertText_mwhs + "②EMA: Golden Cross" + "\n";
+      }
+      if(maCurrentSma < maCurrentEma) {
+        requirement_mwhs++;
+        alertText_mwhs = alertText_mwhs + "③Short MA: Golden Cross" + "\n";
+      }
+      if(maMiddleSma < maMiddleEma) {
+        requirement_mwhs++;
+        alertText_mwhs = alertText_mwhs + "④Middle MA: Golden Cross" + "\n";
+      }
+      if(maLongSma < maLongEma) {
+        alertText_mwhs = alertText_mwhs + "⑤Long MA: Golden Cross" + "\n";
+      }
     }
   }
-  // Short 切り替わり
-  if(zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag5 < zigzag6 && zigzag6 > zigzag7
-      && zigzag5 >= zigzag7 && zigzag3 <= zigzag5 && zigzag2 <= zigzag4
-      && zigzag4 >= zigzag6) {
-    alertText_mwhs = alertText_mwhs + "Short_HS " + Symbol() + " " + periodText + "\n";
-    alertText_mwhs = alertText_mwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-    mailSubject_mwhs = "[Short_HS] " + Symbol() + " " + periodText + " " + Time[0];
-    direction_mwhs = "short_hs";
+  // Short
+  if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag5 < zigzag6 && zigzag6 > zigzag7
+    && zigzag2 <= zigzag4 && zigzag5 >= zigzag7 && zigzag3 <= zigzag5 && zigzag4 >= zigzag6) {
+    if(zigzag4 > maCurrentSma4 && zigzag4 > maCurrentEma4 && zigzag3 < maCurrentSma3 && zigzag3 < maCurrentEma3
+      && zigzag2 > maCurrentSma2 && zigzag2 > maCurrentEma2 && zigzag1 < maCurrentEma && zigzag1 < maCurrentSma
+      && iClose( Symbol(), MATimeframe, 1 ) < iOpen( Symbol(), MATimeframe, 1 ) // 陰線
+      && iClose( Symbol(), MATimeframe, 1 ) < maCurrentEma && iClose( Symbol(), MATimeframe, 1 ) < maCurrentSma
+      && zigzag1 != iLow( Symbol(), MATimeframe, 0 ) ) {
 
-    // MovingAverage取得
-    maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
-    maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
-    maMiddleSma = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
-    maMiddleEma = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
-    maLongSma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
-    maLongEma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+      // MovingAverage取得
+      maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+      maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+      maMiddleSma = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+      maMiddleEma = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+      maLongSma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+      maLongEma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
 
-    if(maCurrentEma < maMiddleEma && maMiddleEma < maLongEma) {
-      alertText_mwhs = alertText_mwhs + "①ALL EMA: Dead Cross" + "\n";
-    }
-    if(maMiddleEma > maCurrentEma) {
-      requirement_mwhs++;
-      alertText_mwhs = alertText_mwhs + "②EMA: Dead Cross" + "\n";
-    }
-    if(maCurrentSma > maCurrentEma) {
-      requirement_mwhs++;
-      alertText_mwhs = alertText_mwhs + "③Short MA: Dead Cross" + "\n";
-    }
-    if(maMiddleSma > maMiddleEma) {
-      requirement_mwhs++;
-      alertText_mwhs = alertText_mwhs + "④Middle MA: Dead Cross" + "\n";
-    }
-    if(maLongSma > maLongEma) {
-      alertText_mwhs = alertText_mwhs + "⑤Long MA: Dead Cross" + "\n";
+      if(zigzag4 > maMiddleSma4 && zigzag4 > maMiddleEma4 && zigzag3 < maMiddleSma3 && zigzag3 < maMiddleEma3
+        && zigzag2 > maMiddleSma2 && zigzag2 > maMiddleEma2 && zigzag1 < maMiddleSma && zigzag1 < maMiddleEma) {
+
+        if(zigzag4 > maLongSma4 && zigzag4 > maLongEma4 && zigzag3 < maLongSma3 && zigzag3 < maLongEma3
+          && zigzag2 > maLongSma2 && zigzag2 > maLongEma2 && zigzag1 < maLongSma && zigzag1 < maLongEma) {
+          alertText_mwhs = alertText_mwhs + "Short_HS_l " + Symbol() + " " + periodText + "\n";
+          alertText_mwhs = alertText_mwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+          mailSubject_mwhs = "[Short_HS_l] " + Symbol() + " " + periodText + " " + Time[0];
+          direction_mwhs = "short_hs_l";
+        } else {
+          alertText_mwhs = alertText_mwhs + "Short_HS_m " + Symbol() + " " + periodText + "\n";
+          alertText_mwhs = alertText_mwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+          mailSubject_mwhs = "[Short_HS_m] " + Symbol() + " " + periodText + " " + Time[0];
+          direction_mwhs = "short_hs_m";
+        }
+
+      } else {
+        alertText_mwhs = alertText_mwhs + "Short_HS_s " + Symbol() + " " + periodText + "\n";
+        alertText_mwhs = alertText_mwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+        mailSubject_mwhs = "[Short_HS_s] " + Symbol() + " " + periodText + " " + Time[0];
+        direction_mwhs = "short_hs_s";
+      }
+
+      if(maCurrentEma < maMiddleEma && maMiddleEma < maLongEma) {
+        alertText_mwhs = alertText_mwhs + "①ALL EMA: Dead Cross" + "\n";
+      }
+      if(maMiddleEma > maCurrentEma) {
+        requirement_mwhs++;
+        alertText_mwhs = alertText_mwhs + "②EMA: Dead Cross" + "\n";
+      }
+      if(maCurrentSma > maCurrentEma) {
+        requirement_mwhs++;
+        alertText_mwhs = alertText_mwhs + "③Short MA: Dead Cross" + "\n";
+      }
+      if(maMiddleSma > maMiddleEma) {
+        requirement_mwhs++;
+        alertText_mwhs = alertText_mwhs + "④Middle MA: Dead Cross" + "\n";
+      }
+      if(maLongSma > maLongEma) {
+        alertText_mwhs = alertText_mwhs + "⑤Long MA: Dead Cross" + "\n";
+      }
     }
   }
 
@@ -392,10 +464,36 @@ int OnCalculate(const int rates_total,
       && iClose( Symbol(), MATimeframe, 1 ) > maCurrentEma && iClose( Symbol(), MATimeframe, 1 ) > maCurrentSma
       && zigzag1 != iHigh( Symbol(), MATimeframe, 0 ) ) {
 
-      alertText_mw = alertText_mw + "Long_MW " + Symbol() + " " + periodText + "\n";
-      alertText_mw = alertText_mw + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-      mailSubject_mw = "[Long_MW] " + Symbol() + " " + periodText + " " + Time[0];
-      direction_mw = "long_mw";
+      // MovingAverage取得
+      maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+      maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+      maMiddleSma = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+      maMiddleEma = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+      maLongSma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+      maLongEma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+
+      if(zigzag4 < maMiddleSma4 && zigzag4 < maMiddleEma4 && zigzag3 > maMiddleSma3 && zigzag3 > maMiddleEma3
+        && zigzag2 < maMiddleSma2 && zigzag2 < maMiddleEma2 && zigzag1 > maMiddleSma && zigzag1 > maMiddleEma) {
+
+        if(zigzag4 < maLongSma4 && zigzag4 < maLongEma4 && zigzag3 > maLongSma3 && zigzag3 > maLongEma3
+          && zigzag2 < maLongSma2 && zigzag2 < maLongEma2 && zigzag1 > maLongSma && zigzag1 > maLongEma) {
+          alertText_mw = alertText_mw + "Long_MW_l " + Symbol() + " " + periodText + "\n";
+          alertText_mw = alertText_mw + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+          mailSubject_mw = "[Long_MW_l] " + Symbol() + " " + periodText + " " + Time[0];
+          direction_mw = "long_mw_l";
+        } else {
+          alertText_mw = alertText_mw + "Long_MW_m " + Symbol() + " " + periodText + "\n";
+          alertText_mw = alertText_mw + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+          mailSubject_mw = "[Long_MW_m] " + Symbol() + " " + periodText + " " + Time[0];
+          direction_mw = "long_mw_m";
+        }
+
+      } else {
+        alertText_mw = alertText_mw + "Long_MW_s " + Symbol() + " " + periodText + "\n";
+        alertText_mw = alertText_mw + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+        mailSubject_mw = "[Long_MW_s] " + Symbol() + " " + periodText + " " + Time[0];
+        direction_mw = "long_mw_s";
+      }
 
       if(maCurrentEma > maMiddleEma && maMiddleEma > maLongEma) {
         alertText_mw = alertText_mw + "①ALL EMA: Golden Cross" + "\n";
@@ -426,10 +524,36 @@ int OnCalculate(const int rates_total,
       && iClose( Symbol(), MATimeframe, 1 ) < maCurrentEma && iClose( Symbol(), MATimeframe, 1 ) < maCurrentSma
       && zigzag1 != iLow( Symbol(), MATimeframe, 0 ) ) {
 
-      alertText_mw = alertText_mw + "Short_MW " + Symbol() + " " + periodText + "\n";
-      alertText_mw = alertText_mw + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
-      mailSubject_mw = "[Short_MW] " + Symbol() + " " + periodText + " " + Time[0];
-      direction_mw = "short_mw";
+      // MovingAverage取得
+      maCurrentSma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+      maCurrentEma = iMA( Symbol(), MATimeframe, MACurrentPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+      maMiddleSma = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+      maMiddleEma = iMA( Symbol(), MATimeframe, MAMiddlePeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+      maLongSma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_SMA, PRICE_CLOSE, 1 );
+      maLongEma = iMA( Symbol(), MATimeframe, MALongPeriod, 0, MODE_EMA, PRICE_CLOSE, 1 );
+
+      if(zigzag4 > maMiddleSma4 && zigzag4 > maMiddleEma4 && zigzag3 < maMiddleSma3 && zigzag3 < maMiddleEma3
+        && zigzag2 > maMiddleSma2 && zigzag2 > maMiddleEma2 && zigzag1 < maMiddleSma && zigzag1 < maMiddleEma) {
+
+        if(zigzag4 > maLongSma4 && zigzag4 > maLongEma4 && zigzag3 < maLongSma3 && zigzag3 < maLongEma3
+          && zigzag2 > maLongSma2 && zigzag2 > maLongEma2 && zigzag1 < maLongSma && zigzag1 < maLongEma) {
+          alertText_mw = alertText_mw + "Short_MW_l " + Symbol() + " " + periodText + "\n";
+          alertText_mw = alertText_mw + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+          mailSubject_mw = "[Short_MW_l] " + Symbol() + " " + periodText + " " + Time[0];
+          direction_mw = "short_mw_l";
+        } else {
+          alertText_mw = alertText_mw + "Short_MW_m " + Symbol() + " " + periodText + "\n";
+          alertText_mw = alertText_mw + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+          mailSubject_mw = "[Short_MW_m] " + Symbol() + " " + periodText + " " + Time[0];
+          direction_mw = "short_mw_m";
+        }
+
+      } else {
+        alertText_mw = alertText_mw + "Short_MW_s " + Symbol() + " " + periodText + "\n";
+        alertText_mw = alertText_mw + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
+        mailSubject_mw = "[Short_MW_s] " + Symbol() + " " + periodText + " " + Time[0];
+        direction_mw = "short_mw_s";
+      }
 
       if(maCurrentEma < maMiddleEma && maMiddleEma < maLongEma) {
         alertText_mw = alertText_mw + "①ALL EMA: Dead Cross" + "\n";
