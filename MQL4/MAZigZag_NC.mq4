@@ -13,7 +13,7 @@ input int MACurrentPeriod = 20;
 input int MAMiddlePeriod = 80;
 input int MALongPeriod = 320;
 input string AlertSetting = "/////// AlertSetting ///////";
-input int AlertRequirementCount = 3;
+input int AlertRequirementCount = 0;
 input bool MailAlert = true;
 input bool FileOutput = true;
 
@@ -198,7 +198,7 @@ int OnCalculate(const int rates_total,
   }
 
   // 条件
-  // MW_HS_NC
+  // HS_NC
   requirement_nc_mwhs = 0;
   // Long
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag5 < zigzag6
@@ -282,7 +282,7 @@ int OnCalculate(const int rates_total,
       macdRsi_nc_mwhs = macdRsi_nc_mwhs + "DivSW: Long";
     }
   }
-  // MW_HS_TR_NC
+  // HS_TR_NC
   requirement_nc_mwhstr = 0;
   // Long
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5
@@ -382,7 +382,7 @@ int OnCalculate(const int rates_total,
       macdRsi_nc_mwhstr = macdRsi_nc_mwhstr + "DivSW: Long";
     }
   }
-  // HS_TR_NC
+  // hs_TR_NC
   requirement_nc_hstr = 0;
   // Long
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5
@@ -568,7 +568,7 @@ int OnCalculate(const int rates_total,
     }
     //macdRsi = macdRsi + "RSI: " + DoubleToStr( rsi1, 2 ) + ", " + DoubleToStr( rsi2, 2 );
   }
-  // EL_MW_HS_NC
+  // EL_HS_NC
   requirement_nc_elmwhs = 0;
   // Long
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag5 < zigzag6 && zigzag6 > zigzag7
@@ -652,7 +652,7 @@ int OnCalculate(const int rates_total,
       macdRsi_nc_elmwhs = macdRsi_nc_elmwhs + "DivSW: Long";
     }
   }
-  // EL_MW_HS_TR_NC
+  // EL_HS_TR_NC
   requirement_nc_elmwhstr = 0;
   // Long
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5
@@ -752,7 +752,7 @@ int OnCalculate(const int rates_total,
       macdRsi_nc_elmwhstr = macdRsi_nc_elmwhstr + "DivSW: Long";
     }
   }
-  // EL_HS_TR_NC
+  // EL_hs_TR_NC
   requirement_nc_elhstr = 0;
   // Long
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5
@@ -894,8 +894,8 @@ int OnCalculate(const int rates_total,
     lastAlert_nc_mwhs = Time[0];
     lastAlertZigzag_nc_mwhs = zigzag2;
   }
-  // MW_HS_TR_NC
-  if(StringLen(alertText_nc_mwhstr) > 0 && requirement_nc_mwhstr >= AlertRequirementCount && lastAlert_nc_mwhstr != Time[0] && lastAlertZigzag_nc_mwhstr != zigzag2) {
+  // HS_TR_NC
+  if(StringLen(alertText_nc_mwhstr) > 0 && requirement_nc_mwhstr >= AlertRequirementCount && lastAlert_nc_mwhstr != Time[0] && lastAlertZigzag_nc_mwhstr != zigzag2 && StringLen(alertText_nc_elmwhstr) == 0 ) {
     Alert(alertText_nc_mwhstr);
     if(MailAlert) {
       mailBody_nc_mwhstr = mailBody_nc_mwhstr + alertText_nc_mwhstr; // ロング or ショート、通貨ペア、時間足
@@ -934,7 +934,7 @@ int OnCalculate(const int rates_total,
     lastAlertZigzag_nc_mwhstr = zigzag2;
   }
   // HS_TR_NC
-  if(StringLen(alertText_nc_hstr) > 0 && requirement_nc_hstr >= AlertRequirementCount && lastAlert_nc_hstr != Time[0] && lastAlertZigzag_nc_hstr != zigzag2) {
+  if(StringLen(alertText_nc_hstr) > 0 && requirement_nc_hstr >= AlertRequirementCount && lastAlert_nc_hstr != Time[0] && lastAlertZigzag_nc_hstr != zigzag2 && StringLen(alertText_nc_elhstr) == 0) {
     Alert(alertText_nc_hstr);
     if(MailAlert) {
       mailBody_nc_hstr = mailBody_nc_hstr + alertText_nc_hstr; // ロング or ショート、通貨ペア、時間足
@@ -973,7 +973,7 @@ int OnCalculate(const int rates_total,
     lastAlertZigzag_nc_hstr = zigzag2;
   }
   // ST_TR_NC
-  if(StringLen(alertText_trnc) > 0 && requirement_trnc >= AlertRequirementCount && lastAlert_trnc != Time[0] && lastAlertZigzag_trnc != zigzag2) {
+  if(StringLen(alertText_trnc) > 0 && requirement_trnc >= AlertRequirementCount && lastAlert_trnc != Time[0] && lastAlertZigzag_trnc != zigzag2 && StringLen(alertText_nc_mwhstr) == 0 && StringLen(alertText_nc_hstr) == 0 && StringLen(alertText_nc_elmwhstr) == 0 && StringLen(alertText_nc_elhstr) == 0   ) {
     Alert(alertText_trnc);
     if(MailAlert) {
       mailBody_trnc = mailBody_trnc + alertText_trnc; // ロング or ショート、通貨ペア、時間足
@@ -1012,7 +1012,7 @@ int OnCalculate(const int rates_total,
     lastAlertZigzag_trnc = zigzag2;
   }
   // EL_MW_HS_NC
-  if(StringLen(alertText_nc_elmwhs) > 0 && requirement_nc_elmwhs >= AlertRequirementCount && lastAlert_nc_elmwhs != Time[0] && lastAlertZigzag_nc_elmwhs != zigzag2) {
+  if(StringLen(alertText_nc_elmwhs) > 0 && requirement_nc_elmwhs >= AlertRequirementCount && lastAlert_nc_elmwhs != Time[0] && lastAlertZigzag_nc_elmwhs != zigzag2 && StringLen(alertText_nc_mwhs) == 0) {
     Alert(alertText_nc_elmwhs);
     if(MailAlert) {
       mailBody_nc_elmwhs = mailBody_nc_elmwhs + alertText_nc_elmwhs; // ロング or ショート、通貨ペア、時間足

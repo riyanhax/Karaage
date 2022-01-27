@@ -13,7 +13,7 @@ input int MACurrentPeriod = 20;
 input int MAMiddlePeriod = 80;
 input int MALongPeriod = 320;
 input string AlertSetting = "/////// AlertSetting ///////";
-input int AlertRequirementCount = 3;
+input int AlertRequirementCount = 0;
 input bool MailAlert = true;
 input bool FileOutput = true;
 
@@ -358,7 +358,7 @@ int OnCalculate(const int rates_total,
   requirement_nc_elmwhs = 0;
   // Long
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag5 < zigzag6 && zigzag6 > zigzag7
-      && zigzag2 <= zigzag4 && zigzag3 >= zigzag5 && zigzag4 >= zigzag6 && zigzag1 <= zigzag3 && zigzag3 >= zigzag7
+      && zigzag2 <= zigzag4 && zigzag3 >= zigzag5 && zigzag4 >= zigzag6 && zigzag1 <= zigzag3 && zigzag3 >= zigzag7 && zigzag1 >= zigzag5
       && zigzag1 <= bb1L) {
     alertText_nc_elmwhs = alertText_nc_elmwhs + "Long_EL_BB " + Symbol() + " " + periodText + "\n";
     alertText_nc_elmwhs = alertText_nc_elmwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
@@ -399,7 +399,7 @@ int OnCalculate(const int rates_total,
   }
   // Short
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag5 > zigzag6 && zigzag6 < zigzag7
-      && zigzag2 >= zigzag4 && zigzag3 <= zigzag5 && zigzag4 <= zigzag6 && zigzag1 >= zigzag3 && zigzag3 <= zigzag7
+      && zigzag2 >= zigzag4 && zigzag3 <= zigzag5 && zigzag4 <= zigzag6 && zigzag1 >= zigzag3 && zigzag3 <= zigzag7 && zigzag1 <= zigzag5
       && zigzag1 >= bb1U) {
     alertText_nc_elmwhs = alertText_nc_elmwhs + "Short_EL_BB " + Symbol() + " " + periodText + "\n";
     alertText_nc_elmwhs = alertText_nc_elmwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
@@ -524,7 +524,7 @@ int OnCalculate(const int rates_total,
   requirement_2nd = 0;
   // Long_2nd_BB
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5
-      && zigzag2 <= zigzag4 && zigzag3 >= zigzag5 && zigzag1 <= zigzag3
+      && zigzag2 <= zigzag4 && zigzag3 >= zigzag5 && zigzag1 <= zigzag3 && zigzag1 >= zigzag5
       && zigzag1 <= bb1L) {
     alertText_2nd = alertText_2nd + "Long_2nd_BB " + Symbol() + " " + periodText + "\n";
     alertText_2nd = alertText_2nd + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
@@ -565,7 +565,7 @@ int OnCalculate(const int rates_total,
   }
   // Short_2nd_BB
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5
-      && zigzag2 >= zigzag4 && zigzag3 <= zigzag5 && zigzag1 >= zigzag3
+      && zigzag2 >= zigzag4 && zigzag3 <= zigzag5 && zigzag1 >= zigzag3 && zigzag1 <= zigzag5
       && zigzag1 >= bb1U) {
     alertText_2nd = alertText_2nd + "Short_2nd_BB " + Symbol() + " " + periodText + "\n";
     alertText_2nd = alertText_2nd + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
@@ -732,7 +732,7 @@ int OnCalculate(const int rates_total,
     lastAlertZigzag_nc_elmwhs = zigzag2;
   }
   // 1st_BB
-  if(StringLen(alertText_1st) > 0 && requirement_1st >= AlertRequirementCount && lastAlert_1st != Time[0] && lastAlertZigzag_1st != zigzag2) {
+  if(StringLen(alertText_trnc) == 0 && StringLen(alertText_nc_mwhs) == 0 && StringLen(alertText_1st) > 0 && requirement_1st >= AlertRequirementCount && lastAlert_1st != Time[0] && lastAlertZigzag_1st != zigzag2) {
     Alert(alertText_1st);
     if(MailAlert) {
       mailBody_1st = mailBody_1st + alertText_1st; // ロング or ショート、通貨ペア、時間足
@@ -771,7 +771,7 @@ int OnCalculate(const int rates_total,
     lastAlertZigzag_1st = zigzag2;
   }
   // 2nd_BB
-  if(StringLen(alertText_2nd) > 0 && requirement_2nd >= AlertRequirementCount && lastAlert_2nd != Time[0] && lastAlertZigzag_2nd != zigzag2) {
+  if(StringLen(alertText_nc_elmwhs) == 0 && StringLen(alertText_2nd) > 0 && requirement_2nd >= AlertRequirementCount && lastAlert_2nd != Time[0] && lastAlertZigzag_2nd != zigzag2) {
     Alert(alertText_2nd);
     if(MailAlert) {
       mailBody_2nd = mailBody_2nd + alertText_2nd; // ロング or ショート、通貨ペア、時間足
