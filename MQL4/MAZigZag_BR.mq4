@@ -366,7 +366,7 @@ int OnCalculate(const int rates_total,
       macdRsi = macdRsi + "Div: Short";
     }
   }
-  // BR_MW_HS
+  // BR_HS
   // Long
   if(zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag5 > zigzag6 && zigzag6 < zigzag7
       && zigzag5 <= zigzag7 && zigzag3 >= zigzag5 && zigzag2 >= zigzag4
@@ -454,7 +454,8 @@ int OnCalculate(const int rates_total,
 
   // アラート
   // BR
-  if(StringLen( alertText_yks ) > 0 && lastAlert_yks != Time[0] && lastAlertZigzag_yks != zigzag2) {
+  if(StringLen( alertText_yks ) > 0 && lastAlert_yks != Time[0] && lastAlertZigzag_yks != zigzag2
+    && StringLen(alertText_tr) == 0 && StringLen(alertText_mwhs) == 0) {
     Alert(alertText_yks);
     if(MailAlert) {
       mailBody_yks = mailBody_yks + alertText_yks; // ロング or ショート、通貨ペア、時間足
@@ -534,7 +535,7 @@ int OnCalculate(const int rates_total,
     lastAlert_tr = Time[0];
     lastAlertZigzag_tr = zigzag2;
   }
-  // BR_MW_HS
+  // BR_HS
   if(StringLen(alertText_mwhs) > 0 && lastAlert_mwhs != Time[0] && lastAlertZigzag_mwhs != zigzag2) {
     Alert(alertText_mwhs);
     if(MailAlert) {

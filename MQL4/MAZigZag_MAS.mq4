@@ -191,7 +191,7 @@ int OnCalculate(const int rates_total,
   // Long
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag5 < zigzag6
       && zigzag2 >= zigzag4 && zigzag3 <= zigzag5 && zigzag4 <= zigzag6 && zigzag1 > zigzag3
-      && ma1S >= zigzag1 && ma1S >= ma1M) {
+      && ma1S >= zigzag1 && ma1S >= ma1M && zigzag2 >= ma1S) {
     alertText_nc_mwhs = alertText_nc_mwhs + "Long_HS_S " + Symbol() + " " + periodText + "\n";
     alertText_nc_mwhs = alertText_nc_mwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
     mailSubject_nc_mwhs = "[Long_HS_S] " + Symbol() + " " + periodText + " " + Time[0];
@@ -232,7 +232,7 @@ int OnCalculate(const int rates_total,
   // Short
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag5 > zigzag6
       && zigzag2 <= zigzag4 && zigzag3 >= zigzag5 && zigzag4 >= zigzag6 && zigzag1 < zigzag3
-      && ma1S <= zigzag1 && ma1S <= ma1M) {
+      && ma1S <= zigzag1 && ma1S <= ma1M && zigzag2 <= ma1S) {
     alertText_nc_mwhs = alertText_nc_mwhs + "Short_HS_S " + Symbol() + " " + periodText + "\n";
     alertText_nc_mwhs = alertText_nc_mwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
     mailSubject_nc_mwhs = "[Short_HS_S] " + Symbol() + " " + periodText + " " + Time[0];
@@ -275,7 +275,7 @@ int OnCalculate(const int rates_total,
   // Long_ST_TR_BB
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5
      && zigzag2 >= zigzag4 && zigzag3 >= zigzag5 && zigzag1 > zigzag3
-     && zigzag1 <= ma1S && ma1S >= ma1M) {
+     && zigzag1 <= ma1S && ma1S >= ma1M && zigzag2 >= ma1S) {
     alertText_trnc = alertText_trnc + "Long_ST_TR_S " + Symbol() + " " + periodText + "\n";
     alertText_trnc = alertText_trnc + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
     mailSubject_trnc = "[Long_ST_TR_S] " + Symbol() + " " + periodText + " " + Time[0];
@@ -316,7 +316,7 @@ int OnCalculate(const int rates_total,
   // Short_ST_TR_BB
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5
      && zigzag2 <= zigzag4 && zigzag3 <= zigzag5 && zigzag1 < zigzag3
-     && zigzag1 >= ma1S && ma1S <= ma1M) {
+     && zigzag1 >= ma1S && ma1S <= ma1M && zigzag2 <= ma1S) {
     alertText_trnc = alertText_trnc + "Short_ST_TR_S " + Symbol() + " " + periodText + "\n";
     alertText_trnc = alertText_trnc + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
     mailSubject_trnc = "[Short_ST_TR_S] " + Symbol() + " " + periodText + " " + Time[0];
@@ -359,7 +359,7 @@ int OnCalculate(const int rates_total,
   // Long
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag5 < zigzag6 && zigzag6 > zigzag7
       && zigzag2 <= zigzag4 && zigzag3 >= zigzag5 && zigzag4 >= zigzag6 && zigzag1 <= zigzag3 && zigzag3 >= zigzag7 && zigzag1 >= zigzag5
-      && zigzag1 <= ma1S && ma1S >= ma1M) {
+      && zigzag1 <= ma1S && ma1S >= ma1M && zigzag2 >= ma1S) {
     alertText_nc_elmwhs = alertText_nc_elmwhs + "Long_EL_S " + Symbol() + " " + periodText + "\n";
     alertText_nc_elmwhs = alertText_nc_elmwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
     mailSubject_nc_elmwhs = "[Long_EL_S] " + Symbol() + " " + periodText + " " + Time[0];
@@ -400,7 +400,7 @@ int OnCalculate(const int rates_total,
   // Short
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag5 > zigzag6 && zigzag6 < zigzag7
       && zigzag2 >= zigzag4 && zigzag3 <= zigzag5 && zigzag4 <= zigzag6 && zigzag1 >= zigzag3 && zigzag3 <= zigzag7 && zigzag1 <= zigzag5
-      && zigzag1 >= ma1S && ma1S <= ma1M) {
+      && zigzag1 >= ma1S && ma1S <= ma1M && zigzag2 <= ma1S) {
     alertText_nc_elmwhs = alertText_nc_elmwhs + "Short_EL_S " + Symbol() + " " + periodText + "\n";
     alertText_nc_elmwhs = alertText_nc_elmwhs + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
     mailSubject_nc_elmwhs = "[Short_EL_S] " + Symbol() + " " + periodText + " " + Time[0];
@@ -442,7 +442,7 @@ int OnCalculate(const int rates_total,
   requirement_1st = 0;
   // Long_1st_BB
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag1 > zigzag3
-     && zigzag1 <= ma1S && ma1S >= ma1M) {
+     && zigzag1 <= ma1S && ma1S >= ma1M && zigzag2 >= ma1S) {
     alertText_1st = alertText_1st + "Long_1st_S " + Symbol() + " " + periodText + "\n";
     alertText_1st = alertText_1st + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
     mailSubject_1st = "[Long_1st_S] " + Symbol() + " " + periodText + " " + Time[0];
@@ -482,7 +482,7 @@ int OnCalculate(const int rates_total,
   }
   // Short_1st_BB
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag1 < zigzag3
-     && zigzag1 >= ma1S && ma1S <= ma1M) {
+     && zigzag1 >= ma1S && ma1S <= ma1M && zigzag2 <= ma1S) {
     alertText_1st = alertText_1st + "Short_1st_S " + Symbol() + " " + periodText + "\n";
     alertText_1st = alertText_1st + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
     mailSubject_1st = "[Short_1st_S] " + Symbol() + " " + periodText + " " + Time[0];
@@ -525,7 +525,7 @@ int OnCalculate(const int rates_total,
   // Long_2nd_BB
   if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5
       && zigzag2 <= zigzag4 && zigzag3 >= zigzag5 && zigzag1 <= zigzag3 && zigzag1 >= zigzag5
-      && zigzag1 <= ma1S && ma1S >= ma1M) {
+      && zigzag1 <= ma1S && ma1S >= ma1M && zigzag2 >= ma1S) {
     alertText_2nd = alertText_2nd + "Long_2nd_S " + Symbol() + " " + periodText + "\n";
     alertText_2nd = alertText_2nd + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
     mailSubject_2nd = "[Long_2nd_S] " + Symbol() + " " + periodText + " " + Time[0];
@@ -566,7 +566,7 @@ int OnCalculate(const int rates_total,
   // Short_2nd_BB
   if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5
       && zigzag2 >= zigzag4 && zigzag3 <= zigzag5 && zigzag1 >= zigzag3 && zigzag1 <= zigzag5
-      && zigzag1 >= ma1S && ma1S <= ma1M) {
+      && zigzag1 >= ma1S && ma1S <= ma1M && zigzag2 <= ma1S) {
     alertText_2nd = alertText_2nd + "Short_2nd_S " + Symbol() + " " + periodText + "\n";
     alertText_2nd = alertText_2nd + TimeToStr( TimeLocal(), TIME_DATE|TIME_SECONDS ) + " (" + TimeToStr( Time[0], TIME_DATE|TIME_MINUTES ) + ")\n"; // 時間
     mailSubject_2nd = "[Short_2nd_S] " + Symbol() + " " + periodText + " " + Time[0];
