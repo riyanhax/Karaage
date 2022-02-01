@@ -14,6 +14,8 @@ input int MAMiddlePeriod = 80;
 input int MALongPeriod = 320;
 input string AlertSetting = "/////// AlertSetting ///////";
 input int AlertRequirementCount = 0;
+input bool LongAlert = true;
+input bool ShortAlert = true;
 input bool MailAlert = true;
 input bool FileOutput = true;
 
@@ -201,7 +203,8 @@ int OnCalculate(const int rates_total,
   // HS_NC
   requirement_nc_mwhs = 0;
   // Long
-  if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag5 < zigzag6
+  if(LongAlert
+      && zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag5 < zigzag6
       && zigzag2 >= zigzag4 && zigzag3 <= zigzag5 && zigzag4 <= zigzag6 && zigzag1 > zigzag3
       && zigzag1 <= zigzag4) {
     alertText_nc_mwhs = alertText_nc_mwhs + "Long_HS_NC " + Symbol() + " " + periodText + "\n";
@@ -242,7 +245,8 @@ int OnCalculate(const int rates_total,
     }
   }
   // Short
-  if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag5 > zigzag6
+  if(ShortAlert
+      && zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag5 > zigzag6
       && zigzag2 <= zigzag4 && zigzag3 >= zigzag5 && zigzag4 >= zigzag6 && zigzag1 < zigzag3
       && zigzag1 >= zigzag4) {
     alertText_nc_mwhs = alertText_nc_mwhs + "Short_HS_NC " + Symbol() + " " + periodText + "\n";
@@ -285,7 +289,8 @@ int OnCalculate(const int rates_total,
   // HS_TR_NC
   requirement_nc_mwhstr = 0;
   // Long
-  if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5
+  if(LongAlert
+      && zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5
       && zigzag5 < zigzag6 && zigzag6 > zigzag7 && zigzag7 < zigzag8
       && zigzag2 >= zigzag4 && zigzag3 >= zigzag5 && zigzag4 >= zigzag6 && zigzag1 > zigzag3
       && zigzag5 <= zigzag7 && zigzag6 <= zigzag8
@@ -334,7 +339,8 @@ int OnCalculate(const int rates_total,
     }
   }
   // Short
-  if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5
+  if(ShortAlert
+      && zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5
       && zigzag5 > zigzag6 && zigzag6 < zigzag7 && zigzag7 > zigzag8
       && zigzag2 <= zigzag4 && zigzag3 <= zigzag5 && zigzag4 <= zigzag6 && zigzag1 < zigzag3
       && zigzag5 >= zigzag7 && zigzag6 >= zigzag8
@@ -385,7 +391,8 @@ int OnCalculate(const int rates_total,
   // hs_TR_NC
   requirement_nc_hstr = 0;
   // Long
-  if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5
+  if(LongAlert
+      && zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5
       && zigzag5 < zigzag6 && zigzag6 > zigzag7 && zigzag7 < zigzag8
       && zigzag2 >= zigzag4 && zigzag3 >= zigzag5 && zigzag4 <= zigzag6 && zigzag1 > zigzag3
       && zigzag5 <= zigzag7 && zigzag6 <= zigzag8 && zigzag2 >= zigzag6
@@ -434,7 +441,8 @@ int OnCalculate(const int rates_total,
     }
   }
   // Short
-  if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5
+  if(ShortAlert
+      && zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5
       && zigzag5 > zigzag6 && zigzag6 < zigzag7 && zigzag7 > zigzag8
       && zigzag2 <= zigzag4 && zigzag3 <= zigzag5 && zigzag4 >= zigzag6 && zigzag1 < zigzag3
       && zigzag5 >= zigzag7 && zigzag6 >= zigzag8 && zigzag2 <= zigzag6
@@ -485,7 +493,8 @@ int OnCalculate(const int rates_total,
   // ST_TR_NC
   requirement_trnc = 0;
   // Long_TR_NC
-  if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5
+  if(LongAlert
+      && zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5
      && zigzag2 >= zigzag4 && zigzag3 >= zigzag5 && zigzag1 > zigzag3
      && zigzag1 <= zigzag4) {
     alertText_trnc = alertText_trnc + "Long_ST_TR_NC " + Symbol() + " " + periodText + "\n";
@@ -527,7 +536,8 @@ int OnCalculate(const int rates_total,
     //macdRsi = macdRsi + "RSI: " + DoubleToStr( rsi1, 2 ) + ", " + DoubleToStr( rsi2, 2 );
   }
   // Short_TR_NC
-  if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5
+  if(ShortAlert
+      && zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5
      && zigzag2 <= zigzag4 && zigzag3 <= zigzag5 && zigzag1 < zigzag3
      && zigzag1 >= zigzag4) {
     alertText_trnc = alertText_trnc + "Short_ST_TR_NC " + Symbol() + " " + periodText + "\n";
@@ -571,7 +581,8 @@ int OnCalculate(const int rates_total,
   // EL_HS_NC
   requirement_nc_elmwhs = 0;
   // Long
-  if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag5 < zigzag6 && zigzag6 > zigzag7
+  if(LongAlert
+      && zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5 && zigzag5 < zigzag6 && zigzag6 > zigzag7
       && zigzag2 >= zigzag4 && zigzag3 <= zigzag5 && zigzag4 <= zigzag6 && zigzag1 > zigzag3 && zigzag3 >= zigzag7
       && zigzag1 <= zigzag4) {
     alertText_nc_elmwhs = alertText_nc_elmwhs + "Long_EL_HS_NC " + Symbol() + " " + periodText + "\n";
@@ -612,7 +623,8 @@ int OnCalculate(const int rates_total,
     }
   }
   // Short
-  if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag5 > zigzag6 && zigzag6 < zigzag7
+  if(ShortAlert
+      && zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5 && zigzag5 > zigzag6 && zigzag6 < zigzag7
       && zigzag2 <= zigzag4 && zigzag3 >= zigzag5 && zigzag4 >= zigzag6 && zigzag1 < zigzag3 && zigzag3 <= zigzag7
       && zigzag1 >= zigzag4) {
     alertText_nc_elmwhs = alertText_nc_elmwhs + "Short_EL_HS_NC " + Symbol() + " " + periodText + "\n";
@@ -655,7 +667,8 @@ int OnCalculate(const int rates_total,
   // EL_HS_TR_NC
   requirement_nc_elmwhstr = 0;
   // Long
-  if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5
+  if(LongAlert
+      && zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5
       && zigzag5 < zigzag6 && zigzag6 > zigzag7 && zigzag7 < zigzag8 && zigzag8 > zigzag9
       && zigzag2 >= zigzag4 && zigzag3 >= zigzag5 && zigzag4 >= zigzag6 && zigzag1 > zigzag3
       && zigzag5 <= zigzag7 && zigzag6 <= zigzag8 && zigzag5 >= zigzag9
@@ -704,7 +717,8 @@ int OnCalculate(const int rates_total,
     }
   }
   // Short
-  if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5
+  if(ShortAlert
+      && zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5
       && zigzag5 > zigzag6 && zigzag6 < zigzag7 && zigzag7 > zigzag8 && zigzag8 < zigzag9
       && zigzag2 <= zigzag4 && zigzag3 <= zigzag5 && zigzag4 <= zigzag6 && zigzag1 < zigzag3
       && zigzag5 >= zigzag7 && zigzag6 >= zigzag8 && zigzag5 <= zigzag9
@@ -755,7 +769,8 @@ int OnCalculate(const int rates_total,
   // EL_hs_TR_NC
   requirement_nc_elhstr = 0;
   // Long
-  if(zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5
+  if(LongAlert
+      && zigzag1 < zigzag2 && zigzag2 > zigzag3 && zigzag3 < zigzag4 && zigzag4 > zigzag5
       && zigzag5 < zigzag6 && zigzag6 > zigzag7 && zigzag7 < zigzag8 && zigzag8 > zigzag9
       && zigzag2 >= zigzag4 && zigzag3 >= zigzag5 && zigzag4 <= zigzag6 && zigzag1 > zigzag3
       && zigzag5 <= zigzag7 && zigzag6 <= zigzag8 && zigzag2 >= zigzag6 && zigzag5 >= zigzag9
@@ -804,7 +819,8 @@ int OnCalculate(const int rates_total,
     }
   }
   // Short
-  if(zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5
+  if(ShortAlert
+      && zigzag1 > zigzag2 && zigzag2 < zigzag3 && zigzag3 > zigzag4 && zigzag4 < zigzag5
       && zigzag5 > zigzag6 && zigzag6 < zigzag7 && zigzag7 > zigzag8 && zigzag8 < zigzag9
       && zigzag2 <= zigzag4 && zigzag3 <= zigzag5 && zigzag4 >= zigzag6 && zigzag1 < zigzag3
       && zigzag5 >= zigzag7 && zigzag6 >= zigzag8 && zigzag2 <= zigzag6 && zigzag5 <= zigzag9
