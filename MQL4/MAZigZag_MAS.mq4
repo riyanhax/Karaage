@@ -23,8 +23,10 @@ datetime lastAlert_nc_mwhs = 0;
 double lastAlertZigzag_nc_mwhs;
 datetime lastAlert_trnc = 0;
 double lastAlertZigzag_trnc;
+/*
 datetime lastAlert_1st = 0;
 double lastAlertZigzag_1st;
+*/
 datetime lastAlert_nc_elmwhs = 0;
 double lastAlertZigzag_nc_elmwhs;
 datetime lastAlert_2nd = 0;
@@ -113,12 +115,14 @@ int OnCalculate(const int rates_total,
   string mailBody_trnc;
   string direction_trnc;
   string macdRsi_trnc;
+  /*
   int requirement_1st;
   string alertText_1st;
   string mailSubject_1st;
   string mailBody_1st;
   string direction_1st;
   string macdRsi_1st;
+  */
   int requirement_nc_elmwhs;
   string alertText_nc_elmwhs;
   string mailSubject_nc_elmwhs;
@@ -447,6 +451,7 @@ int OnCalculate(const int rates_total,
     }
   }
   // 1st_BB
+  /*
   requirement_1st = 0;
   // Long_1st_BB
   if(LongAlert
@@ -530,6 +535,7 @@ int OnCalculate(const int rates_total,
       macdRsi_1st = macdRsi_1st + "Div: Short";
     }
   }
+  */
   // 2nd_BB
   requirement_2nd = 0;
   // Long_2nd_BB
@@ -744,6 +750,7 @@ int OnCalculate(const int rates_total,
     lastAlertZigzag_nc_elmwhs = zigzag2;
   }
   // 1st_BB
+  /*
   if(StringLen(alertText_trnc) == 0 && StringLen(alertText_nc_mwhs) == 0 && StringLen(alertText_1st) > 0 && requirement_1st >= AlertRequirementCount && lastAlert_1st != Time[0] && lastAlertZigzag_1st != zigzag2) {
     Alert(alertText_1st);
     if(MailAlert) {
@@ -782,6 +789,7 @@ int OnCalculate(const int rates_total,
     lastAlert_1st = Time[0];
     lastAlertZigzag_1st = zigzag2;
   }
+  */
   // 2nd_BB
   if(StringLen(alertText_nc_elmwhs) == 0 && StringLen(alertText_2nd) > 0 && requirement_2nd >= AlertRequirementCount && lastAlert_2nd != Time[0] && lastAlertZigzag_2nd != zigzag2) {
     Alert(alertText_2nd);
